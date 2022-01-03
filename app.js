@@ -58,134 +58,12 @@ const jsonQuestionBank = [{
 
 
 const template = document.createElement('template');
-template.innerHTML = `
- <style>
- .btnRevisitQ{
-    background: rgba(51, 51, 51, 0.05);
-    border-radius: 8px;
-    border-width: 0;
-    color: #333333;
-    cursor: pointer;
-    display: inline-block;
-    font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    list-style: none;
-    margin: 0;
-    padding: 3px 4px;
-    text-align: center;
-    transition: all 200ms;
-    vertical-align: baseline;
-    white-space: nowrap;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
- }
-.divBtnShowTranscript{
-    padding: 15px;
-}
- .btnShowTranscript, .btnStart, .btnConclusion, .startInterview{
-  align-self: center;
-  background-color: #fff;
-  background-image: none;
-  background-position: 0 90%;
-  background-repeat: repeat no-repeat;
-  background-size: 4px 3px;
-  border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
-  border-style: solid;
-  border-width: 2px;
-  box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;
-  box-sizing: border-box;
-  color: #41403e;
-  cursor: pointer;
-  display: inline-block;
-  font-family: Neucha, sans-serif;
-  font-size: 1rem;
-  line-height: 23px;
-  outline: none;
-  padding: .30rem;
-  text-decoration: none;
-  transition: all 235ms ease-in-out;
-  border-bottom-left-radius: 15px 255px;
-  border-bottom-right-radius: 225px 15px;
-  border-top-left-radius: 255px 15px;
-  border-top-right-radius: 15px 225px;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  margin-up: 500px;
-  margin-down: 500px;
-  }
-
-.btnShowTranscript:hover, .btnStart:hover, .btnConclusion:hover, .startInterview:hover{
-  box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
-  transform: translate3d(0, 2px, 0);
-}
-
-.btnShowTranscript:focus, .btnStart:focus, .btnConclusion:focus, .startInterview:focus{
-  box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
-}
- 
-
- .btn {
-    font-size: 15px;
-    font-weight: 100;
-    letter-spacing: 1px;
-    padding: 5px 10px 5px;
-    outline: 0;
-    border: 1px solid black;
-    cursor: pointer;
-    position: relative;
-    background: rgba(0, 0, 0, 0);
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-  }
-  
-  .btn:after {
-    content: "";
-    background: #cfebfd;
-    width: 100%;
-    z-index: -1;
-    position: absolute;
-    height: 100%;
-    top: 7px;
-    left: 7px;
-    transition: 0.2s;
-  }
-  
-  .btn:hover:after {
-    top: 0px;
-    left: 0px;
-  }
-  
-  @media (min-width: 768px) {
-    .btn {
-      padding: 10px 15px 10px;
-    }
-  }
-
-
-    .policy-models-default {
-        text-align:center
-    }
-     h1,h2,h3 {
-        color: #344CB7;
-        font-family: 'Nunito', sans-serif;
-    }
-    h4 {
-        color: black;
-        font-family: 'Nunito', sans-serif;
-    }
-    .transcript {
-        display: none
-    }
- </style>
- <div class="policy-models-default"> 
-
- </div>
-`; 
+var nameOfFileCss = document.getElementById("style").innerHTML;
+// if (typeof(document.getElementById("style").innerHTML) != 'undefined' && (document.getElementById("style").innerHTML) != null)
+// {
+//     nameOfFileCss = document.getElementById("style").innerHTML;
+// }
+template.innerHTML = "<link rel=\"stylesheet\" href=" + nameOfFileCss + "><div class=\"policy-models-default\"></div>"; 
 
 class PolicyModelsDefault extends HTMLElement{
     constructor(){
@@ -251,8 +129,9 @@ class PolicyModelsDefault extends HTMLElement{
         let div = `
         <div>
         <h3>Conclusion Page</h3>
-        <h4>These are your results:</h4>
+        <h4>Your results:</h4>
         <p class = \"conclusions\"></p>
+        <button class=\"backToWelcomePage\">Home</button>
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         //the conclusion
@@ -261,6 +140,7 @@ class PolicyModelsDefault extends HTMLElement{
         answersStr = answersStr.substring(1, answersStr.length-1);
         answersStr ="[" + answersStr + "]";
         this.shadowRoot.querySelector('.conclusions').innerText = answersStr;
+        this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.welcomePage());
     }
 
     connectedCallback(){
@@ -353,9 +233,9 @@ class PolicyModelsDefault extends HTMLElement{
             this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(this.question[2][j]));
         }
         //NEW
-        if(this.getAttribute('btn_background')){
-            this.shadowRoot.querySelector('.btn').style.background = this.getAttribute('btn_background');
-        }
+        // if(this.getAttribute('btn_background')){
+        //     this.shadowRoot.querySelector('.btn').style.background = this.getAttribute('btn_background');
+        // }
         //this.ReturnSetUp();  
     }
 
