@@ -1,4 +1,12 @@
 //'use strict'
+class Question {
+    constructor(id, question, answers){
+        this.id = id
+        this.question = question
+        this.answers = answers
+    }
+}
+
 const jsonQuestionBank = [{
 	"questionID": 1,
 	"question": "Are you a woman?",
@@ -54,6 +62,21 @@ const jsonQuestionBank = [{
     "question": "",
     "answers": []
 }];
+
+class APIMock {
+    constructor (){
+        this.questionbank = jsonQuestionBank
+    }
+
+    getNextQuestion(questionID, answer) {
+        var retObject
+        if (answer == -1)
+            retObject = JSON.stringify(this.questionbank[questionID - 1]); 
+        else
+            retObject = JSON.stringify(this.questionbank[questionID]);
+        return retObject;
+    }
+}
  
 
 
@@ -230,22 +253,21 @@ class PolicyModelsDefault extends HTMLElement{
         `;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         
-        this.connectedCallback(); //NOT SURE
+        this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
         this.showInfo = true;
         this.transcriptFlag = false;
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
-        this.question = [0,"Welcome to the PolicyModels test site!", ["Start"]]
-        this.shadowRoot.querySelector('h4').innerText = this.question[1];
-        this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.question[2][0] + "</button>\n";
+        this.question = new Question(0,"Welcome to the PolicyModels test site!", ["Start"]);
+        this.shadowRoot.querySelector('h4').innerText = this.question.question;
+        this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.question.answers[0] + "</button>\n";
         this.buttons = ['#a0'];
         this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
+        this.APIMock = new APIMock();
         
         // answers arre represented in a map
         this.answers = new Map();
               
-        ///to be removed later
-        this.Qnum = 0;
-        ///to be removed later
+
     }
     conclusionPage(){
         let div = `
@@ -263,14 +285,6 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.conclusions').innerText = answersStr;
     }
 
-    connectedCallback(){
-        this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
-    }
-
-    disconnectedCallback(){ //WHEN TO CALL THIS
-        this.shadowRoot.querySelector('#transcript-toggle').removeEventListener();
-    }
-
     /**
      * Loads up the conclusion page when press on conclusion btn.
      */
@@ -282,59 +296,44 @@ class PolicyModelsDefault extends HTMLElement{
     /**
      * Loads up the next question in the interview.
      */
-    FetchQuestion(answer){
-    if (answer != undefined && this.Qnum > 0)
-        this.answers.set(this.Qnum, [this.question[1], answer]);
-    let jsonQuestion = this.getNextQuestion(this.Qnum);
-    let obj = JSON.parse(jsonQuestion);
-    this.question = [obj.questionID,obj.question,Array.from(obj.answers)];
-    this.Qnum = this.Qnum + 1;
+    FetchQuestion(answer, overwriteid, answernum){
+        let jsonQuestion;
+        if (answer != undefined && this.question.id > 0)
+            this.answers.set(this.question.id, [this.question.question, answer]);
+        if(overwriteid != undefined)
+            jsonQuestion = this.APIMock.getNextQuestion(overwriteid, answernum);
+        else
+            jsonQuestion = this.APIMock.getNextQuestion(this.question.id);
+        let obj = JSON.parse(jsonQuestion);
+        this.question = new Question(obj.questionID,obj.question,Array.from(obj.answers));
     }
-
-    /**
-     * set up a return to question button
-     */
-    /*ReturnSetUp(){
-        if (this.Qnum < 2 || this.Qnum > 9)
-            return;
-        let returnButtonSTR = "<option value=0>choose a question</option>\n";
-        for(let i = 1; i < this.Qnum; i++)
-            returnButtonSTR += ("<option value = " + i.toString() +">question " + i.toString() + "</option>\n");
-        this.shadowRoot.querySelector("#QReturns").innerHTML = returnButtonSTR;
-    }*/
+    
 
     /**
      * sets up the transcript
      */
-    setTranscript(answer){
+    setTranscript(){
         let transcriptSTR = "";
-        if (this.Qnum < 1 || this.Qnum > 11)
-            return;
         let transcript = this.shadowRoot.querySelector('.transcript');
         this.answers.forEach((value,key) => {transcriptSTR += ("<div>question "+ key.toString() +": " + value[0] +"&emsp;|&emsp;your answer: " +
         value[1] + "&emsp;|&emsp;<button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">revisit this question</button></div>")});
         transcript.innerHTML = transcriptSTR;
         this.answers.forEach((value,key) => {this.shadowRoot.querySelector('#QR' + key.toString()).addEventListener('click', ()=>this.ReturnToQuestion(key))});
-        //NEW problem
-        // if(this.getAttribute('btnRevisitQ_background')){
-        //     this.shadowRoot.querySelector('.btnRevisitQ').style.background = this.getAttribute('btnRevisitQ_background');
-        // }
     }
 
     /**
      * Sets up the current Question.
      */
-    QuestionSetUp(answer){ 
-        this.FetchQuestion(answer);
-        this.setTranscript(answer); 
-        this.shadowRoot.querySelector('h4').innerText = this.question[1]; 
-        if(this.question[0] == -1){
+    QuestionSetUp(answer, overwriteid, answernum){ 
+        this.FetchQuestion(answer,overwriteid, answernum);
+        this.setTranscript(); 
+        this.shadowRoot.querySelector('h4').innerText = this.question.question; 
+        if(this.question.id == -1){
             this.Conclude();
             this.conclusion();
         }
-        else{
+        else
             this.ButtonSetUp();
-        }
     }
 
 
@@ -344,19 +343,14 @@ class PolicyModelsDefault extends HTMLElement{
     ButtonSetUp(){
         let btnIDs = [];
         let btnSTR = ""; 
-        for (let i = 0; i< this.question[2].length; i++){
-            btnSTR += "<button class = \"btn\" id =\"a" + i.toString() + "\">" + this.question[2][i] + "</button>\n";
+        for (let i = 0; i< this.question.answers.length; i++){
+            btnSTR += "<button class = \"btn\" id =\"a" + i.toString() + "\">" + this.question.answers[i] + "</button>\n";
             btnIDs[i] = '#a' + i.toString();
         } 
         this.shadowRoot.querySelector('.buttons').innerHTML = btnSTR;
-        for (let j = 0; j< this.question[2].length; j++){
-            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(this.question[2][j]));
+        for (let j = 0; j< this.question.answers.length; j++){
+            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(this.question.answers[j]));
         }
-        //NEW
-        if(this.getAttribute('btn_background')){
-            this.shadowRoot.querySelector('.btn').style.background = this.getAttribute('btn_background');
-        }
-        //this.ReturnSetUp();  
     }
 
     /**
@@ -365,24 +359,21 @@ class PolicyModelsDefault extends HTMLElement{
     Conclude(){
         let answersStr = "";
         this.answers.forEach((value, key) => answersStr += (value[1] + ","));
-        answersStr = answersStr.substring(1, answersStr.length-1);
+        answersStr = answersStr.substring(0, answersStr.length-1);
         answersStr ="[" + answersStr + "]";
         this.shadowRoot.querySelector('.buttons').innerHTML = 
         "<h4>Press the \"show conclusion\" button to see the conclusion of your interview</h4>";
-        //this.shadowRoot.querySelector('.buttons').innerText = answersStr;
     }
 
     /**
      * returns to a specific question
      */
     ReturnToQuestion(questionNum){
-        if(questionNum > 9 || questionNum < 1){
+        if(questionNum > 10 || questionNum < 1){
             return;
         }
-        this.Qnum = questionNum -1;
         this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
-        this.QuestionSetUp();
-
+        this.QuestionSetUp(undefined,questionNum, -1);
     }
 
     toggleTranscript(){
@@ -417,13 +408,6 @@ class PolicyModelsDefault extends HTMLElement{
         xmlHttp.send(null);
         prompt("xmlHttp.responseText is"+xmlHttp.responseText);
     }
-
-    getNextQuestion(qNum) {
-        let retQNum = qNum + 1;
-        var retObject = JSON.stringify(jsonQuestionBank[retQNum-1]);
-        return retObject;
-    }
-
 
 }
 
