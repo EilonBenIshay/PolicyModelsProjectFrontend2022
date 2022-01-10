@@ -157,11 +157,8 @@ class PolicyModelsDefault extends HTMLElement{
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         //the conclusion
-        let answersStr = "";
-        this.answers.forEach((value, key) => answersStr += (value[1] + ","));
-        answersStr = answersStr.substring(1, answersStr.length-1);
-        answersStr ="[" + answersStr + "]";
-        this.shadowRoot.querySelector('.conclusions').innerText = answersStr;
+        let conclusions = this.getConclusions()
+        this.shadowRoot.querySelector('.conclusions').innerText = conclusions;
         this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.welcomePage());
     }
 
@@ -209,7 +206,8 @@ class PolicyModelsDefault extends HTMLElement{
         this.setTranscript(); 
         this.shadowRoot.querySelector('h4').innerText = this.question.question; 
         if(this.question.id == -1){
-            this.Conclude();
+            this.shadowRoot.querySelector('.buttons').innerHTML = 
+                "<h4>Press the \"show conclusion\" button to see the conclusion of your interview</h4>";
             this.conclusion();
         }
         else
@@ -236,13 +234,11 @@ class PolicyModelsDefault extends HTMLElement{
     /**
      * Concludes the interview
      */
-    Conclude(){
+    getConclusions(){
         let answersStr = "";
         this.answers.forEach((value, key) => answersStr += (value[1] + ","));
-        answersStr = answersStr.substring(0, answersStr.length-1);
         answersStr ="[" + answersStr + "]";
-        this.shadowRoot.querySelector('.buttons').innerHTML = 
-        "<h4>Press the \"show conclusion\" button to see the conclusion of your interview</h4>";
+        return answersStr;
     }
 
     /**
