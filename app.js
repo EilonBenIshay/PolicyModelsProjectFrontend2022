@@ -7,7 +7,7 @@ class Question {
     }
 }
 
-const jsonQuestionBank = [{
+const jsonQuestionBankEnglish = [{
 	"questionID": 1,
 	"question": "Are you a woman?",
 	"answers": ["Yes", "No"]
@@ -63,9 +63,13 @@ const jsonQuestionBank = [{
     "answers": []
 }];
 
+const jsonQuestionBankArabic = [];
+const jsonQuestionBankHebrew = [];
+const jsonQuestionBankRussian = [];
+
 class APIMock {
     constructor (){
-        this.questionbank = jsonQuestionBank
+        this.questionbank = jsonQuestionBankEnglish
     }
 
     getNextQuestion(questionID, answer) {
