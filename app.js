@@ -1,4 +1,5 @@
 //'use strict'
+
 class Question {
     constructor(id, question, answers){
         this.id = id
@@ -7,6 +8,9 @@ class Question {
     }
 }
 
+/**
+ * temp question bank
+ */
 const jsonQuestionBankEnglish = [{
 	"questionID": 1,
 	"question": "Are you a woman?",
@@ -67,6 +71,10 @@ const jsonQuestionBankArabic = [];
 const jsonQuestionBankHebrew = [];
 const jsonQuestionBankRussian = [];
 
+
+/**
+ * a class that portrays the API calls. later will be changed to include them
+ */
 class APIMock {
     constructor (){
         this.questionbank = jsonQuestionBankEnglish
@@ -107,7 +115,9 @@ class PolicyModelsDefault extends HTMLElement{
         
 
     }
-
+    /** 
+     * a function called to load the welcome page
+    */
     welcomePage(){
         let div = `
         <div>
@@ -119,6 +129,9 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + "START AN INTERVIEW" + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
     }
+    /**
+     * a function called to load the interview page
+     */
     interviewPage(){
         let div = `
         <div>
@@ -151,6 +164,10 @@ class PolicyModelsDefault extends HTMLElement{
               
 
     }
+
+    /**
+     * a function called to load the conclusion page
+     */
     conclusionPage(){
         let div = `
         <div>
@@ -256,6 +273,9 @@ class PolicyModelsDefault extends HTMLElement{
         this.QuestionSetUp(undefined,questionNum, -1);
     }
 
+    /**
+     * toggles the transcript button
+     */
     toggleTranscript(){
         let info = this.shadowRoot.querySelector('.transcript');
         let btn = this.shadowRoot.querySelector('#transcript-toggle');
@@ -269,6 +289,8 @@ class PolicyModelsDefault extends HTMLElement{
             btn.innerText = "show tanscript";
         }
     }
+
+    /*
     httpGet()
     {
         // prompt("before1");
@@ -287,7 +309,7 @@ class PolicyModelsDefault extends HTMLElement{
         xmlHttp.open("GET", theUrl, true); // true for asynchronous 
         xmlHttp.send(null);
         prompt("xmlHttp.responseText is"+xmlHttp.responseText);
-    }
+    }*/
 
 }
 
