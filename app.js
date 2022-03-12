@@ -76,7 +76,7 @@ const jsonQuestionBankRussian = [];
  * a class that portrays the API calls. later will be changed to include them
  */
 class APIMock {
-    constructor (){
+    constructor(){
         this.questionbank = jsonQuestionBankEnglish
     }
 
@@ -87,6 +87,21 @@ class APIMock {
         else
             retObject = JSON.stringify(this.questionbank[questionID]);
         return retObject;
+    }
+}
+
+class APIHandler{
+    userId;
+    modelId;
+    versionNum;
+    nodeId;
+
+    answers;
+
+    constructor(){
+    }
+
+    sendAPIRequest (type){
     }
 }
  
