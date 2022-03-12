@@ -1,4 +1,6 @@
 //'use strict'
+const https = require('https');
+
 
 class Question {
     constructor(id, question, answers){
@@ -94,7 +96,7 @@ class APIHandler{
     userId;
     modelId;
     versionNum;
-    nodeId;
+    questionID;
 
     answers;
 
@@ -102,6 +104,17 @@ class APIHandler{
     }
 
     sendAPIRequest (type){
+        https.get('https://encrypted.google.com/', (res) => {
+        console.log('statusCode:', res.statusCode);
+        console.log('headers:', res.headers);
+
+        res.on('data', (d) => {
+            process.stdout.write(d);
+        });
+
+        }).on('error', (e) => {
+        console.error(e);
+        });
     }
 }
  
@@ -140,6 +153,8 @@ class PolicyModelsDefault extends HTMLElement{
         <h4></h4>
         <div class=\"startInterview\"></div>
         </div>`;
+        APIHandler = new APIHandler();
+        console.log(APIHandler.sendAPIRequest(7));
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + "START AN INTERVIEW" + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
