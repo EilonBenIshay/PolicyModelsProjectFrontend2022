@@ -131,6 +131,12 @@ template.innerHTML = "<link rel=\"stylesheet\" href=" + nameOfFileCss + "><div c
 class PolicyModelsDefault extends HTMLElement{
     constructor(){
         super();
+        showInfo = true;
+        transcriptFlag = false;
+        buttons = ['#a0'];
+        question;
+        apiHandler = new APIMock();
+        answers = new Map();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.welcomePage();
@@ -177,22 +183,18 @@ class PolicyModelsDefault extends HTMLElement{
         </div>
         `;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
-        
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
         this.showInfo = true;
         this.transcriptFlag = false;
+        this.buttons = ['#a0'];
+        this.question = new Question(0,"Welcome to the PolicyModels test site!", ["Start"]);        
+
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
-        this.question = new Question(0,"Welcome to the PolicyModels test site!", ["Start"]);
         this.shadowRoot.querySelector('h4').innerText = this.question.question;
         this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.question.answers[0] + "</button>\n";
-        this.buttons = ['#a0'];
         this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
-        this.APIMock = new APIMock();
         
-        // answers arre represented in a map
-        this.answers = new Map();
               
-
     }
 
     /**
