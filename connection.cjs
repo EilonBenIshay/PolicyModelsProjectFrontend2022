@@ -36,7 +36,7 @@ function GetModelLanguages(modelId)
 function startInterview(modelId,versionId,languageId)
 {
     url = `http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`
-    return new promises((resolve, reject) =>{
+    return new Promise((resolve, reject) =>{
         http.get(url, (res) => {
             // console.log('statusCode:', res.statusCode);
             // console.log('headers:', res.headers);
@@ -90,13 +90,23 @@ function answerLastQuestion(uuid,modelId,versionId,languageId,questionId)
 
 //GetModels();
 //GetModelLanguages(1);
-let uuid = -1;
-startInterview(1,1,"English-Raw").then((uid) => {
-    uuid = uid
-}).catch((messege) => {
-    console.log(messege)
-});
-console.log(uuid)
+let uuid = undefined;
+async function doWork(){
+    //let uuid = -1;
+    const uid = await startInterview(1,1,"English-Raw");
+    uuid = uid;
+    console.log(uuid);
+    console.log(uid);
+
+}
+doWork();
+//let uuid = -1;
+// startInterview(1,1,"English-Raw").then((uid) => {
+//     uuid = uid
+// }).catch((messege) => {
+//     console.log(messege)
+// });
+// console.log(uuid)
 // for now -1 return the last question
 //GetLastQuestion(uuid,1,1,"English-Raw",-1);
 
