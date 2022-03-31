@@ -1,3 +1,4 @@
+const { rejects } = require('assert');
 const http = require('http');
 
 
@@ -35,19 +36,20 @@ function GetModelLanguages(modelId)
 function startInterview(modelId,versionId,languageId)
 {
     url = `http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`
-
-    http.get(url, (res) => {
-    // console.log('statusCode:', res.statusCode);
-    // console.log('headers:', res.headers);
-
-    res.on('data', (d) => {
-        process.stdout.write(d);
-        return JSON.parse(d)[0];
-    });
-
-    }).on('error', (e) => {
-        console.error(e);
-    });
+    return new promises((resolve, reject) =>{
+        http.get(url, (res) => {
+            // console.log('statusCode:', res.statusCode);
+            // console.log('headers:', res.headers);
+        
+            res.on('data', (d) => {
+                resolve(JSON.parse(d)[0]);
+            });
+        
+            }).on('error', (e) => {
+                reject(e);
+            });
+    })
+    
 }
 
 function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
@@ -88,9 +90,13 @@ function answerLastQuestion(uuid,modelId,versionId,languageId,questionId)
 
 //GetModels();
 //GetModelLanguages(1);
-
-uuid = startInterview(1,1,"English-Raw");
+let uuid = -1;
+startInterview(1,1,"English-Raw").then((uid) => {
+    uuid = uid
+}).catch((messege) => {
+    console.log(messege)
+});
 console.log(uuid)
 // for now -1 return the last question
-GetLastQuestion(uuid,1,1,"English-Raw",-1);
+//GetLastQuestion(uuid,1,1,"English-Raw",-1);
 
