@@ -83,20 +83,16 @@ function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
 
     return new Promise((resolve, reject) =>{
         const req = http.request(options, (res) => {
-            console.log('statusCode:', res.statusCode);
-            console.log('headers:', res.headers);
-        
+                   
             res.on('data', (d) => {
-                //resolve(JSON.parse(d));
-                //process.stdout.write(JSON.parse(d));
                 resolve(JSON.parse(d));
             });
-            res.on('error', (e) => {
+            req.on('error', (e) => {
                 reject(e);
             });
+        });
         req.write(postData);
         req.end();
-        })
     })
 }
         
@@ -148,7 +144,8 @@ async function WORK(){
     uuid = ans[0];
     questionId = ans[1];
     const question = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
-    console.log(question)
+    console.log(question[0]);
+    console.log(question[1]);
 }
 WORK();
 
