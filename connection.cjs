@@ -73,7 +73,7 @@ function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
       const options = {
         hostname: 'http://localhost',
         method: 'POST',
-        path: '/apiInterviewCtrl/ask/',
+        path: 'apiInterviewCtrl/ask/',
         port: 9000,
         headers: {
           'Content-Type': 'application/json',
@@ -81,19 +81,19 @@ function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
         }
       };
 
-    return new Promise((resolve, reject) =>{
+    // return new Promise((resolve, reject) =>{
         http.request(options, (res) => {
             console.log('statusCode:', res.statusCode);
             console.log('headers:', res.headers);
         
             res.on('data', (d) => {
-                resolve(JSON.parse(d));
+                console.log(JSON.parse(d));
             });
         
             }).on('error', (e) => {
-                reject(e);
+                console.log(e);
             });
-    })
+    // })
 }
 
 //1) todo async await 
@@ -135,14 +135,14 @@ async function getQuestionId(uuid,questionId){
     return ans;
 }
 
-async function getQuestion(){
+async function WORK(){
     const ans = await startInterview(modelId,versionId,language);
     uuid = ans[0];
     questionId = ans[1];
     const question = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
     console.log(question)
 }
-
+WORK();
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview
 //     uuid = uuidWithFirstQuestionId[0];
