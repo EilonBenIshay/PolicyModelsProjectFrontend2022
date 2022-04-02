@@ -81,20 +81,30 @@ function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
         }
       };
 
-    return new Promise((resolve, reject) =>{
-        http.request(options, (res) => {
+    //return new Promise((resolve, reject) =>{
+        const req = http.request(options, (res) => {
             console.log('statusCode:', res.statusCode);
             console.log('headers:', res.headers);
         
             res.on('data', (d) => {
-                resolve(JSON.parse(d));
+                //resolve(JSON.parse(d));
+                console.log(d);
             });
+
+            res.on('end', () => {
+                console.log('No more data in response.');
+              });
         
             }).on('error', (e) => {
                 reject(e);
             });
-    })
+        req.write(postData);
+        req.end();
 }
+        
+        
+
+
 
 //1) todo async await 
 function answerLastQuestion(uuid,modelId,versionId,languageId,questionId)
@@ -142,6 +152,17 @@ async function getQuestion(){
     const question = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
     console.log(question)
 }
+
+
+
+function dosomething(a, b){
+    return a+b;
+}
+
+function dosomethingelse(c){
+    console.log(C)
+}
+dosomethingelse((dosomething(a,b)));
 
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview
