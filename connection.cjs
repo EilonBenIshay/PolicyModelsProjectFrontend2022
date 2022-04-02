@@ -135,6 +135,14 @@ async function getQuestionId(uuid,questionId){
     return ans;
 }
 
+async function getQuestion(){
+    const ans = await startInterview(modelId,versionId,language);
+    uuid = ans[0];
+    questionId = ans[1];
+    const question = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
+    console.log(question)
+}
+
 getUserId().then((uuidWithFirstQuestionId) => {
     //here we hgave the usierId of the interview
     uuid = uuidWithFirstQuestionId[0];
