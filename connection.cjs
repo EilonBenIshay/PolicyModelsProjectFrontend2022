@@ -143,16 +143,16 @@ async function getQuestion(){
     console.log(question)
 }
 
-getUserId().then((uuidWithFirstQuestionId) => {
-    //here we hgave the usierId of the interview
-    uuid = uuidWithFirstQuestionId[0];
-    questionId = uuidWithFirstQuestionId[1];
+// getUserId().then((uuidWithFirstQuestionId) => {
+//     //here we hgave the usierId of the interview
+//     uuid = uuidWithFirstQuestionId[0];
+//     questionId = uuidWithFirstQuestionId[1];
 
-    getQuestionId(uuid,questionId).then((QuestionWithAnswers) => {
-        console.log(QuestionWithAnswers);
-    });
+//     getQuestionId(uuid,questionId).then((QuestionWithAnswers) => {
+//         console.log(QuestionWithAnswers);
+//     });
 
-});
+// });
 //let uuid = -1;
 // startInterview(1,1,"English-Raw").then((uid) => {
 //     uuid = uid
