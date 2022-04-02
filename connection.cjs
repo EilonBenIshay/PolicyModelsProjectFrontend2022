@@ -65,15 +65,15 @@ function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
     const postData = JSON.stringify({
         'uuid': uuid,
         'modelId':modelId,
-        'versionId':versionId,
+        'versionNum':versionId,
         'languageId':languageId,
-        'questionId':questionId
+        'reqNodeId':questionId
       });
       
       const options = {
-        hostname: 'http://localhost',
+        hostname: 'localhost',
         method: 'POST',
-        path: 'apiInterviewCtrl/ask/',
+        path: '/apiInterviewCtrl/ask/',
         port: 9000,
         headers: {
           'Content-Type': 'application/json',
@@ -81,20 +81,31 @@ function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
         }
       };
 
-    // return new Promise((resolve, reject) =>{
-        http.request(options, (res) => {
+    //return new Promise((resolve, reject) =>{
+        const req = http.request(options, (res) => {
             console.log('statusCode:', res.statusCode);
             console.log('headers:', res.headers);
         
             res.on('data', (d) => {
+                //resolve(JSON.parse(d));
+                process.stdout.write(JSON.parse(d));
                 console.log(JSON.parse(d));
             });
+
+            res.on('end', () => {
+                console.log('No more data in response.');
+              });
         
             }).on('error', (e) => {
                 console.log(e);
             });
-    // })
+        req.write(postData);
+        req.end();
 }
+        
+        
+
+
 
 //1) todo async await 
 function answerLastQuestion(uuid,modelId,versionId,languageId,questionId)
@@ -120,8 +131,8 @@ function answerLastQuestion(uuid,modelId,versionId,languageId,questionId)
 //GetModelLanguages(1);
 let uuid = undefined;
 let language = "English-Raw";
-let modelId = 1;
-let versionId = 1;
+let modelId ="1";
+let versionId = "1";
 let questionId = undefined;
 let questionAnswer = undefined;
 
@@ -139,10 +150,11 @@ async function WORK(){
     const ans = await startInterview(modelId,versionId,language);
     uuid = ans[0];
     questionId = ans[1];
-    const question = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
+    const question = GetLastQuestion(uuid,modelId,versionId,language,questionId);
     console.log(question)
 }
 WORK();
+
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview
 //     uuid = uuidWithFirstQuestionId[0];
