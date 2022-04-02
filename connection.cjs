@@ -39,33 +39,51 @@ function startInterview(modelId,versionId,languageId)
     return new Promise((resolve, reject) =>{
         http.get(url, (res) => {
             // console.log('statusCode:', res.statusCode);
-            // console.log('headers:', res.headers);
         
             res.on('data', (d) => {
-                resolve(JSON.parse(d)[0]);
+                resolve(JSON.parse(d));
             });
         
             }).on('error', (e) => {
                 reject(e);
             });
     })
-    
 }
 
 function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
 {
-    url = `http://localhost:9000/apiInterviewCtrl/${uuid}/${uuid}/${versionId}/${languageId}/q/${questionId}`
-    http.get(url, (res) => {
-    // console.log('statusCode:', res.statusCode);
-    
-    // console.log('headers:', res.headers);
-    res.on('data', (d) => {
-        process.stdout.write(d);
-    });
+    const postData = JSON.stringify({
+        'uuid': uuid,
+        'modelId':modelId,
+        'versionId':versionId,
+        'languageId':languageId,
+        'questionId':questionId
+      });
+      
+      const options = {
+        hostname: 'http://localhost',
+        method: 'POST',
+        path: '/apiInterviewCtrl/ask/',
+        port: 9000,
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData)
+        }
+      };
 
-    }).on('error', (e) => {
-        console.error(e);
-    });
+    return new Promise((resolve, reject) =>{
+        http.request(options, (res) => {
+            console.log('statusCode:', res.statusCode);
+            console.log('headers:', res.headers);
+        
+            res.on('data', (d) => {
+                resolve(JSON.parse(d));
+            });
+        
+            }).on('error', (e) => {
+                reject(e);
+            });
+    })
 }
 
 //1) todo async await 
@@ -91,15 +109,32 @@ function answerLastQuestion(uuid,modelId,versionId,languageId,questionId)
 //GetModels();
 //GetModelLanguages(1);
 let uuid = undefined;
-async function doWork(){
-    //let uuid = -1;
-    const uid = await startInterview(1,1,"English-Raw");
-    uuid = uid;
-    console.log(uuid);
-    console.log(uid);
+let language = "English-Raw";
+let modelId = 1;
+let versionId = 1;
+let questionId = undefined;
+let questionAnswer = undefined;
 
+async function getUserId(){
+    const ans = await startInterview(modelId,versionId,language);
+    return ans;
 }
-doWork();
+
+async function getQuestionId(uuid,questionId){
+    const ans = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
+    return ans;
+}
+
+getUserId().then((uuidWithFirstQuestionId) => {
+    //here we hgave the usierId of the interview
+    uuid = uuidWithFirstQuestionId[0];
+    questionId = uuidWithFirstQuestionId[1];
+
+    getQuestionId(uuid,questionId).then((QuestionWithAnswers) => {
+        console.log(QuestionWithAnswers);
+    });
+
+});
 //let uuid = -1;
 // startInterview(1,1,"English-Raw").then((uid) => {
 //     uuid = uid
