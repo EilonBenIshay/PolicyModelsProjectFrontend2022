@@ -1,7 +1,17 @@
-const { rejects } = require('assert');
 const http = require('http');
 
 
+class APIHandler {
+    constructor(){
+        this.userId = undefined;
+        this.questionId = undefined;
+        this.answers = undefined;
+        this.languages = undefined;
+        this.activeLangauge = undefined;
+        this.models = undefined;
+        this.versionId = undefined;
+    }
+}
 function GetModels()
 {
     url = `http://localhost:9000/apiInterviewCtrl/models/`
@@ -97,7 +107,7 @@ async function doWork(){
     uuid = uid;
     console.log(uuid);
     console.log(uid);
-
+    
 }
 doWork();
 //let uuid = -1;
