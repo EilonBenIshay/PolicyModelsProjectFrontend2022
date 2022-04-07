@@ -135,16 +135,49 @@ class APIHandler{
 
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
-// if (typeof(document.getElementById("style").innerHTML) != 'undefined' && (document.getElementById("style").innerHTML) != null)
-// {
-//     nameOfFileCss = document.getElementById("style").innerHTML;
-// }
-template.innerHTML = "<link rel=\"stylesheet\" href=" + nameOfFileCss + "><div class=\"policy-models-default\"></div>"; 
+
+template.innerHTML = `<div class=\"changeLanguageClass\">
+                      </div>
+                      <link rel=\"stylesheet\" href=` + nameOfFileCss + `>
+                      <div class=\"policy-models-default\">
+                      </div>
+                      `; 
+
+function changeLanguage() {
+    var x = document.createElement("SELECT");
+    x.setAttribute("id", "mySelect");
+    document.body.appendChild(x);
+                      
+    var z = document.createElement("option");
+    z.setAttribute("value", "ENGLISH_RAW");
+    var t = document.createTextNode("ENGLISH_RAW");
+    z.appendChild(t);
+    document.getElementById("mySelect").appendChild(z);
+
+    var z2 = document.createElement("option");
+    z2.setAttribute("value", "HEBREW");
+    var t2 = document.createTextNode("HEBREW");
+    z2.appendChild(t2);
+    document.getElementById("mySelect").appendChild(z2);
+
+    var z3 = document.createElement("option");
+    z3.setAttribute("value", "ARABIC");
+    var t3 = document.createTextNode("ARABIC");
+    z3.appendChild(t3);
+    document.getElementById("mySelect").appendChild(z3);
+
+    var z4 = document.createElement("option");
+    z4.setAttribute("value", "ENGLISH_US");
+    var t4 = document.createTextNode("ENGLISH_US");
+    z4.appendChild(t4);
+    document.getElementById("mySelect").appendChild(z4);
+
+}
 
 class PolicyModelsDefault extends HTMLElement{
     constructor(){
         super();
-
+        this.number = 1;
         this.showInfo = true;
         this.transcriptFlag = false;
         this.question;
@@ -152,18 +185,44 @@ class PolicyModelsDefault extends HTMLElement{
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
         this.apiHandler = new APIMock();
-        this.language = Languages.HEBREW;
+        this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
+        // this.shadowRoot.querySelector('.changeLanguageClass').innerHTML =
+        // "<script type=\"text/javascript\"> changeLanguage();</script>" ;
+        changeLanguage(); //NEW
         this.welcomePage();
         
 
-        //NEW
-        if(this.getAttribute('h3_color')){
-            this.shadowRoot.querySelector('h3').style.color = this.getAttribute('h3_color');
-        }
+
+        //  NEW (delete the btn and the script)
+        document.getElementById('mySelect').addEventListener('change', () => {
+            var selectElement = document.getElementById('mySelect').value;
+            switch (selectElement) { //FIX
+                case "ENGLISH_RAW":
+                    this.language = Languages.ENGLISH_RAW;
+                    break;
+                case "HEBREW":
+                    this.language = Languages.HEBREW;
+                    break;
+                case "ARABIC":
+                    this.language = Languages.ARABIC;
+                    break;
+                case "ENGLISH_US":
+                    this.language = Languages.ENGLISH_US;
+                    break;
+            }
+            //this.welcomePage(); //FIX
+            //location.reload(true);
+            if(this.number == 1)
+                this.welcomePage();
+            else if (this.number == 2)
+                this.interviewPage();
+            else if (this.number == 3)
+                this.conclusionPage();
+        });
         
 
     }
@@ -171,20 +230,25 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the welcome page
     */
     welcomePage(){
+        this.number = 1;
         let div = `
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
         <h4></h4>
         <div class=\"startInterview\"></div>
+
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
+        
     }
+
     /**
      * a function called to load the interview page
      */
     interviewPage(){
+        this.number = 2;
         let div = `
         <div>
         <h3></h3>
@@ -220,6 +284,7 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the conclusion page
      */
     conclusionPage(){ //TODO add text assets
+        this.number = 3;
         let div = `
         <div>
         <h3>`+this.textassets.conclusion_page[this.language]+`</h3>  
