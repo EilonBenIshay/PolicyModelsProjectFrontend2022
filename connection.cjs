@@ -97,7 +97,7 @@ function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
 }
         
         
-function answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
+function answerQuestion(uuid,modelId,versionId,languageId,questionId,answer,languageId)
 {
     const postData = JSON.stringify({
         'uuid': uuid,
@@ -106,6 +106,7 @@ function answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
         'languageId':languageId,
         'reqNodeId':questionId,
         'answer':answer,
+        'languageId':languageId
       });
       
       const options = {
@@ -156,14 +157,48 @@ let questionAnswer = undefined;
 // }
 
 async function WORK(){
-    const ans = await startInterview(modelId,versionId,language);
-    uuid = ans[0];
-    questionId = ans[1];
-    const question = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
-    console.log(question[0]);
-    console.log(question[1]);
-    const ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'yes');
-    console.log(ansResult);
+    let ans = await startInterview(modelId,versionId,language);
+    uuid = ans['ssid'];
+    questionId = ans['questionId'];
+    //let returnedQuestion = questionId;
+
+    let ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'yes',language);
+    questionId = ansResult['questionId'];
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'under 62',language);
+    questionId = ansResult['questionId'];
+
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'yes',language);
+    questionId = ansResult['questionId'];
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'monthly',language);
+    questionId = ansResult['questionId'];
+
+    //return to the secend question
+    // ansResult = await answerQuestion(uuid,modelId,versionId,language,returnedQuestion,'yes',language);
+    // questionId = ansResult['questionId'];
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'direct',language);
+    questionId = ansResult['questionId'];
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'full',language);
+    questionId = ansResult['questionId'];
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'11 months or more',language);
+    questionId = ansResult['questionId'];
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'my initiative',language);
+    questionId = ansResult['questionId'];
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'health issues',language);
+    questionId = ansResult['questionId'];
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'accident during my work',language);
+    
+    //here is the answer 
+    var isFinished = ansResult['finished'];
+    if(isFinished == 'true'){
+        console.log(ansResult);
+    }
+
+    
 }
 WORK();
 
