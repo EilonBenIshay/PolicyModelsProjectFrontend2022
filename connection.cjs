@@ -120,21 +120,22 @@ class APIHandler {
             })
         })
     }
-
-    answer(uuid,modelId,versionId,languageId,questionId, answer)  //TODO
+    answerQuestion(uuid,modelId,versionId,languageId,questionId,answer,languageId)
     {
         const postData = JSON.stringify({
             'uuid': uuid,
             'modelId':modelId,
             'versionNum':versionId,
             'languageId':languageId,
-            'reqNodeId':questionId
+            'reqNodeId':questionId,
+            'answer':answer,
+            'languageId':languageId
         });
         
         const options = {
             hostname: 'localhost',
             method: 'POST',
-            path: '/apiInterviewCtrl/ask/',
+            path: '/apiInterviewCtrl/answer/',
             port: 9000,
             headers: {
             'Content-Type': 'application/json',
@@ -144,45 +145,19 @@ class APIHandler {
 
         return new Promise((resolve, reject) =>{
             const req = http.request(options, (res) => {
-                console.log('statusCode:', res.statusCode);
-                console.log('headers:', res.headers);
-            
                 res.on('data', (d) => {
-                    //resolve(JSON.parse(d));
-                    //process.stdout.write(JSON.parse(d));
                     resolve(JSON.parse(d));
                 });
-                res.on('error', (e) => {
+                req.on('error', (e) => {
                     reject(e);
                 });
+            });
             req.write(postData);
             req.end();
-            })
         })
     }
-    
 }
 
-
- 
-
-
-//1) todo async await 
-function answerLastQuestion(uuid,modelId,versionId,languageId,questionId)
-{
-    url = `http://localhost:9000/apiInterviewCtrl/${uuid}/${modelId}/${versionId}/${languageId}/q/${questionId}`
-    http.get(url, (res) => {
-    // console.log('statusCode:', res.statusCode);
-    
-    // console.log('headers:', res.headers);
-    res.on('data', (d) => {
-        process.stdout.write(d);
-    });
-
-    }).on('error', (e) => {
-        console.error(e);
-    });
-}
 
 //2)todo post request answer question 
 
@@ -196,22 +171,59 @@ let versionId = "1";
 let questionId = undefined;
 let questionAnswer = undefined;
 
-async function getUserId(){
-    const ans = await startInterview(modelId,versionId,language);
-    return ans;
-}
+// async function getUserId(){
+//     const ans = await startInterview(modelId,versionId,language);
+//     return ans;
+// }
 
-async function getQuestionId(uuid,questionId){
-    const ans = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
-    return ans;
-}
+// async function getQuestionId(uuid,questionId){
+//     const ans = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
+//     return ans;
+// }
 
 async function WORK(){
-    const ans = await startInterview(modelId,versionId,language);
-    uuid = ans[0];
-    questionId = ans[1];
-    const question = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
-    console.log(question)
+    let ans = await startInterview(modelId,versionId,language);
+    uuid = ans['ssid'];
+    questionId = ans['questionId'];
+    //let returnedQuestion = questionId;
+
+    let ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'yes',language);
+    questionId = ansResult['questionId'];
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'under 62',language);
+    questionId = ansResult['questionId'];
+
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'yes',language);
+    questionId = ansResult['questionId'];
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'monthly',language);
+    questionId = ansResult['questionId'];
+
+    //return to the secend question
+    // ansResult = await answerQuestion(uuid,modelId,versionId,language,returnedQuestion,'yes',language);
+    // questionId = ansResult['questionId'];
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'direct',language);
+    questionId = ansResult['questionId'];
+
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'full',language);
+    questionId = ansResult['questionId'];
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'11 months or more',language);
+    questionId = ansResult['questionId'];
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'my initiative',language);
+    questionId = ansResult['questionId'];
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'health issues',language);
+    questionId = ansResult['questionId'];
+    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'accident during my work',language);
+    
+    //here is the answer 
+    var isFinished = ansResult['finished'];
+    if(isFinished == 'true'){
+        console.log(ansResult);
+    }
+
+    
 }
 WORK();
 
