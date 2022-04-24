@@ -15,32 +15,31 @@ class APIHandler {
 function GetModels()
 {
     url = `http://localhost:9000/apiInterviewCtrl/models/`
-    http.get(url, (res) => {
-    console.log('statusCode:', res.statusCode);
-    console.log('headers:', res.headers);
-
-    res.on('data', (d) => {
-        process.stdout.write(d);
-    });
-
-    }).on('error', (e) => {
-        console.error(e);
-    });
+    return new Promise((resolve, reject) =>{
+        http.get(url, (res) => {
+            res.on('data', (d) => {
+                resolve(JSON.parse(d));
+            });
+        
+            }).on('error', (e) => {
+                reject(e);
+            });
+    })
 }
+
 function GetModelLanguages(modelId)
 {
     url = `http://localhost:9000/apiInterviewCtrl/${modelId}/start`
-    http.get(url, (res) => {
-    console.log('statusCode:', res.statusCode);
-    console.log('headers:', res.headers);
-
-    res.on('data', (d) => {
-        process.stdout.write(d);
-    });
-
-    }).on('error', (e) => {
-        console.error(e);
-    });
+    return new Promise((resolve, reject) =>{
+        http.get(url, (res) => {
+            res.on('data', (d) => {
+                resolve(JSON.parse(d));
+            });
+        
+            }).on('error', (e) => {
+                reject(e);
+            });
+    })
 }
 
 function startInterview(modelId,versionId,languageId)
@@ -157,6 +156,9 @@ let questionAnswer = undefined;
 // }
 
 async function WORK(){
+    let models = await GetModels();
+    let modelId = models[0]['id']
+    let firstModelLanguages = await GetModelLanguages(modelId);
     let ans = await startInterview(modelId,versionId,language);
     uuid = ans['ssid'];
     questionId = ans['questionId'];
