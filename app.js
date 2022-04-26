@@ -20,6 +20,7 @@ class TextAssets {
         this.welcome = ["Welcome", "ברוכים הבאים", "", "Welcome"];
         this.start_interview = ["Start Interview", "התחל ראיון", "","Start Interview"];
         this.start = ["Start","התחלה","","Start"];
+        this.restart = ["Restart","התחל מחדש","","Restart"];
         this.show_transcript = ["Show Transcript","הראה תשובות","","Show Transcript"];
         this.hide_transcript = ["Hide Transcript","הסתר תשובות", "","Hide Transcript"];
         this.question = ["Question", "שאלה","","Question"];
@@ -251,6 +252,8 @@ class PolicyModelsDefault extends HTMLElement{
         this.number = 2;
         let div = `
         <div>
+        <div class="restartClass">
+        </div>
         <h3></h3>
         <h4></h4>
         <p id="demo"> </p>
@@ -275,9 +278,9 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.question.answers[0] + "</button>\n";
         this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
         
+        this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.restart[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => {this.answers=new Map(); this.interviewPage();});
         
-              
-
     }
 
     /**
