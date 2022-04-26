@@ -85,7 +85,7 @@ class PMAPIHandler {
 
     getModels()
     {
-        let url = `http://localhost:9000/apiInterviewCtrl/models`
+        let url = `http://localhost:9000/apiInterviewCtrl/models/`
         return new Promise((resolve, reject) =>{
             http.get(url, (res) => {
                 // console.log('statusCode:', res.statusCode);
