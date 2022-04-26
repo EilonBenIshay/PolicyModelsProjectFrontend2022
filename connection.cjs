@@ -14,22 +14,22 @@ class PMAPIHandler {
 
     async init(){
         const ans = await this.getModels();
-        this.models = ans;
+        PMAPIHandler.settings.default.models = ans;
     }
 
     async initModel(modelId, versionId){
-        this.modelId = modelId;
-        this.versionId = versionId;
+        PMAPIHandler.settings.default.modelId = modelId;
+        PMAPIHandler.settings.default.versionId = versionId;
         const ans = await this.getModelLanguages(modelId);
-        this.languages = ans;
+        PMAPIHandler.settings.default.languages = ans;
         return this.languages
     }
     
     async initInterview(language){
         const ans = await this.startInterview(this.modelId,this.versionId,language);
-        this.userId = ans[0];
-        this.question = ans[1];
-        this.activeLangauge = language
+        PMAPIHandler.settings.default.userId = ans[0];
+        PMAPIHandler.settings.default.question = ans[1];
+        PMAPIHandler.settings.default.activeLangauge = language
         return true;
     }
 
