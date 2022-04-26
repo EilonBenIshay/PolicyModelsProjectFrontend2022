@@ -2,34 +2,34 @@ const http = require('http');
 
 class PMAPIHandler {
     constructor(){
-        this.userId = undefined;
-        this.questionId = undefined;
-        this.answers = undefined;
-        this.languages = undefined;
-        this.activeLangauge = undefined;
-        this.models = undefined;
-        this.versionId = undefined;
-        this.models = undefined
+        this.userId;
+        this.questionId;
+        this.answers;
+        this.languages;
+        this.activeLangauge;
+        this.models;
+        this.versionId;
+        this.models
     }
 
     async init(){
         const ans = await this.getModels();
-        PMAPIHandler.settings.default.models = ans;
+        this.models = ans;
     }
 
     async initModel(modelId, versionId){
-        PMAPIHandler.settings.default.modelId = modelId;
-        PMAPIHandler.settings.default.versionId = versionId;
+        this.modelId = modelId;
+        this.versionId = versionId;
         const ans = await this.getModelLanguages(modelId);
-        PMAPIHandler.settings.default.languages = ans;
+        this.languages = ans;
         return this.languages
     }
     
     async initInterview(language){
         const ans = await this.startInterview(this.modelId,this.versionId,language);
-        PMAPIHandler.settings.default.userId = ans[0];
-        PMAPIHandler.settings.default.question = ans[1];
-        PMAPIHandler.settings.default.activeLangauge = language
+        this.userId = ans[0];
+        this.question = ans[1];
+        this.activeLangauge = language
         return true;
     }
 
