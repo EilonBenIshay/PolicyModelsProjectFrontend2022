@@ -17,6 +17,7 @@ class APIHandler {
     }
 
     async initModel(modelId){
+        this.modelId = modelId;
         const ans = await this.getModelLanguages(modelId);
         this.languages = ans;
         return this.languages
