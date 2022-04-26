@@ -268,6 +268,8 @@ class PolicyModelsDefault extends HTMLElement{
         <div class="transcript"></div>
         <div class="conclusion">
         </div>
+        <div class="downloadTranscript">
+        </div>
         `;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         
@@ -293,8 +295,36 @@ class PolicyModelsDefault extends HTMLElement{
             this.shadowRoot.querySelector('#transcript-toggle').innerText = this.textassets.hide_transcript[this.language];
         }
         
+        this.shadowRoot.querySelector('.downloadTranscript').innerHTML = "<button class=\"btnDownloadTranscript\">Download Transcript</button>";
+        this.shadowRoot.querySelector('.btnDownloadTranscript').addEventListener('click', () => this.downloadTranscript(this.answers, 'myTranscript.json'));
     }
-
+    // downloadTry(){
+    //     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.answers));
+    //     var dlAnchorElem = document.getElementById('downloadAnchorElem');
+    //     dlAnchorElem.setAttribute("href",     dataStr     );
+    //     dlAnchorElem.setAttribute("download", "scene.json");
+    //     dlAnchorElem.click();
+    // }
+    // downloadObjectAsJson(exportObj, exportName){
+    //     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    //     var downloadAnchorNode = document.createElement('a');
+    //     downloadAnchorNode.setAttribute("href",     dataStr);
+    //     downloadAnchorNode.setAttribute("download", exportName + ".json");
+    //     document.body.appendChild(downloadAnchorNode); // required for firefox
+    //     downloadAnchorNode.click();
+    //     downloadAnchorNode.remove();
+    //   }
+    downloadTranscript(objToJson, name) {
+        const obj = Object.fromEntries(objToJson);
+        const text = JSON.stringify(obj);
+        const a = document.createElement('a');
+        const type = name.split(".").pop();
+        a.href = URL.createObjectURL( new Blob([text], { type:`text/${type === "txt" ? "plain" : type}` }) );
+        a.download = name;
+        a.click();
+      }
+      
+      
     /**
      * a function called to load the conclusion page
      */

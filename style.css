@@ -27,7 +27,11 @@
   position: absolute;
   left: 350px;
  }
- .btnShowTranscript, .btnStart, .btnConclusion, .startInterview, .backToWelcomePage, .restartBtn{
+ .btnDownloadTranscript{
+  padding-top: 40px;
+  margin-top: 40px;
+}
+ .btnShowTranscript, .btnStart, .btnConclusion, .startInterview, .backToWelcomePage, .restartBtn, .btnDownloadTranscript{
   align-self: center;
   background-color: #fff;
   background-image: none;
@@ -58,12 +62,12 @@
   touch-action: manipulation;
   }
 
-.btnShowTranscript:hover, .btnStart:hover, .btnConclusion:hover, .startInterview:hover, .backToWelcomePage:hover, .restartBtn:hover{
+.btnShowTranscript:hover, .btnStart:hover, .btnConclusion:hover, .startInterview:hover, .backToWelcomePage:hover, .restartBtn:hover, .btnDownloadTranscript:hover{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
 }
 
-.btnShowTranscript:focus, .btnStart:focus, .btnConclusion:focus, .startInterview:focus, .backToWelcomePage:focus, .restartBtn:focus{
+.btnShowTranscript:focus, .btnStart:focus, .btnConclusion:focus, .startInterview:focus, .backToWelcomePage:focus, .restartBtn:focus, .btnDownloadTranscript:focus{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
  
