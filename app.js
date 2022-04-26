@@ -135,11 +135,11 @@ class APIHandler{
 
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
-// if (typeof(document.getElementById("style").innerHTML) != 'undefined' && (document.getElementById("style").innerHTML) != null)
-// {
-//     nameOfFileCss = document.getElementById("style").innerHTML;
-// }
-template.innerHTML = "<link rel=\"stylesheet\" href=" + nameOfFileCss + "><div class=\"policy-models-default\"></div>"; 
+
+template.innerHTML = 
+`<link rel=\"stylesheet\" href=`
+ + nameOfFileCss + `>
+ <div class=\"policy-models-default\">`
 
 class PolicyModelsDefault extends HTMLElement{
     constructor(){
@@ -154,6 +154,11 @@ class PolicyModelsDefault extends HTMLElement{
         this.apiHandler = new APIMock();
         this.language = Languages.HEBREW;
         this.textassets = new TextAssets();  
+
+        this.showInfo = true;
+        this.transcriptFlag = false;
+        this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        this.buttons = ['#a0'];
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -201,10 +206,10 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
-        this.showInfo = true;
-        this.transcriptFlag = false;
-        this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
-        this.buttons = ['#a0'];
+        //this.showInfo = true;
+        //this.transcriptFlag = false;
+        //this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        //this.buttons = ['#a0'];
 
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
         this.shadowRoot.querySelector('h4').innerText = this.question.question;
