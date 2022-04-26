@@ -189,6 +189,11 @@ class PolicyModelsDefault extends HTMLElement{
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
 
+        this.showInfo = true;
+        this.transcriptFlag = false;
+        this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        this.buttons = ['#a0'];
+
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         // this.shadowRoot.querySelector('.changeLanguageClass').innerHTML =
@@ -270,10 +275,10 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
-        this.showInfo = true;
-        this.transcriptFlag = false;
-        this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
-        this.buttons = ['#a0'];
+        //this.showInfo = true;
+        //this.transcriptFlag = false;
+        //this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        //this.buttons = ['#a0'];
 
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
         this.shadowRoot.querySelector('h4').innerText = this.question.question;
