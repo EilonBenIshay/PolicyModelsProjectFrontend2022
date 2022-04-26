@@ -83,128 +83,128 @@ class PMAPIHandler {
     }
 
 
-getModels()
-{
-    let url = `http://localhost:9000/apiInterviewCtrl/models`
-    return new Promise((resolve, reject) =>{
-        http.get(url, (res) => {
-            // console.log('statusCode:', res.statusCode);
-        
-            res.on('data', (d) => {
-                resolve(JSON.parse(d));
-            });
-        
-            }).on('error', (e) => {
-                reject(e);
-            });
-    })
-}
+    getModels()
+    {
+        let url = `http://localhost:9000/apiInterviewCtrl/models`
+        return new Promise((resolve, reject) =>{
+            http.get(url, (res) => {
+                // console.log('statusCode:', res.statusCode);
+            
+                res.on('data', (d) => {
+                    resolve(JSON.parse(d));
+                });
+            
+                }).on('error', (e) => {
+                    reject(e);
+                });
+        })
+    }
 
- GetModelLanguages(modelId)
-{
-    url = `http://localhost:9000/apiInterviewCtrl/${modelId}/start`
-    return new Promise((resolve, reject) =>{
-        http.get(url, (res) => {
-            res.on('data', (d) => {
-                resolve(JSON.parse(d));
-            });
-        
-            }).on('error', (e) => {
-                reject(e);
-            });
-    })
-}
+    getModelLanguages(modelId)
+    {
+        let url = `http://localhost:9000/apiInterviewCtrl/${modelId}/start`
+        return new Promise((resolve, reject) =>{
+            http.get(url, (res) => {
+                res.on('data', (d) => {
+                    resolve(JSON.parse(d));
+                });
+            
+                }).on('error', (e) => {
+                    reject(e);
+                });
+        })
+    }
 
-startInterview(modelId,versionId,languageId)
-{
-    url = `http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`
-    return new Promise((resolve, reject) =>{
-        http.get(url, (res) => {
-            // console.log('statusCode:', res.statusCode);
-        
-            res.on('data', (d) => {
-                resolve(JSON.parse(d));
-            });
-        
-            }).on('error', (e) => {
-                reject(e);
-            });
-    })
-}
+    startInterview(modelId,versionId,languageId)
+    {
+        let url = `http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`
+        return new Promise((resolve, reject) =>{
+            http.get(url, (res) => {
+                // console.log('statusCode:', res.statusCode);
+            
+                res.on('data', (d) => {
+                    resolve(JSON.parse(d));
+                });
+            
+                }).on('error', (e) => {
+                    reject(e);
+                });
+        })
+    }
 
-GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
-{
-    const postData = JSON.stringify({
-        'uuid': uuid,
-        'modelId':modelId,
-        'versionNum':versionId,
-        'languageId':languageId,
-        'reqNodeId':questionId
-      });
-      
-      const options = {
-        hostname: 'localhost',
-        method: 'POST',
-        path: '/apiInterviewCtrl/ask/',
-        port: 9000,
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(postData)
-        }
-      };
-
-    return new Promise((resolve, reject) =>{
-        const req = http.request(options, (res) => {
-                   
-            res.on('data', (d) => {
-                resolve(JSON.parse(d));
-            });
-            req.on('error', (e) => {
-                reject(e);
-            });
+    getLastQuestion(uuid,modelId,versionId,languageId,questionId)
+    {
+        const postData = JSON.stringify({
+            'uuid': uuid,
+            'modelId':modelId,
+            'versionNum':versionId,
+            'languageId':languageId,
+            'reqNodeId':questionId
         });
-        req.write(postData);
-        req.end();
-    })
-}
         
-        
-answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
-{
-    const postData = JSON.stringify({
-        'uuid': uuid,
-        'modelId':modelId,
-        'versionNum':versionId,
-        'languageId':languageId,
-        'reqNodeId':questionId,
-        'answer':answer,
-        'languageId':languageId
-      });
-      
-      const options = {
-        hostname: 'localhost',
-        method: 'POST',
-        path: '/apiInterviewCtrl/answer/',
-        port: 9000,
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(postData)
-        }
-      };
+        const options = {
+            hostname: 'localhost',
+            method: 'POST',
+            path: '/apiInterviewCtrl/ask/',
+            port: 9000,
+            headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(postData)
+            }
+        };
 
-    return new Promise((resolve, reject) =>{
-        const req = http.request(options, (res) => {
-            res.on('data', (d) => {
-                resolve(JSON.parse(d));
+        return new Promise((resolve, reject) =>{
+            const req = http.request(options, (res) => {
+                    
+                res.on('data', (d) => {
+                    resolve(JSON.parse(d));
+                });
+                req.on('error', (e) => {
+                    reject(e);
+                });
             });
-            req.on('error', (e) => {
-                reject(e);
-            });
+            req.write(postData);
+            req.end();
+        })
+    }
+            
+            
+    answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
+    {
+        const postData = JSON.stringify({
+            'uuid': uuid,
+            'modelId':modelId,
+            'versionNum':versionId,
+            'languageId':languageId,
+            'reqNodeId':questionId,
+            'answer':answer,
+            'languageId':languageId
         });
-        req.write(postData);
-        req.end();
-    })
-}
+        
+        const options = {
+            hostname: 'localhost',
+            method: 'POST',
+            path: '/apiInterviewCtrl/answer/',
+            port: 9000,
+            headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(postData)
+            }
+        };
+
+        return new Promise((resolve, reject) =>{
+            const req = http.request(options, (res) => {
+                res.on('data', (d) => {
+                    resolve(JSON.parse(d));
+                });
+                req.on('error', (e) => {
+                    reject(e);
+                });
+            });
+            req.write(postData);
+            req.end();
+        })
+    }
 }
 
 //2)todo post request answer question 
