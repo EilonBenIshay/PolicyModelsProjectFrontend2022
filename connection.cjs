@@ -27,8 +27,8 @@ class PMAPIHandler {
     
     async initInterview(language){
         const ans = await this.startInterview(this.modelId,this.versionId,language);
-        this.userId = ans[0];
-        this.question = ans[1];
+        this.userId = ans['ssid'];
+        this.question = ans['questionId'];
         this.activeLangauge = language
         return true;
     }
