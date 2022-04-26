@@ -1,6 +1,6 @@
 const http = require('http');
 
-class APIHandler {
+class PM_APIHandler {
     constructor(){
         this.userId = undefined;
         this.question = undefined;
@@ -16,8 +16,9 @@ class APIHandler {
         this.models = ans;
     }
 
-    async initModel(modelId){
+    async initModel(modelId, versionId){
         this.modelId = modelId;
+        this.versionId = versionId;
         const ans = await this.getModelLanguages(modelId);
         this.languages = ans;
         return this.languages
@@ -31,7 +32,10 @@ class APIHandler {
         return true;
     }
 
-    async answerQuestion(questionId, answer){
+    async getNextQuestion(questionId, answer){
+        const ans = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer,this.activeLangauge);
+
+
 
     }
 

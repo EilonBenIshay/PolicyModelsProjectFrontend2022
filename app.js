@@ -8,6 +8,15 @@ class Question {
     }
 }
 
+class AnswerListing{
+    constructor(question, answer, answerPos, comment){
+        this.question = question
+        this.answer = answer
+        this.answerPos = answerPos
+        this.comment = comment
+    }
+}
+
 const Languages = {
     ENGLISH_RAW: 0,
     HEBREW: 1,
