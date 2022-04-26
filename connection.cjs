@@ -38,9 +38,9 @@ class PMAPIHandler {
     }
 
     async Work(){
-        this.init();
-        this.initModel("1","1");
-        this.initInterview("English-Raw");
+        await this.init();
+        await this.initModel("1","1");
+        await this.initInterview("English-Raw");
         //let returnedQuestion = questionId;
     
         let ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
