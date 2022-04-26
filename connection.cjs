@@ -1,6 +1,6 @@
 const http = require('http');
 
-class PM_APIHandler {
+class PMAPIHandler {
     constructor(){
         this.userId = undefined;
         this.questionId = undefined;
@@ -34,44 +34,44 @@ class PM_APIHandler {
     }
 
     async getNextQuestion(questionId, answer){
-        const ans = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer,this.activeLangauge);
+        const ans = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
     }
 
-    async  Work(){
+    async Work(){
         this.init();
         this.initModel("1","1");
         this.initInterview("English-Raw");
         //let returnedQuestion = questionId;
     
-        let ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes',this.activeLanguage);
+        let ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
         this.question = ansResult['questionId'];
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
         this.question = ansResult['questionId'];
     
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
         this.question = ansResult['questionId'];
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'monthly',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'monthly');
         this.question = ansResult['questionId'];
     
         //return to the secend question
         // ansResult = await answerQuestion(uuid,modelId,versionId,language,returnedQuestion,'yes',language);
         // questionId = ansResult['questionId'];
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'direct',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'direct');
         this.question = ansResult['questionId'];
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'full',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'full');
         this.question = ansResult['questionId'];
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'11 months or more',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'11 months or more');
         this.question = ansResult['questionId'];
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'my initiative',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'my initiative');
         this.question = ansResult['questionId'];
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'health issues',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'health issues');
         this.question = ansResult['questionId'];
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'accident during my work',this.activeLangauge);
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'accident during my work');
         
         //here is the answer 
         var isFinished = ansResult['finished'];
@@ -81,9 +81,26 @@ class PM_APIHandler {
     
         
     }
-    
 
-function GetModelLanguages(modelId)
+
+getModels()
+{
+    let url = `http://localhost:9000/apiInterviewCtrl/models`
+    return new Promise((resolve, reject) =>{
+        http.get(url, (res) => {
+            // console.log('statusCode:', res.statusCode);
+        
+            res.on('data', (d) => {
+                resolve(JSON.parse(d));
+            });
+        
+            }).on('error', (e) => {
+                reject(e);
+            });
+    })
+}
+
+ GetModelLanguages(modelId)
 {
     url = `http://localhost:9000/apiInterviewCtrl/${modelId}/start`
     return new Promise((resolve, reject) =>{
@@ -98,7 +115,7 @@ function GetModelLanguages(modelId)
     })
 }
 
-function startInterview(modelId,versionId,languageId)
+startInterview(modelId,versionId,languageId)
 {
     url = `http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`
     return new Promise((resolve, reject) =>{
@@ -115,7 +132,7 @@ function startInterview(modelId,versionId,languageId)
     })
 }
 
-function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
+GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
 {
     const postData = JSON.stringify({
         'uuid': uuid,
@@ -152,7 +169,7 @@ function GetLastQuestion(uuid,modelId,versionId,languageId,questionId)
 }
         
         
-function answerQuestion(uuid,modelId,versionId,languageId,questionId,answer,languageId)
+answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
 {
     const postData = JSON.stringify({
         'uuid': uuid,
@@ -188,6 +205,7 @@ function answerQuestion(uuid,modelId,versionId,languageId,questionId,answer,lang
         req.end();
     })
 }
+}
 
 //2)todo post request answer question 
 
@@ -210,8 +228,8 @@ function answerQuestion(uuid,modelId,versionId,languageId,questionId,answer,lang
 //     const ans = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
 //     return ans;
 // }
-APIH = new PM_APIHandler();
-APIH.Work();
+let APIhandler = new PMAPIHandler();
+APIhandler.Work();
 
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview
