@@ -31,7 +31,8 @@ class TextAssets {
         this.welcome_PM = ["Welcome to the PolicyModels test site!", "ברוכים הבאים לאתר הזמני של PolicyModels","","Welcome to the PolicyModels test site!"];
         this.results = ["Your results", "התוצאות שלך", "", "your results"];
         this.conclusion_page = ["Conclusion Page", "עמוד התוצאות","","Conclusion Page"];
-        this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"]
+        this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"];
+        this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"]
     }
 }
 
@@ -159,13 +160,13 @@ function changeLanguage() {
 
     var z2 = document.createElement("option");
     z2.setAttribute("value", "HEBREW");
-    var t2 = document.createTextNode("HEBREW");
+    var t2 = document.createTextNode("עברית");
     z2.appendChild(t2);
     document.getElementById("mySelect").appendChild(z2);
 
     var z3 = document.createElement("option");
     z3.setAttribute("value", "ARABIC");
-    var t3 = document.createTextNode("ARABIC");
+    var t3 = document.createTextNode("العربية");
     z3.appendChild(t3);
     document.getElementById("mySelect").appendChild(z3);
 
@@ -260,7 +261,6 @@ class PolicyModelsDefault extends HTMLElement{
         </div>
         <h3></h3>
         <h4></h4>
-        <p id="demo"> </p>
         </div>
         <div class="buttons">
         </div>
@@ -288,32 +288,17 @@ class PolicyModelsDefault extends HTMLElement{
             this.QuestionSetUp(undefined,Array.from(this.answers.keys()).pop());
         }
         
-        this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.restart[this.language] + "</button>\n";
-        this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => {this.answers=new Map(); this.interviewPage();});
+        this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.home[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => this.backToWelcomePage());
         if (this.transcriptFlag == true){
             this.shadowRoot.querySelector('.transcript').style.display = 'block';
             this.shadowRoot.querySelector('#transcript-toggle').innerText = this.textassets.hide_transcript[this.language];
         }
         
-        this.shadowRoot.querySelector('.downloadTranscript').innerHTML = "<button class=\"btnDownloadTranscript\">Download Transcript</button>";
+        this.shadowRoot.querySelector('.downloadTranscript').innerHTML = "<button class=\"btnDownloadTranscript\">" + this.textassets.download_transcript[this.language] + "</button>";
         this.shadowRoot.querySelector('.btnDownloadTranscript').addEventListener('click', () => this.downloadTranscript(this.answers, 'myTranscript.json'));
     }
-    // downloadTry(){
-    //     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.answers));
-    //     var dlAnchorElem = document.getElementById('downloadAnchorElem');
-    //     dlAnchorElem.setAttribute("href",     dataStr     );
-    //     dlAnchorElem.setAttribute("download", "scene.json");
-    //     dlAnchorElem.click();
-    // }
-    // downloadObjectAsJson(exportObj, exportName){
-    //     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-    //     var downloadAnchorNode = document.createElement('a');
-    //     downloadAnchorNode.setAttribute("href",     dataStr);
-    //     downloadAnchorNode.setAttribute("download", exportName + ".json");
-    //     document.body.appendChild(downloadAnchorNode); // required for firefox
-    //     downloadAnchorNode.click();
-    //     downloadAnchorNode.remove();
-    //   }
+    
     downloadTranscript(objToJson, name) {
         const obj = Object.fromEntries(objToJson);
         const text = JSON.stringify(obj);
@@ -322,7 +307,15 @@ class PolicyModelsDefault extends HTMLElement{
         a.href = URL.createObjectURL( new Blob([text], { type:`text/${type === "txt" ? "plain" : type}` }) );
         a.download = name;
         a.click();
-      }
+    }
+
+    backToWelcomePage(){
+        this.answers = new Map();   
+        this.transcriptFlag = false;
+        this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        this.buttons = ['#a0'];
+        this.welcomePage();
+    }
       
       
     /**
@@ -341,7 +334,7 @@ class PolicyModelsDefault extends HTMLElement{
         //the conclusion
         let conclusions = this.getConclusions()
         this.shadowRoot.querySelector('.conclusions').innerText = conclusions;
-        this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.welcomePage());
+        this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.backToWelcomePage());
     }
 
     /**
