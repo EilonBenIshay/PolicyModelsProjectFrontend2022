@@ -156,8 +156,8 @@ let questionAnswer = undefined;
 // }
 
 async function WORK(){
+    let handler = new APIHandler();
     let models = await GetModels();
-    let modelId = models[0]['id']
     let firstModelLanguages = await GetModelLanguages(modelId);
     let ans = await startInterview(modelId,versionId,language);
     uuid = ans['ssid'];
