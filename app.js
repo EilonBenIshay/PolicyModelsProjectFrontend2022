@@ -111,6 +111,8 @@ class APIMock {
         var retObject
         if (answer == -1)
             retObject = JSON.stringify(this.questionbank[questionID - 1]); 
+        else if (questionID == undefined)
+            retObject = JSON.stringify(this.questionbank[0]);
         else
             retObject = JSON.stringify(this.questionbank[questionID]);
         return retObject;
@@ -179,7 +181,6 @@ class PolicyModelsDefault extends HTMLElement{
     constructor(){
         super();
         this.number = 1;
-        this.showInfo = true;
         this.transcriptFlag = false;
         this.question;
         this.buttons;
@@ -189,9 +190,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
 
-        this.showInfo = true;
-        this.transcriptFlag = false;
-        this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
         this.buttons = ['#a0'];
 
         this.attachShadow({ mode: 'open' });
@@ -273,18 +272,26 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
-        //this.showInfo = true;
         //this.transcriptFlag = false;
         //this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
         //this.buttons = ['#a0'];
 
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
         this.shadowRoot.querySelector('h4').innerText = this.question.question;
-        this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.question.answers[0] + "</button>\n";
-        this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
+        if (this.question.id == undefined){
+            this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.question.answers[0] + "</button>\n";
+            this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
+            }
+        else{
+            this.QuestionSetUp(undefined,Array.from(this.answers.keys()).pop());
+        }
         
         this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.restart[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => {this.answers=new Map(); this.interviewPage();});
+        if (this.transcriptFlag == true){
+            this.shadowRoot.querySelector('.transcript').style.display = 'block';
+            this.shadowRoot.querySelector('#transcript-toggle').innerText = this.textassets.hide_transcript[this.language];
+        }
         
     }
 
