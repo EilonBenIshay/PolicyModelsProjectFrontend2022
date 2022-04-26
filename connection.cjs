@@ -167,8 +167,6 @@ class PMAPIHandler {
             req.end();
         })
     }
-            
-            
     answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
     {
         const postData = JSON.stringify({
@@ -205,43 +203,9 @@ class PMAPIHandler {
             req.end();
         })
     }
-    answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
-    {
-        const postData = JSON.stringify({
-            'uuid': uuid,
-            'modelId':modelId,
-            'versionNum':versionId,
-            'languageId':languageId,
-            'reqNodeId':questionId,
-            'answer':answer,
-            'languageId':languageId
-        });
-        
-        const options = {
-            hostname: 'localhost',
-            method: 'POST',
-            path: '/apiInterviewCtrl/answer/',
-            port: 9000,
-            headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(postData)
-            }
-        };
-
-        return new Promise((resolve, reject) =>{
-            const req = http.request(options, (res) => {
-                res.on('data', (d) => {
-                    resolve(JSON.parse(d));
-                });
-                req.on('error', (e) => {
-                    reject(e);
-                });
-            });
-            req.write(postData);
-            req.end();
-        })
-    }
-}
+}        
+            
+    
 
 //2)todo post request answer question 
 
