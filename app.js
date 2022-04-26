@@ -8,6 +8,15 @@ class Question {
     }
 }
 
+class AnswerListing{
+    constructor(question, answer, answerPos, comment){
+        this.question = question
+        this.answer = answer
+        this.answerPos = answerPos
+        this.comment = comment
+    }
+}
+
 const Languages = {
     ENGLISH_RAW: 0,
     HEBREW: 1,
@@ -152,7 +161,7 @@ class PolicyModelsDefault extends HTMLElement{
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
         this.apiHandler = new APIMock();
-        this.language = Languages.HEBREW;
+        this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
 
         this.attachShadow({ mode: 'open' });

@@ -1,7 +1,6 @@
 const http = require('http');
 
-
-class APIHandler {
+class PM_APIHandler {
     constructor(){
         this.userId = undefined;
         this.questionId = undefined;
@@ -10,22 +9,79 @@ class APIHandler {
         this.activeLangauge = undefined;
         this.models = undefined;
         this.versionId = undefined;
+        this.models = undefined
     }
-}
-function GetModels()
-{
-    url = `http://localhost:9000/apiInterviewCtrl/models/`
-    return new Promise((resolve, reject) =>{
-        http.get(url, (res) => {
-            res.on('data', (d) => {
-                resolve(JSON.parse(d));
-            });
+
+    async init(){
+        const ans = await this.getModels();
+        this.models = ans;
+    }
+
+    async initModel(modelId, versionId){
+        this.modelId = modelId;
+        this.versionId = versionId;
+        const ans = await this.getModelLanguages(modelId);
+        this.languages = ans;
+        return this.languages
+    }
+    
+    async initInterview(language){
+        const ans = await this.startInterview(this.modelId,this.versionId,language);
+        this.userId = ans[0];
+        this.question = ans[1];
+        this.activeLangauge = language
+        return true;
+    }
+
+    async getNextQuestion(questionId, answer){
+        const ans = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer,this.activeLangauge);
+    }
+
+    async  Work(){
+        this.init();
+        this.initModel("1","1");
+        this.initInterview("English-Raw");
+        //let returnedQuestion = questionId;
+    
+        let ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes',this.activeLanguage);
+        this.question = ansResult['questionId'];
+    
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62',this.activeLangauge);
+        this.question = ansResult['questionId'];
+    
+    
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes',this.activeLangauge);
+        this.question = ansResult['questionId'];
+    
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'monthly',this.activeLangauge);
+        this.question = ansResult['questionId'];
+    
+        //return to the secend question
+        // ansResult = await answerQuestion(uuid,modelId,versionId,language,returnedQuestion,'yes',language);
+        // questionId = ansResult['questionId'];
+    
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'direct',this.activeLangauge);
+        this.question = ansResult['questionId'];
+    
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'full',this.activeLangauge);
+        this.question = ansResult['questionId'];
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'11 months or more',this.activeLangauge);
+        this.question = ansResult['questionId'];
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'my initiative',this.activeLangauge);
+        this.question = ansResult['questionId'];
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'health issues',this.activeLangauge);
+        this.question = ansResult['questionId'];
+        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'accident during my work',this.activeLangauge);
         
-            }).on('error', (e) => {
-                reject(e);
-            });
-    })
-}
+        //here is the answer 
+        var isFinished = ansResult['finished'];
+        if(isFinished == 'true'){
+            console.log(ansResult);
+        }
+    
+        
+    }
+    
 
 function GetModelLanguages(modelId)
 {
@@ -138,12 +194,12 @@ function answerQuestion(uuid,modelId,versionId,languageId,questionId,answer,lang
 
 //GetModels();
 //GetModelLanguages(1);
-let uuid = undefined;
-let language = "English-Raw";
-let modelId ="1";
-let versionId = "1";
-let questionId = undefined;
-let questionAnswer = undefined;
+// let uuid = undefined;
+// let language = "English-Raw";
+// let modelId ="1";
+// let versionId = "1";
+// let questionId = undefined;
+// let questionAnswer = undefined;
 
 // async function getUserId(){
 //     const ans = await startInterview(modelId,versionId,language);
@@ -154,55 +210,8 @@ let questionAnswer = undefined;
 //     const ans = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
 //     return ans;
 // }
-
-async function WORK(){
-    let handler = new APIHandler();
-    let models = await GetModels();
-    let firstModelLanguages = await GetModelLanguages(modelId);
-    let ans = await startInterview(modelId,versionId,language);
-    uuid = ans['ssid'];
-    questionId = ans['questionId'];
-    //let returnedQuestion = questionId;
-
-    let ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'yes',language);
-    questionId = ansResult['questionId'];
-
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'under 62',language);
-    questionId = ansResult['questionId'];
-
-
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'yes',language);
-    questionId = ansResult['questionId'];
-
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'monthly',language);
-    questionId = ansResult['questionId'];
-
-    //return to the secend question
-    // ansResult = await answerQuestion(uuid,modelId,versionId,language,returnedQuestion,'yes',language);
-    // questionId = ansResult['questionId'];
-
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'direct',language);
-    questionId = ansResult['questionId'];
-
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'full',language);
-    questionId = ansResult['questionId'];
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'11 months or more',language);
-    questionId = ansResult['questionId'];
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'my initiative',language);
-    questionId = ansResult['questionId'];
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'health issues',language);
-    questionId = ansResult['questionId'];
-    ansResult = await answerQuestion(uuid,modelId,versionId,language,questionId,'accident during my work',language);
-    
-    //here is the answer 
-    var isFinished = ansResult['finished'];
-    if(isFinished == 'true'){
-        console.log(ansResult);
-    }
-
-    
-}
-WORK();
+APIH = new PM_APIHandler();
+APIH.Work();
 
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview
