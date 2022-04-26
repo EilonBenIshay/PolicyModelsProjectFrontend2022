@@ -281,7 +281,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
         this.shadowRoot.querySelector('h4').innerText = this.question.question;
         if (this.question.id == undefined){
-            this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.question.answers[0] + "</button>\n";
+            this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.textassets.start[this.language] + "</button>\n";
             this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
             }
         else{
