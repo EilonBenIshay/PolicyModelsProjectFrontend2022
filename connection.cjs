@@ -43,35 +43,35 @@ class PMAPIHandler {
         this.initInterview("English-Raw");
         //let returnedQuestion = questionId;
     
-        let ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
+        let ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
         this.question = ansResult['questionId'];
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
         this.question = ansResult['questionId'];
     
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
         this.question = ansResult['questionId'];
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'monthly');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'monthly');
         this.question = ansResult['questionId'];
     
         //return to the secend question
         // ansResult = await answerQuestion(uuid,modelId,versionId,language,returnedQuestion,'yes',language);
         // questionId = ansResult['questionId'];
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'direct');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'direct');
         this.question = ansResult['questionId'];
     
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'full');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'full');
         this.question = ansResult['questionId'];
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'11 months or more');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'11 months or more');
         this.question = ansResult['questionId'];
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'my initiative');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'my initiative');
         this.question = ansResult['questionId'];
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'health issues');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'health issues');
         this.question = ansResult['questionId'];
-        ansResult = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'accident during my work');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'accident during my work');
         
         //here is the answer 
         var isFinished = ansResult['finished'];
@@ -169,6 +169,42 @@ class PMAPIHandler {
     }
             
             
+    answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
+    {
+        const postData = JSON.stringify({
+            'uuid': uuid,
+            'modelId':modelId,
+            'versionNum':versionId,
+            'languageId':languageId,
+            'reqNodeId':questionId,
+            'answer':answer,
+            'languageId':languageId
+        });
+        
+        const options = {
+            hostname: 'localhost',
+            method: 'POST',
+            path: '/apiInterviewCtrl/answer/',
+            port: 9000,
+            headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(postData)
+            }
+        };
+
+        return new Promise((resolve, reject) =>{
+            const req = http.request(options, (res) => {
+                res.on('data', (d) => {
+                    resolve(JSON.parse(d));
+                });
+                req.on('error', (e) => {
+                    reject(e);
+                });
+            });
+            req.write(postData);
+            req.end();
+        })
+    }
     answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
     {
         const postData = JSON.stringify({
