@@ -28,7 +28,7 @@ class PMAPIHandler {
     async initInterview(language){
         const ans = await this.startInterview(this.modelId,this.versionId,language);
         this.userId = ans['ssid'];
-        this.question = ans['questionId'];
+        this.questionId = ans['questionId'];
         this.activeLangauge = language
         return true;
     }
@@ -40,7 +40,8 @@ class PMAPIHandler {
             return [undefined, "", [""]];
         }
         this.questionId = ans['questionId'];
-        return [ans['questionId'], ans['questionText'], ans['Answers']];
+        const returnValue = [ans['questionId'], ans['questionText'], ans['Answers']];
+        return returnValue;
     }
 
     async Work(){
