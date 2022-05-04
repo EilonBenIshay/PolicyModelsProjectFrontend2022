@@ -35,7 +35,7 @@ class PMAPIHandler {
 
     async getNextQuestion(questionId, answer){
         const ans = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
-        return [ans['questionId'], ans['question'], ans['answers']]
+        return [ans['questionId'], ans['questionText'], ans['Answers']]
     }
 
     async Work(){
@@ -44,7 +44,7 @@ class PMAPIHandler {
         await this.initInterview("English-Raw");
         //let returnedQuestion = questionId;
     
-        let ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
+        let ansResult = //await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
         this.question = ansResult['questionId'];
     
         ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
