@@ -35,7 +35,12 @@ class PMAPIHandler {
 
     async getNextQuestion(questionId, answer){
         const ans = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
-        return [ans['questionId'], ans['questionText'], ans['Answers']]
+        if(ans['finished'] == 'true'){
+            this.questionId = undefined;
+            return [undefined, "", [""]];
+        }
+        this.questionId = ans['questionId'];
+        return [ans['questionId'], ans['questionText'], ans['Answers']];
     }
 
     async Work(){
@@ -43,11 +48,28 @@ class PMAPIHandler {
         await this.initModel("1","1");
         await this.initInterview("English-Raw");
         //let returnedQuestion = questionId;
-    
-        let ansResult = //await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
-        this.question = ansResult['questionId'];
-    
-        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'yes');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'under 62');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'yes');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'monthly');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'direct');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'full');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'11 months or more');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'my initiative');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'health issues');
+        console.log(this.questionId);
+        getNextQuestion(this.questionId,'accident during my work');
+        console.log(this.questionId);
+        /***ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
         this.question = ansResult['questionId'];
     
     
@@ -72,13 +94,13 @@ class PMAPIHandler {
         this.question = ansResult['questionId'];
         ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'health issues');
         this.question = ansResult['questionId'];
-        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'accident during my work');
+        ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'accident during my work');**/
         
         //here is the answer 
-        var isFinished = ansResult['finished'];
-        if(isFinished == 'true'){
-            console.log(ansResult);
-        }
+        //var isFinished = ansResult['finished'];
+        // if(this.questionId == undefined){
+        //     console.log(ansResult);
+        // }
     
         
     }
