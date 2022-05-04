@@ -35,6 +35,7 @@ class PMAPIHandler {
 
     async getNextQuestion(questionId, answer){
         const ans = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
+        return [ans['questionId'], ans['question'], ans['answers']]
     }
 
     async Work(){
