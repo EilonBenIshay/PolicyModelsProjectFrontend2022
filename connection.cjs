@@ -28,19 +28,20 @@ class PMAPIHandler {
     async initInterview(language){
         const ans = await this.startInterview(this.modelId,this.versionId,language);
         this.userId = ans['ssid'];
-        this.question = ans['questionId'];
+        this.questionId = ans['questionId'];
         this.activeLangauge = language
         return true;
     }
 
     async getNextQuestion(questionId, answer){
-        const ans = await answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
+        const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
         if(ans['finished'] == 'true'){
             this.questionId = undefined;
             return [undefined, "", [""]];
         }
         this.questionId = ans['questionId'];
-        return [ans['questionId'], ans['questionText'], ans['Answers']];
+        const returnValue = [ans['questionId'], ans['questionText'], ans['Answers']];
+        return returnValue;
     }
 
     async Work(){
@@ -49,25 +50,25 @@ class PMAPIHandler {
         await this.initInterview("English-Raw");
         //let returnedQuestion = questionId;
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'yes');
+        await this.getNextQuestion(this.questionId,'yes');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'under 62');
+        await this.getNextQuestion(this.questionId,'under 62');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'yes');
+        await this.getNextQuestion(this.questionId,'yes');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'monthly');
+        await this.getNextQuestion(this.questionId,'monthly');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'direct');
+        await this.getNextQuestion(this.questionId,'direct');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'full');
+        await this.getNextQuestion(this.questionId,'full');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'11 months or more');
+        await this.getNextQuestion(this.questionId,'11 months or more');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'my initiative');
+        await this.getNextQuestion(this.questionId,'my initiative');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'health issues');
+        await this.getNextQuestion(this.questionId,'health issues');
         console.log(this.questionId);
-        getNextQuestion(this.questionId,'accident during my work');
+        await this.getNextQuestion(this.questionId,'accident during my work');
         console.log(this.questionId);
         /***ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
         this.question = ansResult['questionId'];
