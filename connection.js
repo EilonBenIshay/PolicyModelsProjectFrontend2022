@@ -1,4 +1,4 @@
-const http = require('http');
+import * as http from 'http';
 
 export class PMAPIHandler {
     constructor(){
@@ -258,7 +258,6 @@ export class PMAPIHandler {
 // }
 // let APIhandler = new PMAPIHandler();
 // APIhandler.Work();
-
 
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview

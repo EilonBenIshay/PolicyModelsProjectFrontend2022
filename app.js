@@ -1,4 +1,5 @@
 //'use strict'
+import { PMAPIHandler } from "./connection.js"
 
 class Question {
     constructor(id, question, answers){
@@ -160,7 +161,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
-        this.apiHandler = new APIMock();
+        this.apiHandler = new PMAPIHandler();
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
 
@@ -179,7 +180,10 @@ class PolicyModelsDefault extends HTMLElement{
     /** 
      * a function called to load the welcome page
     */
-    welcomePage(){
+    async welcomePage(){
+        await this.apiHandler.init();
+        await this.apiHandler.initModel("1","1");
+        await this.apiHandler.initInterview("English-Raw");
         let div = `
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
@@ -258,14 +262,14 @@ class PolicyModelsDefault extends HTMLElement{
      * overwriteid -> if defined, will fetch a specific question. otherwise if undefined will fetch the next question
      * answerNum -> position of the answer in the answer array
      */
-    FetchQuestion(answer, overwriteid, answerNum){
+    async FetchQuestion(answer, overwriteid, answerNum){
         let jsonQuestion;
         if (answer != undefined && this.question.id > 0)
             this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
         if(overwriteid != undefined)
-            jsonQuestion = this.apiHandler.getNextQuestion(overwriteid, answerNum);
+            jsonQuestion = await this.apiHandler.getNextQuestion(overwriteid, answerNum);
         else
-            jsonQuestion = this.apiHandler.getNextQuestion(this.question.id);
+            jsonQuestion = await this.apiHandler.getNextQuestion(this.question.id);
         let obj = JSON.parse(jsonQuestion);
         this.question = new Question(obj.questionID,obj.question,Array.from(obj.answers));
     }
@@ -317,7 +321,7 @@ class PolicyModelsDefault extends HTMLElement{
         } 
         this.shadowRoot.querySelector('.buttons').innerHTML = btnSTR;
         for (let j = 0; j< this.question.answers.length; j++){
-            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(this.question.answers[j],undefined,j));
+            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(this.question.answers[j],undefined,this.question.answers[j]));
         }
     }
 
