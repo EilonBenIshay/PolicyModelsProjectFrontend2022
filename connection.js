@@ -1,6 +1,6 @@
-const http = require('http');
+import * as http from 'http';
 
-class PMAPIHandler {
+export class PMAPIHandler {
     constructor(){
         this.userId;
         this.questionId;
@@ -252,8 +252,8 @@ class PMAPIHandler {
 //     const ans = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
 //     return ans;
 // }
-let APIhandler = new PMAPIHandler();
-APIhandler.Work();
+// let APIhandler = new PMAPIHandler();
+// APIhandler.Work();
 
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview
