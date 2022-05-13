@@ -1,9 +1,10 @@
 const http = require('http');
 
-class PMAPIHandler {
+export class PMAPIHandler {
     constructor(){
         this.userId;
         this.questionId;
+        this.questionText;
         this.answers;
         this.languages;
         this.activeLangauge;
@@ -29,6 +30,7 @@ class PMAPIHandler {
         const ans = await this.startInterview(this.modelId,this.versionId,language);
         this.userId = ans['ssid'];
         this.questionId = ans['questionId'];
+        this.questionText = ans['questionText'];
         this.activeLangauge = language
         return true;
     }
@@ -40,6 +42,7 @@ class PMAPIHandler {
             return [undefined, "", [""]];
         }
         this.questionId = ans['questionId'];
+        this.questionText = ans['questionText'];
         const returnValue = [ans['questionId'], ans['questionText'], ans['Answers']];
         return returnValue;
     }
@@ -47,29 +50,30 @@ class PMAPIHandler {
     async Work(){
         await this.init();
         await this.initModel("1","1");
-        await this.initInterview("English-Raw");
+        await this.initInterview("he-IL");
         //let returnedQuestion = questionId;
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'yes');
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'under 62');
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'yes');
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'monthly');
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'direct');
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'full');
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'11 months or more');
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'my initiative');
-        console.log(this.questionId);
+        console.log(this.questionText);
         await this.getNextQuestion(this.questionId,'health issues');
-        console.log(this.questionId);
-        await this.getNextQuestion(this.questionId,'accident during my work');
-        console.log(this.questionId);
+        console.log(this.questionText);
+        var shady = await this.getNextQuestion(this.questionId,'accident during my work');
+        console.log(this.questionText);
+        console.log(shady)
         /***ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
         this.question = ansResult['questionId'];
     
@@ -252,8 +256,9 @@ class PMAPIHandler {
 //     const ans = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
 //     return ans;
 // }
-let APIhandler = new PMAPIHandler();
-APIhandler.Work();
+// let APIhandler = new PMAPIHandler();
+// APIhandler.Work();
+
 
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview
