@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^17.0.33",
+    "http": "^0.0.1-security",
     "xhr2": "^0.2.1"
   }
 }
-

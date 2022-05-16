@@ -1,5 +1,5 @@
 import * as http from 'http';
-
+//const http = require('http');
 export class PMAPIHandler {
     constructor(){
         this.userId;
@@ -122,6 +122,12 @@ export class PMAPIHandler {
                     reject(e);
                 });
         })
+    }
+
+    test(){
+        fetch(`http://localhost:9000/apiInterviewCtrl/models/`)
+        .then(response => response.json())
+        .then(data => console.log(data));
     }
 
     getModelLanguages(modelId)
@@ -252,8 +258,8 @@ export class PMAPIHandler {
 //     const ans = await GetLastQuestion(uuid,modelId,versionId,language,questionId);
 //     return ans;
 // }
-// let APIhandler = new PMAPIHandler();
-// APIhandler.Work();
+let APIhandler = new PMAPIHandler();
+APIhandler.test();
 
 // getUserId().then((uuidWithFirstQuestionId) => {
 //     //here we hgave the usierId of the interview
