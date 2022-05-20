@@ -181,15 +181,17 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the welcome page
     */
     async welcomePage(){
-        let models = await this.apiHandler.getModels()
-        console.log(models);
-        let languages = await this.apiHandler.getModelLanguages("1");
-        console.log(languages);
-        let start = await this.apiHandler.startInterview("1","1","English-Raw");
-        console.log(start);
+        // let models = await this.apiHandler.getModels()
+        // console.log(models);
+        // let languages = await this.apiHandler.getModelLanguages("1");
+        // console.log(languages);
+        // let start = await this.apiHandler.startInterview("1","1","English-Raw");
+        // console.log(start);
         await this.apiHandler.init();
         await this.apiHandler.initModel("1","1");
         await this.apiHandler.initInterview("English-Raw");
+        let response = await this.apiHandler.getNextQuestion('yes');
+        console.log(response);
         let div = `
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>

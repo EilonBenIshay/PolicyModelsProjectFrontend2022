@@ -57,25 +57,31 @@ export class PMAPIHandler {
         return true;
     }
 
-    async  getLastQuestion(uuid,modelId,versionId,languageId,questionId) {
-        const postData = JSON.stringify({
+    async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
+    {
+        const postData = {
             'uuid': uuid,
             'modelId':modelId,
             'versionNum':versionId,
             'languageId':languageId,
-            'reqNodeId':questionId
-        });
+            'reqNodeId':questionId,
+            'answer':answer,
+            'languageId':languageId
+        };
                 
-        const options = {
+        //const options = 
+        const response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/`, {
             method: 'POST',
+            mode: 'cors',
             headers: {
             'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(postData)
+            //Content-Length': Buffer.byteLength(postData)
+            'Access-Control-Allow-Origin': 'http://localhost:9000/'
             },
-            body: postData
-        };
-        const response = await fetch(`http://localhost:9000/apiInterviewCtrl/ask/`, options);
-        return response.json(); // parses JSON response into native JavaScript objects
+            body: JSON.stringify(postData)
+        }).then(data => data.json().then(q => console.log(q)));
+        //const q = await response.json(); // parses JSON response into native JavaScript objects
+        //console.log(q);
       }
 
     //   getLastQuestion(uuid,modelId,versionId,languageId,questionId)
@@ -97,7 +103,7 @@ export class PMAPIHandler {
       //     })
       // }
 
-    async getNextQuestion(questionId = this.questionId, answer){
+    async getNextQuestion(answer, questionId = this.questionId){
         const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
         if(ans['finished'] == 'true'){
             this.questionId = undefined;
