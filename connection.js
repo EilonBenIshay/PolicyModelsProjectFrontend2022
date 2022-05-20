@@ -28,35 +28,34 @@ export class PMAPIHandler {
         return data;
     }
 
-    startInterview(modelId,versionId,languageId)
+    async startInterview(modelId,versionId,languageId)
     {
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`);
         let data = await response.json();
-        //this.models = data;
         return data;
     }
 
-    // async init(){
-    //     const ans = await this.getModels();
-    //     this.models = ans;
-    // }
+    async init(){
+        const ans = await this.getModels();
+        this.models = ans;
+    }
 
-    // async initModel(modelId, versionId){
-    //     this.modelId = modelId;
-    //     this.versionId = versionId;
-    //     const ans = await this.getModelLanguages(modelId);
-    //     this.languages = ans;
-    //     return this.languages
-    // }
+    async initModel(modelId, versionId){
+        this.modelId = modelId;
+        this.versionId = versionId;
+        const ans = await this.getModelLanguages(modelId);
+        this.languages = ans;
+        return this.languages
+    }
     
-    // async initInterview(language){
-    //     const ans = await this.startInterview(this.modelId,this.versionId,language);
-    //     this.userId = ans['ssid'];
-    //     this.questionId = ans['questionId'];
-    //     this.questionText = ans['questionText'];
-    //     this.activeLangauge = language
-    //     return true;
-    // }
+    async initInterview(language){
+        const ans = await this.startInterview(this.modelId,this.versionId,language);
+        this.userId = ans['ssid'];
+        this.questionId = ans['questionId'];
+        this.questionText = ans['questionText'];
+        this.activeLangauge = language
+        return true;
+    }
 
     // async getNextQuestion(questionId, answer){
     //     const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);

@@ -185,11 +185,11 @@ class PolicyModelsDefault extends HTMLElement{
         console.log(models);
         let languages = await this.apiHandler.getModelLanguages("1");
         console.log(languages);
-        let start = this.apiHandler.startInterview("1","1","English-Raw");
+        let start = await this.apiHandler.startInterview("1","1","English-Raw");
         console.log(start);
-        // await this.apiHandler.init();
-        // await this.apiHandler.initModel("1","1");
-        // await this.apiHandler.initInterview("English-Raw");
+        await this.apiHandler.init();
+        await this.apiHandler.initModel("1","1");
+        await this.apiHandler.initInterview("English-Raw");
         let div = `
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
