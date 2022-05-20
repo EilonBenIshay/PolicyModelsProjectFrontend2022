@@ -131,7 +131,7 @@ export class PMAPIHandler {
     test(){
         fetch(`http://localhost:9000/apiInterviewCtrl/models/`)
         .then(response => response.json())
-        .then(data => console.log(data));
+        .then(data => JSON.parse(data));
     }
 
     // getModelLanguages(modelId)
