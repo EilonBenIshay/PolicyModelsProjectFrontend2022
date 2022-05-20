@@ -15,9 +15,24 @@ export class PMAPIHandler {
 
 
     async getModels() {
-        let response = await fetch('http://localhost:9000/apiInterviewCtrl/models/');
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/models/`);
         let data = await response.json();
-        this.models = data;
+        //this.models = data;
+        return data;
+    }
+
+    async getModelLanguages(modelId) {
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/start`);
+        let data = await response.json();
+        //this.languages = data;
+        return data;
+    }
+
+    startInterview(modelId,versionId,languageId)
+    {
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`);
+        let data = await response.json();
+        //this.models = data;
         return data;
     }
 
