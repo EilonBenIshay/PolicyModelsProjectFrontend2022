@@ -162,7 +162,6 @@ class PolicyModelsDefault extends HTMLElement{
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
         this.apiHandler = new PMAPIHandler();
-        this.apiHandler.test();
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
 
@@ -182,6 +181,10 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the welcome page
     */
     async welcomePage(){
+        let models = await this.apiHandler.getModels()
+        models.forEach(model =>{
+                console.log(model[0]);
+        })
         // await this.apiHandler.init();
         // await this.apiHandler.initModel("1","1");
         // await this.apiHandler.initInterview("English-Raw");

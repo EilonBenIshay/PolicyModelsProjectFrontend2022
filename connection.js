@@ -13,6 +13,14 @@ export class PMAPIHandler {
         this.models
     }
 
+
+    async getModels() {
+        let response = await fetch('http://localhost:9000/apiInterviewCtrl/models/');
+        let data = await response.json();
+        this.models = data;
+        return data;
+    }
+
     // async init(){
     //     const ans = await this.getModels();
     //     this.models = ans;
@@ -128,12 +136,7 @@ export class PMAPIHandler {
     //     })
     // }
 
-    test(){
-        fetch(`http://localhost:9000/apiInterviewCtrl/models/`)
-        .then(response => response.json())
-        .then(data => JSON.parse(data));
-    }
-
+    
     // getModelLanguages(modelId)
     // {
     //     let url = `http://localhost:9000/apiInterviewCtrl/${modelId}/start`
