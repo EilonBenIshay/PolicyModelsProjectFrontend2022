@@ -57,6 +57,46 @@ export class PMAPIHandler {
         return true;
     }
 
+    async  getLastQuestion(uuid,modelId,versionId,languageId,questionId) {
+        const postData = JSON.stringify({
+            'uuid': uuid,
+            'modelId':modelId,
+            'versionNum':versionId,
+            'languageId':languageId,
+            'reqNodeId':questionId
+        });
+                
+        const options = {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(postData)
+            },
+            body: postData
+        };
+        const response = await fetch(`http://localhost:9000/apiInterviewCtrl/ask/`, options);
+        return response.json(); // parses JSON response into native JavaScript objects
+      }
+
+    //   getLastQuestion(uuid,modelId,versionId,languageId,questionId)
+      // {
+      //     
+  
+      //     return new Promise((resolve, reject) =>{
+      //         const req = http.request(options, (res) => {
+                      
+      //             res.on('data', (d) => {
+      //                 resolve(JSON.parse(d));
+      //             });
+      //             req.on('error', (e) => {
+      //                 reject(e);
+      //             });
+      //         });
+      //         req.write(postData);
+      //         req.end();
+      //     })
+      // }
+
     // async getNextQuestion(questionId, answer){
     //     const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
     //     if(ans['finished'] == 'true'){
@@ -183,41 +223,7 @@ export class PMAPIHandler {
     //     })
     // }
 
-    // getLastQuestion(uuid,modelId,versionId,languageId,questionId)
-    // {
-    //     const postData = JSON.stringify({
-    //         'uuid': uuid,
-    //         'modelId':modelId,
-    //         'versionNum':versionId,
-    //         'languageId':languageId,
-    //         'reqNodeId':questionId
-    //     });
-        
-    //     const options = {
-    //         hostname: 'localhost',
-    //         method: 'POST',
-    //         path: '/apiInterviewCtrl/ask/',
-    //         port: 9000,
-    //         headers: {
-    //         'Content-Type': 'application/json',
-    //         'Content-Length': Buffer.byteLength(postData)
-    //         }
-    //     };
-
-    //     return new Promise((resolve, reject) =>{
-    //         const req = http.request(options, (res) => {
-                    
-    //             res.on('data', (d) => {
-    //                 resolve(JSON.parse(d));
-    //             });
-    //             req.on('error', (e) => {
-    //                 reject(e);
-    //             });
-    //         });
-    //         req.write(postData);
-    //         req.end();
-    //     })
-    // }
+    //
     // answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
     // {
     //     const postData = JSON.stringify({
