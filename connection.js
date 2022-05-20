@@ -97,17 +97,17 @@ export class PMAPIHandler {
       //     })
       // }
 
-    // async getNextQuestion(questionId, answer){
-    //     const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
-    //     if(ans['finished'] == 'true'){
-    //         this.questionId = undefined;
-    //         return [undefined, "", [""]];
-    //     }
-    //     this.questionId = ans['questionId'];
-    //     this.questionText = ans['questionText'];
-    //     const returnValue = [ans['questionId'], ans['questionText'], ans['Answers']];
-    //     return returnValue;
-    // }
+    async getNextQuestion(questionId = this.questionId, answer){
+        const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
+        if(ans['finished'] == 'true'){
+            this.questionId = undefined;
+            return [undefined, "", [""]];
+        }
+        this.questionId = ans['questionId'];
+        this.questionText = ans['questionText'];
+        const returnValue = [ans['questionId'], ans['questionText'], ans['Answers']];
+        return returnValue;
+    }
 
     // async Work(){
     //     await this.init();
