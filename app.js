@@ -345,6 +345,10 @@ class PolicyModelsDefault extends HTMLElement{
      */
     conclusion(){
         this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
+        if(document.getElementById("inputID") != null){
+            var e = document.getElementById("inputID");
+            e.parentNode.removeChild(e);
+        }
         this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + this.textassets.show_conclusion[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.conclusion').addEventListener('click', () => this.conclusionPage());
     }
@@ -395,9 +399,10 @@ class PolicyModelsDefault extends HTMLElement{
         this.FetchQuestion(answer,overwriteid, answerNum);
         this.setTranscript(); 
         this.shadowRoot.querySelector('h4').innerText = this.question.question; 
-         this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
-         `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
-         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.feedback());
+        this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
+        `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
+        this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+        this.feedbackFlag = false;
         if(this.question.id == -1){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
                 "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
@@ -413,12 +418,12 @@ class PolicyModelsDefault extends HTMLElement{
         }
     }
 
-    feedback(){
-        this.createInputFeedback();
-        this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
-        <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
-        this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.feedbackSubmit());
-    }
+    // feedback(){
+    //     this.createInputFeedback();
+    //     this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
+    //     <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
+    //     this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.feedbackSubmit());
+    // }
 
     createInputFeedback(){
         if(document.getElementById("inputID") == null){
@@ -438,7 +443,6 @@ class PolicyModelsDefault extends HTMLElement{
         x.setAttribute("value", "My feedback is");
         //document.getElementsByClassName("downloadTranscript").appendChild(x);
         document.body.appendChild(x);
-        this.toggleFeedback();
     }
 
     feedbackSubmit(){
@@ -450,15 +454,23 @@ class PolicyModelsDefault extends HTMLElement{
     /**
      * toggles the feedback button
      */
-    toggleFeedback(){ //TODO
+    toggleFeedback(){ 
         let btn = this.shadowRoot.querySelector('#feedbackDivID');
         this.feedbackFlag = !this.feedbackFlag;
         if(this.feedbackFlag){
-            this.feedback();
+            prompt("wowIF");
+            this.createInputFeedback();
+            this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
+            <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
+            this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.toggleFeedback());
         }
-        // else{
-        //     btn.innerText = this.textassets.show_transcript[this.language];
-        // }
+        else{
+            prompt("wowELSE");
+            this.feedbackSubmit();
+            this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
+            `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
+            this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+        }
     }
 
     // let info = this.shadowRoot.querySelector('.transcript');
