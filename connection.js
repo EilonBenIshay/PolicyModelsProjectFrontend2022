@@ -57,51 +57,59 @@ export class PMAPIHandler {
         return true;
     }
 
-    async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
-    {
-        const postData = {
-            'uuid': uuid,
-            'modelId':modelId,
-            'versionNum':versionId,
-            'languageId':languageId,
-            'reqNodeId':questionId,
-            'answer':answer,
-            'languageId':languageId
-        };
-                
-        //const options = 
-        const response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/`, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-            'Content-Type': 'application/json',
-            //Content-Length': Buffer.byteLength(postData)
-            'Access-Control-Allow-Origin': 'http://localhost:9000/'
-            },
-            body: JSON.stringify(postData)
-        }).then(data => data.json().then(q => console.log(q)));
-        //const q = await response.json(); // parses JSON response into native JavaScript objects
-        //console.log(q);
-      }
 
-    //   getLastQuestion(uuid,modelId,versionId,languageId,questionId)
-      // {
-      //     
+    async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer) {
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/0/${answer}/`);
+        let data = await response.json();
+        //this.models = data;
+        return data;
+    }
+
+    // async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
+    // {
+    //     const postData = {
+    //         'uuid': uuid,
+    //         'modelId':modelId,
+    //         'versionNum':versionId,
+    //         'languageId':languageId,
+    //         'reqNodeId':questionId,
+    //         'answer':answer,
+    //         'languageId':languageId
+    //     };
+                
+    //     //const options = 
+    //     //onst response = await 
+    //     await fetch(`http://localhost:9000/apiInterviewCtrl/answer/`, {
+    //         method: 'POST',
+    //         mode: 'cors',
+    //         headers: {
+    //         'Content-Type': 'application/json'
+    //         //Content-Length': Buffer.byteLength(postData)
+    //         },
+    //         body: JSON.stringify(postData)
+    //     }).then(function(response) {console.log(response)});
+    //     //const q = await response.json(); // parses JSON response into native JavaScript objects
+    //     //console.log(q);
+    //   }
+
+      getLastQuestion(uuid,modelId,versionId,languageId,questionId)
+      {
+          
   
-      //     return new Promise((resolve, reject) =>{
-      //         const req = http.request(options, (res) => {
+          return new Promise((resolve, reject) =>{
+              const req = http.request(options, (res) => {
                       
-      //             res.on('data', (d) => {
-      //                 resolve(JSON.parse(d));
-      //             });
-      //             req.on('error', (e) => {
-      //                 reject(e);
-      //             });
-      //         });
-      //         req.write(postData);
-      //         req.end();
-      //     })
-      // }
+                  res.on('data', (d) => {
+                      resolve(JSON.parse(d));
+                  });
+                  req.on('error', (e) => {
+                      reject(e);
+                  });
+              });
+              req.write(postData);
+              req.end();
+          })
+      }
 
     async getNextQuestion(answer, questionId = this.questionId){
         const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
