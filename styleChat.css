@@ -1,0 +1,9 @@
+.question{
+    background-color: aquamarine;
+    position: left;
+}
+
+.answer{
+    background-color: blueviolet;
+    position: right;
+}
