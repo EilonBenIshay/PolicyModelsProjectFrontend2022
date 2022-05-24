@@ -47,8 +47,7 @@
     content: "";
     width: 0px;
     height: 0px;
-    /* position: absolute; */
-    position: relative;
+    position: absolute;
     border-left: 10px solid transparent;
     border-right: 10px solid #E4D8DC;
     border-top: 10px solid #E4D8DC;
