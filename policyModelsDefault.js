@@ -32,7 +32,9 @@ class TextAssets {
         this.results = ["Your results", "התוצאות שלך", "", "your results"];
         this.conclusion_page = ["Conclusion Page", "עמוד התוצאות","","Conclusion Page"];
         this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"];
-        this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"]
+        this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"];
+        this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
+        this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"]
     }
 }
 
@@ -140,9 +142,7 @@ class APIHandler{
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
 
-template.innerHTML = `<div class=\"changeLanguageClass\">
-                      </div>
-                      <link rel=\"stylesheet\" href=` + nameOfFileCss + `>
+template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
                       <div class=\"policy-models-default\">
                       </div>
                       `; 
@@ -183,6 +183,7 @@ class PolicyModelsDefault extends HTMLElement{
         super();
         this.number = 1;
         this.transcriptFlag = false;
+        this.feedbackFlag = false;
         this.question;
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
@@ -220,8 +221,6 @@ class PolicyModelsDefault extends HTMLElement{
                     this.language = Languages.ENGLISH_US;
                     break;
             }
-            //this.welcomePage(); //FIX
-            //location.reload(true);
             if(this.number == 1)
                 this.welcomePage();
             else if (this.number == 2)
@@ -242,7 +241,6 @@ class PolicyModelsDefault extends HTMLElement{
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
         <h4></h4>
         <div class=\"startInterview\"></div>
-
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
@@ -264,6 +262,8 @@ class PolicyModelsDefault extends HTMLElement{
         </div>
         <div class="buttons">
         </div>
+        <div class="feedbackDiv" id="feedbackDivID">
+        </div>
         <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
         <div class="transcript"></div>
         <div class="conclusion">
@@ -271,6 +271,8 @@ class PolicyModelsDefault extends HTMLElement{
         <div class="downloadTranscript">
         </div>
         `;
+
+
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
@@ -294,11 +296,11 @@ class PolicyModelsDefault extends HTMLElement{
             this.shadowRoot.querySelector('.transcript').style.display = 'block';
             this.shadowRoot.querySelector('#transcript-toggle').innerText = this.textassets.hide_transcript[this.language];
         }
-        
+                
         this.shadowRoot.querySelector('.downloadTranscript').innerHTML = "<button class=\"btnDownloadTranscript\">" + this.textassets.download_transcript[this.language] + "</button>";
         this.shadowRoot.querySelector('.btnDownloadTranscript').addEventListener('click', () => this.downloadTranscript(this.answers, 'myTranscript.json'));
     }
-    
+
     downloadTranscript(objToJson, name) {
         const obj = Object.fromEntries(objToJson);
         const text = JSON.stringify(obj);
@@ -327,8 +329,9 @@ class PolicyModelsDefault extends HTMLElement{
         <div>
         <h3>`+this.textassets.conclusion_page[this.language]+`</h3>  
         <h4>`+this.textassets.results[this.language]+`:</h4>
-        <p class = \"conclusions\"></p>
-        <button class=\"backToWelcomePage\">`+this.textassets.home[this.language]+`</button>
+        <div class = \"conclusions\"></div>
+        <br>
+        <div class=backToHome><button class=\"backToWelcomePage\">`+this.textassets.home[this.language]+`</button></div>
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         //the conclusion
@@ -341,6 +344,11 @@ class PolicyModelsDefault extends HTMLElement{
      * Loads up the conclusion page when press on conclusion btn.
      */
     conclusion(){
+        this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
+        if(document.getElementById("inputID") != null){
+            var e = document.getElementById("inputID");
+            e.parentNode.removeChild(e);
+        }
         this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + this.textassets.show_conclusion[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.conclusion').addEventListener('click', () => this.conclusionPage());
     }
@@ -352,14 +360,17 @@ class PolicyModelsDefault extends HTMLElement{
      * overwriteid -> if defined, will fetch a specific question. otherwise if undefined will fetch the next question
      * answerNum -> position of the answer in the answer array
      */
-    FetchQuestion(answer, overwriteid, answerNum){
+    FetchQuestion(answer, overwriteid, answerNum){ 
         let jsonQuestion;
-        if (answer != undefined && this.question.id > 0)
+        if (answer != undefined && this.question.id > 0){
             this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
-        if(overwriteid != undefined)
+        }
+        if(overwriteid != undefined){
             jsonQuestion = this.apiHandler.getNextQuestion(overwriteid, answerNum);
-        else
+        }
+        else{
             jsonQuestion = this.apiHandler.getNextQuestion(this.question.id);
+        }
         let obj = JSON.parse(jsonQuestion);
         this.question = new Question(obj.questionID,obj.question,Array.from(obj.answers));
     }
@@ -388,14 +399,91 @@ class PolicyModelsDefault extends HTMLElement{
         this.FetchQuestion(answer,overwriteid, answerNum);
         this.setTranscript(); 
         this.shadowRoot.querySelector('h4').innerText = this.question.question; 
+        this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
+        `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
+        this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+        this.feedbackFlag = false;
         if(this.question.id == -1){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
                 "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
+
             this.conclusion();
         }
-        else
+        else{
             this.ButtonSetUp();
+            var e = document.getElementById("inputID"); //NEW
+            if (e != null){
+                e.parentNode.removeChild(e);
+            }
+        }
     }
+
+    // feedback(){
+    //     this.createInputFeedback();
+    //     this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
+    //     <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
+    //     this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.feedbackSubmit());
+    // }
+
+    createInputFeedback(){
+        if(document.getElementById("inputID") == null){
+            this.createElementInput();
+        }
+        else{
+            var e = document.getElementById("inputID");
+            e.parentNode.removeChild(e);
+            this.createElementInput();
+        }
+        
+    }
+    createElementInput(){
+        var x = document.createElement("INPUT");
+        x.setAttribute("type", "text");
+        x.setAttribute("id", "inputID");
+        x.setAttribute("value", "My feedback is");
+        //document.getElementsByClassName("downloadTranscript").appendChild(x);
+        document.body.appendChild(x);
+    }
+
+    feedbackSubmit(){
+        var x = document.getElementById("inputID");
+        prompt(x.value);
+        x.parentNode.removeChild(x);
+    }
+
+    /**
+     * toggles the feedback button
+     */
+    toggleFeedback(){ 
+        let btn = this.shadowRoot.querySelector('#feedbackDivID');
+        this.feedbackFlag = !this.feedbackFlag;
+        if(this.feedbackFlag){
+            prompt("wowIF");
+            this.createInputFeedback();
+            this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
+            <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
+            this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.toggleFeedback());
+        }
+        else{
+            prompt("wowELSE");
+            this.feedbackSubmit();
+            this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
+            `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
+            this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+        }
+    }
+
+    // let info = this.shadowRoot.querySelector('.transcript');
+    //     let btn = this.shadowRoot.querySelector('#transcript-toggle');
+    //     this.transcriptFlag = !this.transcriptFlag;
+    //     if(this.transcriptFlag){
+    //         info.style.display = 'block';
+    //         btn.innerText = this.textassets.hide_transcript[this.language];
+    //     }
+    //     else{
+    //         info.style.display = 'none';
+    //         btn.innerText = this.textassets.show_transcript[this.language];
+    //     }
 
 
     /**
@@ -455,28 +543,6 @@ class PolicyModelsDefault extends HTMLElement{
             btn.innerText = this.textassets.show_transcript[this.language];
         }
     }
-
-    /*
-    httpGet()
-    {
-        // prompt("before1");
-        // var XMLHttpRequest = require('xhr2');
-        // var xmlHttp = new XMLHttpRequest();
-        // const Url = 'http://localhost:9000/api/1/models/testInterviewConnection';
-        // xmlHttp.open( "GET", Url, false ); // false for synchronous request
-        // xmlHttp.send( null );
-        // return xmlHttp.responseText;
-        var theUrl = 'http://localhost:9000/api/1/models/testInterviewConnection';
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
-        }
-        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-        xmlHttp.send(null);
-        prompt("xmlHttp.responseText is"+xmlHttp.responseText);
-    }*/
-
 }
 
 window.customElements.define('policy-models-default',PolicyModelsDefault); //the name of the tag and the name of the class we want to be connected
