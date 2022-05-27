@@ -159,7 +159,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.transcriptFlag = false;
         this.question;
         this.buttons;
-        // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
+        // answers are represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
         this.apiHandler = new PMAPIHandler();
         this.language = Languages.ENGLISH_RAW;
