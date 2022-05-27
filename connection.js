@@ -50,18 +50,20 @@ export class PMAPIHandler {
     
     async initInterview(language){
         const ans = await this.startInterview(this.modelId,this.versionId,language);
+        console.log(ans);
+        console.log(ans['Answers']);
         this.userId = ans['ssid'];
         this.questionId = ans['questionId'];
         this.questionText = ans['questionText'];
         this.activeLangauge = language
-        return true;
+        return [ans['questionId'],ans['questionText'],ans['Answers']];
     }
 
-
-    async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer) {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/0/${answer}/`);
+    async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
+    {
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
         let data = await response.json();
-        //this.models = data;
+        console.log(data);
         return data;
     }
 
@@ -92,24 +94,24 @@ export class PMAPIHandler {
     //     //console.log(q);
     //   }
 
-      getLastQuestion(uuid,modelId,versionId,languageId,questionId)
-      {
-          
+    //   getLastQuestion(uuid,modelId,versionId,languageId,questionId)
+      // {
+      //     
   
-          return new Promise((resolve, reject) =>{
-              const req = http.request(options, (res) => {
+      //     return new Promise((resolve, reject) =>{
+      //         const req = http.request(options, (res) => {
                       
-                  res.on('data', (d) => {
-                      resolve(JSON.parse(d));
-                  });
-                  req.on('error', (e) => {
-                      reject(e);
-                  });
-              });
-              req.write(postData);
-              req.end();
-          })
-      }
+      //             res.on('data', (d) => {
+      //                 resolve(JSON.parse(d));
+      //             });
+      //             req.on('error', (e) => {
+      //                 reject(e);
+      //             });
+      //         });
+      //         req.write(postData);
+      //         req.end();
+      //     })
+      // }
 
     async getNextQuestion(answer, questionId = this.questionId){
         const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
@@ -322,3 +324,5 @@ export class PMAPIHandler {
 // for now -1 return the last question
 //GetLastQuestion(uuid,1,1,"English-Raw",-1);
 
+// let apih = new PMAPIHandler();
+// console.log(apih.Work());

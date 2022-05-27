@@ -189,9 +189,11 @@ class PolicyModelsDefault extends HTMLElement{
         // console.log(start);
         await this.apiHandler.init();
         await this.apiHandler.initModel("1","1");
-        await this.apiHandler.initInterview("English-Raw");
-        let response = await this.apiHandler.getNextQuestion('yes');
-        console.log(response);
+        // let response = await this.apiHandler.initInterview("English-Raw");
+        // //let response = await this.apiHandler.getNextQuestion('1','0');
+        // this.question = new Question(response[0],response[1],response[2]);
+        // console.log(response);
+        //console.log("------------------------");
         let div = `
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
@@ -224,13 +226,13 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
         this.showInfo = true;
         this.transcriptFlag = false;
-        this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
         this.buttons = ['#a0'];
 
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
         this.shadowRoot.querySelector('h4').innerText = this.question.question;
         this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.question.answers[0] + "</button>\n";
-        this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
+        this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp());
         
         
               
@@ -271,15 +273,23 @@ class PolicyModelsDefault extends HTMLElement{
      * answerNum -> position of the answer in the answer array
      */
     async FetchQuestion(answer, overwriteid, answerNum){
-        let jsonQuestion;
-        if (answer != undefined && this.question.id > 0)
-            this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
-        if(overwriteid != undefined)
-            jsonQuestion = await this.apiHandler.getNextQuestion(overwriteid, answerNum);
-        else
-            jsonQuestion = await this.apiHandler.getNextQuestion(this.question.id);
-        let obj = JSON.parse(jsonQuestion);
-        this.question = new Question(obj.questionID,obj.question,Array.from(obj.answers));
+        // let jsonQuestion;
+        // if (answer != undefined && this.question.id > 0)
+        //     this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
+        // if(overwriteid != undefined)
+        //     jsonQuestion = await this.apiHandler.getNextQuestion(answerNum,overwriteid);
+        // else
+        //     jsonQuestion = await this.apiHandler.getNextQuestion(answerNum, this.question.id);
+        // let obj = JSON.parse(jsonQuestion);
+        if (this.question.id == undefined){
+            let obj = await this.apiHandler.initInterview(this.language);
+            this.question = new Question(obj[0],obj[1],obj[2]);
+            console.log(this.question);
+        }
+        else{ 
+            let obj = await this.apiHandler.getNextQuestion(answer,this.question.id);
+            this.question = new Question(obj[0],obj[1],obj[2]);
+        }
     }
     
 
@@ -302,17 +312,21 @@ class PolicyModelsDefault extends HTMLElement{
      * overwriteid -> if defined, will fetch a specific question. otherwise if undefined will fetch the next question
      * answerNum -> position of the answer in the answer array
      */
-    QuestionSetUp(answer, overwriteid, answerNum){ 
-        this.FetchQuestion(answer,overwriteid, answerNum);
+    async QuestionSetUp(answer, overwriteid, answerNum){ 
+        await this.FetchQuestion(answer,overwriteid, answerNum);
+        console.log(this.question);
         this.setTranscript(); 
+        console.log("test");
         this.shadowRoot.querySelector('h4').innerText = this.question.question; 
+        console.log("test");
         if(this.question.id == -1){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
                 "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
             this.conclusion();
         }
-        else
+        else{
             this.ButtonSetUp();
+        }
     }
 
 
@@ -329,7 +343,7 @@ class PolicyModelsDefault extends HTMLElement{
         } 
         this.shadowRoot.querySelector('.buttons').innerHTML = btnSTR;
         for (let j = 0; j< this.question.answers.length; j++){
-            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(this.question.answers[j],undefined,this.question.answers[j]));
+            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(j,undefined,this.question.answers[j]));
         }
     }
 
