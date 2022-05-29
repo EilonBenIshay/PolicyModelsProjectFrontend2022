@@ -97,6 +97,13 @@ class APIMock {
         this.questionbank = jsonQuestionBankEnglish
     }
 
+    initInterview(language){
+        let RawObj = JSON.stringify(this.questionbank[0]);
+        let obj = JSON.parse(RawObj);
+        let question = new Question(obj.questionID,obj.question,Array.from(obj.answers));
+        return question;
+    }
+
     getNextQuestion(answer, questionID) {
         var retObject
         if (answer == -1)
@@ -115,34 +122,69 @@ template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
                         <div class=\"policy-models-chat\">
                         <h4>
                         </h4>
-                        <div class = \"chat\">
-                        </div>
                         </div>`; 
 class PolicyModelsChat extends HTMLElement{
     constructor(){
         super();
+        var model = document.getElementById("model").innerHTML;
         this.question;
+        this.number = 1;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();  
         this.transcriptFlag = false; 
         this.apiHandler = new APIMock();
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
-        this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        this.question = this.apiHandler.initInterview("English-Raw");
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this.welcomePage();
+    }
+    welcomePage(){
+        this.number = 1;
+        let div = `
+        <div>
+        <h3>`+ this.textassets.welcome[this.language] +`</h3>
+        <h4></h4>
+        <div class=\"startInterview\"></div>
+        </div>`;
+        this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
+        this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
+        
+    }
+    interviewPage(){
+        this.number = 2;
+        let div = `
+        <div>
+        <h3></h3>
+        </div>
+        <div class = \"chat\">
+        </div>
+        `;
+        this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
         this.createElementInput();
         // this.shadowRoot.querySelector('.changeLanguageClass').innerHTML =
         // "<script type=\"text/javascript\"> changeLanguage();</script>" ;
-        this.shadowRoot.querySelector('.chat').innerHTML = `<div class=\"question\">
-                                                            <br>${this.question.question}
-                                                            </div>`
+        let answers_text = ``;
+        for (let i = 0; i < this.question.answers.length; i++){
+            answers_text += `<br>${i} - ${this.question.answers[i]}`;
+        }
+        this.shadowRoot.querySelector('.chat').innerHTML = `<div class=ChatDiv>
 
+                                                            <div class=\"boxRight question\">
+                                                            <br>${this.question.question}
+                                                            ${answers_text}
+                                                            </div>
+                                                            
+                                                            </div>`
     }
+    
     createElementInput(){
         var x = document.createElement("INPUT");
         x.setAttribute("type", "text");
         x.setAttribute("id", "inputID");
+        x.setAttribute("class", "inputClass");
         x.setAttribute("placeholder", "Enter your answer here");
         document.body.appendChild(x);
         document.getElementById("inputID").addEventListener("keydown", (e) => {if (e.keyCode == 13) {this.getAnswer()}});
@@ -150,6 +192,8 @@ class PolicyModelsChat extends HTMLElement{
 
     getAnswer(){
     var inputAnswer = parseInt(document.getElementById("inputID").value);
+    //document.getElementById("inputID").setAttribute("value","wow");
+    //document.getElementById("inputID").textContent = " ";
     this.QuestionSetUp(inputAnswer, `\n${this.question.answers[inputAnswer]}\n`);
     }
 
@@ -197,20 +241,23 @@ class PolicyModelsChat extends HTMLElement{
      QuestionSetUp(answerNum, answer, overwriteid = undefined){
         this.FetchQuestion(answerNum, answer, overwriteid);
         this.setTranscript(); 
-        this.answers_text = "";
+        document.getElementById("inputID").value = "";
+        let answers_text = "";
         for (let i = 0; i < this.question.answers.length; i++){
-            this.answers_text += `<br>${i} - ${this.question.answers[i]}`
+            answers_text += `<br>${i} - ${this.question.answers[i]}`
         }
-        this.shadowRoot.querySelector('.chat').innerHTML += `  
-                                                                <div class=\"box answer\">
+        this.shadowRoot.querySelector('.chat').innerHTML += `  <div class=ChatDiv>
+
+                                                                <div class=\"boxLeft answer\">
                                                                 <br>${answer}<br>
                                                                 </div>
                                                                 
-                                                                <div class=\"box question\">
+                                                                <div class=\"boxRight question\">
                                                                 <br>${this.question.question}
-                                                                ${this.answers_text}
+                                                                ${answers_text}
                                                                 </div>
                                                                 
+                                                                </div>
                                                                 `; 
         // this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
         // `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
