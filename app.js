@@ -281,7 +281,7 @@ class PolicyModelsDefault extends HTMLElement{
         // else
         //     jsonQuestion = await this.apiHandler.getNextQuestion(answerNum, this.question.id);
         // let obj = JSON.parse(jsonQuestion);
-        if (this.question.id == undefined){
+        if (answer == undefined){
             let obj = await this.apiHandler.initInterview(this.language);
             this.question = new Question(obj[0],obj[1],obj[2]);
             console.log(this.question);
