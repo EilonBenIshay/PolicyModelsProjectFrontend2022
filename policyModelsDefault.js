@@ -458,14 +458,12 @@ class PolicyModelsDefault extends HTMLElement{
         let btn = this.shadowRoot.querySelector('#feedbackDivID');
         this.feedbackFlag = !this.feedbackFlag;
         if(this.feedbackFlag){
-            prompt("wowIF");
             this.createInputFeedback();
             this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
             <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
             this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.toggleFeedback());
         }
         else{
-            prompt("wowELSE");
             this.feedbackSubmit();
             this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
             `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
