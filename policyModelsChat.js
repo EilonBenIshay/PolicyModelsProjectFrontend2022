@@ -36,6 +36,7 @@ class TextAssets {
     }
 }
 
+const jsonData = [{"Recommendations":["checkElderlyAllowance"],"EmployerObligations":["hearing","finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter","priorNotice","form161"],"Notices":["jointEmploymentNotice","severancePayMethod_Varied","priorNoticePeriod_Varied","relativeSeverancePay"],"Benefits":{"Pension":"allowance","Properties":["severancePay"]},"Assertions":{"EffectiveTerminationType":"severance","Employment":{"Type":"jointEmployment","Scope":"partial","SalaryUnits":"daily","Duration":"_12_24"},"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Flags":["thisEmploymentOver11months"],"Gender":"female","ReasonForLeaving":"endOfContract"}}];
 const jsonQuestionBankEnglish = [{
 	"questionID": 1,
 	"question": "Are you a woman?",
@@ -146,8 +147,10 @@ class PolicyModelsChat extends HTMLElement{
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
         <h4></h4>
+        <div>` + this.parseTag(jsonData[0], false) + `</div>
         <div class=\"startInterview\"></div>
         </div>`;
+        this.buildList(jsonData[0]);
         this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
@@ -316,6 +319,28 @@ class PolicyModelsChat extends HTMLElement{
             btn.innerText = this.textassets.show_transcript[this.language];
         }
     }
+
+    parseTags(data, isSub){
+        var html = (isSub)?'<div>':''; // Wrap with div if true
+        html += '<ul>';
+        for(var item in data){
+            html += '<li>';
+            if(typeof(data[item]) === 'object'){ // An array will return 'object'
+                html += item; // Submenu found, but top level list item.
+                html += this.buildList(data[item], true); // Submenu found. Calling recursively same method (and wrapping it in a div)
+            } else {
+                if(isNaN(item)){
+                  html += item; 
+                  html += `: `; 
+                }
+                html += data[item]; // No submenu
+            }
+            html += '</li>';
+        }
+        html += '</ul>';
+        html += (isSub)?'</div>':'';
+        return html;
+    }  
 
 }
 
