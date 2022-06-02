@@ -100,17 +100,13 @@ class APIMock {
 
     initInterview(language){
         let RawObj = JSON.stringify(this.questionbank[0]);
-        let obj = JSON.parse(RawObj);
-        let question = new Question(obj.questionID,obj.question,Array.from(obj.answers));
-        return question;
+        return RawObj;
     }
 
     getNextQuestion(answer, questionID) {
         var retObject
-        if (answer == -1)
+        if (answer == undefined)
             retObject = JSON.stringify(this.questionbank[questionID - 1]); 
-        else if (questionID == undefined)
-            retObject = JSON.stringify(this.questionbank[0]);
         else
             retObject = JSON.stringify(this.questionbank[questionID]);
         return retObject;
@@ -130,13 +126,13 @@ class PolicyModelsChat extends HTMLElement{
         var model = document.getElementById("model").innerHTML;
         this.question;
         this.number = 1;
-        // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
+        // answers are represented in a map  [QuestionID]-->[Question| answer text | answer position]
         this.answers = new Map();  
         this.transcriptFlag = false; 
         this.apiHandler = new APIMock();
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
-        this.question = this.apiHandler.initInterview("English-Raw");
+        //this.question = this.apiHandler.initInterview("English-Raw");
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.welcomePage();
@@ -171,18 +167,19 @@ class PolicyModelsChat extends HTMLElement{
         this.createElementInput();
         // this.shadowRoot.querySelector('.changeLanguageClass').innerHTML =
         // "<script type=\"text/javascript\"> changeLanguage();</script>" ;
-        let answers_text = ``;
-        for (let i = 0; i < this.question.answers.length; i++){
-            answers_text += `<br>${i} - ${this.question.answers[i]}`;
-        }
-        this.shadowRoot.querySelector('.chat').innerHTML = `<div class=ChatDiv>
+        // let answers_text = ``;
+        // for (let i = 0; i < this.question.answers.length; i++){
+        //     answers_text += `<br>${i} - ${this.question.answers[i]}`;
+        // }
+        // this.shadowRoot.querySelector('.chat').innerHTML = `<div class=ChatDiv>
 
-                                                            <div class=\"boxRight question\">
-                                                            <br>${this.question.question}
-                                                            ${answers_text}
-                                                            </div>
+        //                                                     <div class=\"boxRight question\">
+        //                                                     <br>${this.question.question}
+        //                                                     ${answers_text}
+        //                                                     </div>
                                                             
-                                                            </div>`
+        //                                                     </div>`
+        this.QuestionSetUp(undefined,undefined,-1);
         this.shadowRoot.querySelector('.transcriptDiv').innerHTML = "<button class = \"transcriptBtn\">" + this.textassets.show_transcript[this.language] + "</button>\n";
     }
     
@@ -224,9 +221,12 @@ class PolicyModelsChat extends HTMLElement{
      FetchQuestion(answerNum, answer, overwriteid = undefined){ 
         let jsonQuestion;
         if (answer != undefined && this.question.id != undefined){
-            this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
+            this.answers.set(this.question.id, [this.question, answer, answerNum]);
         }
-        if(overwriteid != undefined){
+        if(overwriteid == -1){
+            jsonQuestion = this.apiHandler.initInterview(this.language);
+        }
+        else if(overwriteid != undefined){
             jsonQuestion = this.apiHandler.getNextQuestion(answerNum, overwriteid);
         }
         else{
@@ -239,14 +239,14 @@ class PolicyModelsChat extends HTMLElement{
     /**
      * sets up the transcript
      */
-     setTranscript(){
-        // let transcriptSTR = "";
-        // let transcript = this.shadowRoot.querySelector('.transcript');
-        // this.answers.forEach((value,key) => {transcriptSTR += ("<div>" +this.textassets.question[this.language]+ " "+ key.toString() +": " + value[0] +"&emsp;|&emsp;" +this.textassets.your_answer[this.language]+ ": " +
-        // value[1] + "&emsp;|&emsp;<button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>")});
-        // //transcript.innerHTML = transcriptSTR;
-        // this.answers.forEach((value,key) => {this.shadowRoot.querySelector('#QR' + key.toString()).addEventListener('click', ()=>this.ReturnToQuestion(key))});
-    }
+    // setTranscript(){
+    //     let transcriptSTR = "";
+    //     let transcript = this.shadowRoot.querySelector('.transcript');
+    //     this.answers.forEach((value,key) => {transcriptSTR += ("<div>" +this.textassets.question[this.language]+ " "+ key.toString() +": " + value[0].question +"&emsp;|&emsp;" +this.textassets.your_answer[this.language]+ ": " +
+    //     value[1] + "&emsp;|&emsp;<button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>")});
+    //     transcript.innerHTML = transcriptSTR;
+    //     this.answers.forEach((value,key) => {this.shadowRoot.querySelector('#QR' + key.toString()).addEventListener('click', ()=>this.ReturnToQuestion(key))});
+    // }
 
     /**
      * Sets up the current Question.
@@ -257,25 +257,45 @@ class PolicyModelsChat extends HTMLElement{
      */
      QuestionSetUp(answerNum, answer, overwriteid = undefined){
         this.FetchQuestion(answerNum, answer, overwriteid);
-        this.setTranscript(); 
+        //this.setTranscript(); 
         document.getElementById("inputID").value = "";
+        let chat_text = ``;
+        this.answers.forEach((value,key) => {
+            let answers_text = "";
+            for (let i = 0; i < value[0].answers.length; i++){
+                answers_text += `<br>(${i}) - ${value[0].answers[i]}`;
+            }
+            answers_text += "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>";
+            chat_text += `  <div class=ChatDiv>
+                            
+                            <div class=\"boxRight question\">
+                            <br>${value[0].question}
+                            ${answers_text}
+                            </div>
+
+                            <div class=\"boxLeft answer\">
+                            <br>${value[1]}<br>
+                            </div>
+                            
+                            </div>
+                            `;
+        });
         let answers_text = "";
         for (let i = 0; i < this.question.answers.length; i++){
-            answers_text += `<br>${i} - ${this.question.answers[i]}`
+            answers_text += `<br>(${i}) - ${this.question.answers[i]}`;
         }
-        this.shadowRoot.querySelector('.chat').innerHTML += `  <div class=ChatDiv>
-
-                                                                <div class=\"boxLeft answer\">
-                                                                <br>${answer}<br>
-                                                                </div>
-                                                                
-                                                                <div class=\"boxRight question\">
-                                                                <br>${this.question.question}
-                                                                ${answers_text}
-                                                                </div>
-                                                                
-                                                                </div>
-                                                                `; 
+        chat_text += `  <div class=ChatDiv>
+                            
+                        <div class=\"boxRight question\">
+                        <br>${this.question.question}
+                        <div class="buttons">
+                        </div>
+                        </div>
+                        </div>
+                        `;
+        this.shadowRoot.querySelector('.chat').innerHTML = chat_text; 
+        this.answers.forEach((value,key) => {this.shadowRoot.querySelector('#QR' + key.toString()).addEventListener('click', ()=>this.ReturnToQuestion(key))});
+        this.buttonSetUp();
         // this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
         // `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
         // this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
@@ -288,6 +308,19 @@ class PolicyModelsChat extends HTMLElement{
         }
         else{
            // prompt ("stuff");
+        }
+    }
+    
+    buttonSetUp(){
+        let btnIDs = [];
+        let btnSTR = ""; 
+        for (let i = 0; i< this.question.answers.length; i++){
+            btnSTR += "<br><button class = \"btn\" id =\"a" + i.toString() + "\">(" + i.toString()+ ") - " + this.question.answers[i] + "</button>\n";
+            btnIDs[i] = '#a' + i.toString();
+        } 
+        this.shadowRoot.querySelector('.buttons').innerHTML = btnSTR;
+        for (let j = 0; j< this.question.answers.length; j++){
+            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(j, this.question.answers[j]));
         }
     }
 
@@ -304,19 +337,50 @@ class PolicyModelsChat extends HTMLElement{
     /**
      * toggles the transcript button
      */
-     toggleTranscript(){
-        let info = this.shadowRoot.querySelector('.transcript');
-        let btn = this.shadowRoot.querySelector('#transcript-toggle');
-        this.transcriptFlag = !this.transcriptFlag;
-        if(this.transcriptFlag){
-            info.style.display = 'block';
-            btn.innerText = this.textassets.hide_transcript[this.language];
+    // toggleTranscript(){
+    //     let info = this.shadowRoot.querySelector('.transcript');
+    //     let btn = this.shadowRoot.querySelector('#transcript-toggle');
+    //     this.transcriptFlag = !this.transcriptFlag;
+    //     if(this.transcriptFlag){
+    //         info.style.display = 'block';
+    //         btn.innerText = this.textassets.hide_transcript[this.language];
+    //     }
+    //     else{
+    //         info.style.display = 'none';
+    //         btn.innerText = this.textassets.show_transcript[this.language];
+    //     }
+    // }
+
+    /**
+     * returns to a specific question
+     * @param
+     * questionNum -> question to return to
+     */
+    ReturnToQuestion(questionNum){
+        //TODO remove this condition with the full API implementation
+        if(questionNum > 10 || questionNum < 1){
+            return;
         }
-        else{
-            info.style.display = 'none';
-            btn.innerText = this.textassets.show_transcript[this.language];
-        }
+        this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
+        this.QuestionSetUp(undefined, undefined, questionNum);
     }
+
+    // /**
+    //  * toggles the transcript button
+    //  */
+    // toggleTranscript(){
+    //     let info = this.shadowRoot.querySelector('.transcript');
+    //     let btn = this.shadowRoot.querySelector('#transcript-toggle');
+    //     this.transcriptFlag = !this.transcriptFlag;
+    //     if(this.transcriptFlag){
+    //         info.style.display = 'block';
+    //         btn.innerText = this.textassets.hide_transcript[this.language];
+    //     }
+    //     else{
+    //         info.style.display = 'none';
+    //         btn.innerText = this.textassets.show_transcript[this.language];
+    //     }
+    // }
 
     parseTags(data, isSub){
         var html = (isSub)?'<div>':''; // Wrap with div if true
