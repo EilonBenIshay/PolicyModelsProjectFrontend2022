@@ -157,9 +157,13 @@ class PolicyModelsChat extends HTMLElement{
         this.number = 2;
         let div = `
         <div>
-        <h3></h3>
+            <h3></h3>
         </div>
-        <div class = \"chat\">
+        <div class = "grid">
+            <div class = \"chat\">
+            </div>
+            <div class = \"transcriptDiv\">
+            </div>
         </div>
         `;
         this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
@@ -178,6 +182,7 @@ class PolicyModelsChat extends HTMLElement{
                                                             </div>
                                                             
                                                             </div>`
+        this.shadowRoot.querySelector('.transcriptDiv').innerHTML = "<button class = \"transcriptBtn\">" + this.textassets.show_transcript[this.language] + "</button>\n";
     }
     
     createElementInput(){
@@ -192,9 +197,20 @@ class PolicyModelsChat extends HTMLElement{
 
     getAnswer(){
     var inputAnswer = parseInt(document.getElementById("inputID").value);
-    //document.getElementById("inputID").setAttribute("value","wow");
-    //document.getElementById("inputID").textContent = " ";
-    this.QuestionSetUp(inputAnswer, `\n${this.question.answers[inputAnswer]}\n`);
+    let valid = 0;
+    for (let i = 0; i < this.question.answers.length; i++){
+       if(inputAnswer == i){
+            valid = 1;
+       }
+    }
+    if(valid){
+        this.QuestionSetUp(inputAnswer, `\n${this.question.answers[inputAnswer]}\n`);
+    }
+    else{
+        prompt("Oops! Your answer must be a number between 0 and "+ (this.question.answers.length-1));
+        document.getElementById("inputID").value = "";
+    }
+    
     }
 
     /**
