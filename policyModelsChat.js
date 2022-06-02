@@ -147,10 +147,8 @@ class PolicyModelsChat extends HTMLElement{
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
         <h4></h4>
-        <div>` + this.parseTag(jsonData[0], false) + `</div>
         <div class=\"startInterview\"></div>
         </div>`;
-        this.buildList(jsonData[0]);
         this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
