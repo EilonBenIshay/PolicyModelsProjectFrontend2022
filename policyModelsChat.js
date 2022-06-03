@@ -119,10 +119,41 @@ const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
 
 template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
-                        <div class=\"policy-models-chat\">
+                        <div class=\"policy-models-chat\" id="policy-models-chat-id">
                         <h4>
                         </h4>
-                        </div>`; 
+                        </div>`;
+                        
+function changeLanguage() {
+    var x = document.createElement("SELECT");
+    x.setAttribute("id", "mySelect");
+    document.body.appendChild(x);
+                        
+    var z = document.createElement("option");
+    z.setAttribute("value", "ENGLISH_RAW");
+    var t = document.createTextNode("ENGLISH_RAW");
+    z.appendChild(t);
+    document.getElementById("mySelect").appendChild(z);
+
+    var z2 = document.createElement("option");
+    z2.setAttribute("value", "HEBREW");
+    var t2 = document.createTextNode("עברית");
+    z2.appendChild(t2);
+    document.getElementById("mySelect").appendChild(z2);
+
+    var z3 = document.createElement("option");
+    z3.setAttribute("value", "ARABIC");
+    var t3 = document.createTextNode("العربية");
+    z3.appendChild(t3);
+    document.getElementById("mySelect").appendChild(z3);
+
+    var z4 = document.createElement("option");
+    z4.setAttribute("value", "ENGLISH_US");
+    var t4 = document.createTextNode("ENGLISH_US");
+    z4.appendChild(t4);
+    document.getElementById("mySelect").appendChild(z4);
+
+}
 class PolicyModelsChat extends HTMLElement{
     constructor(){
         super();
@@ -138,8 +169,35 @@ class PolicyModelsChat extends HTMLElement{
         //this.question = this.apiHandler.initInterview("English-Raw");
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
+        changeLanguage(); //NEW
         this.welcomePage();
+
+        document.getElementById('mySelect').addEventListener('change', () => {
+            var selectElement = document.getElementById('mySelect').value;
+            switch (selectElement) { //FIX
+                case "ENGLISH_RAW":
+                    this.language = Languages.ENGLISH_RAW;
+                    break;
+                case "HEBREW":
+                    this.language = Languages.HEBREW;
+                    break;
+                case "ARABIC":
+                    this.language = Languages.ARABIC;
+                    break;
+                case "ENGLISH_US":
+                    this.language = Languages.ENGLISH_US;
+                    break;
+            }
+            if(this.number == 1)
+                this.welcomePage();
+            else if (this.number == 2)
+                this.interviewPage();
+            // else if (this.number == 3)
+            //     this.conclusionPage();
+        });
+
     }
+
     welcomePage(){
         this.number = 1;
         let div = `
@@ -169,7 +227,7 @@ class PolicyModelsChat extends HTMLElement{
         </div>
         `;
         this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
-        this.createElementInput();
+        this.checkElementInput();
         // this.shadowRoot.querySelector('.changeLanguageClass').innerHTML =
         // "<script type=\"text/javascript\"> changeLanguage();</script>" ;
         // let answers_text = ``;
@@ -193,7 +251,17 @@ class PolicyModelsChat extends HTMLElement{
         }
 
     }
-    
+    checkElementInput(){
+        if(document.getElementById("inputID") == null){
+            this.createElementInput();
+        }
+        else{
+            var e = document.getElementById("inputID");
+            e.parentNode.removeChild(e);
+            this.createElementInput();
+        }
+    }
+
     createElementInput(){
         var x = document.createElement("INPUT");
         x.setAttribute("type", "text");
