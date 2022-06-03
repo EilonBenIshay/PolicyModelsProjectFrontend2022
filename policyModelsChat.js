@@ -275,7 +275,7 @@ class PolicyModelsChat extends HTMLElement{
             let revisit = "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>";
             chat_text += `  <div class=ChatDiv>
                             
-                            <div class=\"boxRight question\">
+                            <div class=\"boxRight question\">                            
                             <br>${value[0].question}
                             ${revisit}
                             </div>
