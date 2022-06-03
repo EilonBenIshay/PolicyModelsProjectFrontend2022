@@ -25,7 +25,8 @@
 }
  .restartBtn{
   position: relative;
-  right: 250px;
+  right: 400px;
+  margin-top: 20px;
  }
  .btnDownloadTranscript{
   padding-top: 40px;
@@ -139,6 +140,11 @@
     border-radius: inherit;
   }
   
+ #inputID{
+  border: none;
+  border-bottom: 2px solid black;
+  margin-top: 30px;
+ }
 
 
   

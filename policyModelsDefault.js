@@ -243,6 +243,7 @@ class PolicyModelsDefault extends HTMLElement{
         </div>
         <div class="feedbackDiv" id="feedbackDivID">
         </div>
+        <div class="feedbackInputDiv"></div>
         <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
         <div class="transcript"></div>
         <div class="conclusion">
@@ -336,8 +337,8 @@ class PolicyModelsDefault extends HTMLElement{
      */
     conclusion(){
         this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
-        if(document.getElementById("inputID") != null){
-            var e = document.getElementById("inputID");
+        if(this.shadowRoot.querySelector('#inputID')  != null){
+            var e = this.shadowRoot.querySelector('#inputID') ;
             e.parentNode.removeChild(e);
         }
         this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + this.textassets.show_conclusion[this.language] + "</button>\n";
@@ -402,7 +403,7 @@ class PolicyModelsDefault extends HTMLElement{
         }
         else{
             this.ButtonSetUp();
-            var e = document.getElementById("inputID"); //NEW
+            var e = this.shadowRoot.querySelector('#inputID') ; //NEW
             if (e != null){
                 e.parentNode.removeChild(e);
             }
@@ -417,27 +418,35 @@ class PolicyModelsDefault extends HTMLElement{
     // }
 
     createInputFeedback(){
-        if(document.getElementById("inputID") == null){
+        //prompt("wow3");
+        if(this.shadowRoot.querySelector('#inputID') == null){
+            //prompt("wow4");
             this.createElementInput();
+            //prompt("wow5");
         }
         else{
-            var e = document.getElementById("inputID");
+            //prompt("wow6");
+            var e = this.shadowRoot.querySelector('#inputID');
             e.parentNode.removeChild(e);
             this.createElementInput();
         }
         
     }
     createElementInput(){
-        var x = document.createElement("INPUT");
-        x.setAttribute("type", "text");
-        x.setAttribute("id", "inputID");
-        x.setAttribute("value", "My feedback is");
-        //document.getElementsByClassName("downloadTranscript").appendChild(x);
-        document.body.appendChild(x);
+        //prompt("wow1");
+        this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
+        `<input type="text" id="inputID" value="My feedback is"><br><br>`;
+        //prompt("wow2");
+        // var x = document.createElement("INPUT");
+        // x.setAttribute("type", "text");
+        // x.setAttribute("id", "inputID");
+        // x.setAttribute("value", "My feedback is");
+        // document.body.appendChild(x);
     }
 
     feedbackSubmit(){
-        var x = document.getElementById("inputID");
+        //prompt("wow7");
+        var x = this.shadowRoot.querySelector('#inputID');
         prompt(x.value);
         x.parentNode.removeChild(x);
     }
