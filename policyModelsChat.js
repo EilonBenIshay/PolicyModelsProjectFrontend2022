@@ -32,25 +32,28 @@ class TextAssets {
         this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"];
         this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"];
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
-        this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"]
+        this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
+        this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
+        this.hide_tags = ["Hide Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Hide Current Tags (intermediate result)"]
     }
 }
 
-const jsonData = [{"Recommendations":["checkElderlyAllowance"],"EmployerObligations":["hearing","finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter","priorNotice","form161"],"Notices":["jointEmploymentNotice","severancePayMethod_Varied","priorNoticePeriod_Varied","relativeSeverancePay"],"Benefits":{"Pension":"allowance","Properties":["severancePay"]},"Assertions":{"EffectiveTerminationType":"severance","Employment":{"Type":"jointEmployment","Scope":"partial","SalaryUnits":"daily","Duration":"_12_24"},"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Flags":["thisEmploymentOver11months"],"Gender":"female","ReasonForLeaving":"endOfContract"}}];
+const jsonData = {"EmployerObligations":["finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter",,"form161"],"Benefits":{"Pension":"allowance"},"Assertions":{"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Gender":"female"}};
+//answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
 const jsonQuestionBankEnglish = [{
 	"questionID": 1,
 	"question": "Are you a woman?",
-	"answers": ["Yes", "No"]
+	"answers": ["yes", "no"]
 },
 {
 	"questionID": 2,
 	"question": "How old are you?",
-	"answers": ["1-14","15-18","19-65","66+"]
+	"answers": ["under 62", "62 to 67", "67 and over"]
 },
 {
 	"questionID": 3,
-	"question": "How did your employment end?",
-	"answers": ["Resignation", "Lawful Termination", "Unlawful Termination", "Death"]
+	"question": "Are you an Israeli citizen?",
+	"answers": ["yes", "no"]
 },
 {
 	"questionID": 4,
@@ -128,7 +131,7 @@ class PolicyModelsChat extends HTMLElement{
         this.number = 1;
         // answers are represented in a map  [QuestionID]-->[Question| answer text | answer position]
         this.answers = new Map();  
-        this.transcriptFlag = false; 
+        this.tagsFlag = false; 
         this.apiHandler = new APIMock();
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
@@ -159,7 +162,9 @@ class PolicyModelsChat extends HTMLElement{
         <div class = "grid">
             <div class = \"chat\">
             </div>
-            <div class = \"transcriptDiv\">
+            <div>
+            <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
+            <div class = \"tagsDiv\"></div>
             </div>
         </div>
         `;
@@ -180,7 +185,13 @@ class PolicyModelsChat extends HTMLElement{
                                                             
         //                                                     </div>`
         this.QuestionSetUp(undefined,undefined,-1);
-        this.shadowRoot.querySelector('.transcriptDiv').innerHTML = "<button class = \"transcriptBtn\">" + this.textassets.show_transcript[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('#tags-toggle').addEventListener('click', () => this.toggleTags());
+        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(jsonData, false);
+        if (this.tagsFlag == true){
+            this.shadowRoot.querySelector('.tagsDiv').style.display = 'block';
+            this.shadowRoot.querySelector('#tags-toggle').innerText = this.textassets.hide_tags[this.language];
+        }
+
     }
     
     createElementInput(){
@@ -315,7 +326,7 @@ class PolicyModelsChat extends HTMLElement{
         let btnIDs = [];
         let btnSTR = ""; 
         for (let i = 0; i< this.question.answers.length; i++){
-            btnSTR += "<br><button class = \"btn\" id =\"a" + i.toString() + "\">(" + i.toString()+ ") - " + this.question.answers[i] + "</button>\n";
+            btnSTR += "<button class = \"btn\" id =\"a" + i.toString() + "\">(" + i.toString()+ ") - " + this.question.answers[i] + "</button><br>\n";
             btnIDs[i] = '#a' + i.toString();
         } 
         this.shadowRoot.querySelector('.buttons').innerHTML = btnSTR;
@@ -382,6 +393,20 @@ class PolicyModelsChat extends HTMLElement{
     //     }
     // }
 
+    toggleTags(){
+        let info = this.shadowRoot.querySelector('.tagsDiv');
+        let btn = this.shadowRoot.querySelector('#tags-toggle');
+        this.tagsFlag = !this.tagsFlag;
+        if(this.tagsFlag){
+            info.style.display = 'block';
+            btn.innerText = this.textassets.hide_tags[this.language];
+        }
+        else{
+            info.style.display = 'none';
+            btn.innerText = this.textassets.show_tags[this.language];
+        }
+    }
+
     parseTags(data, isSub){
         var html = (isSub)?'<div>':''; // Wrap with div if true
         html += '<ul>';
@@ -389,7 +414,7 @@ class PolicyModelsChat extends HTMLElement{
             html += '<li>';
             if(typeof(data[item]) === 'object'){ // An array will return 'object'
                 html += item; // Submenu found, but top level list item.
-                html += this.buildList(data[item], true); // Submenu found. Calling recursively same method (and wrapping it in a div)
+                html += this.parseTags(data[item], true); // Submenu found. Calling recursively same method (and wrapping it in a div)
             } else {
                 if(isNaN(item)){
                   html += item; 
