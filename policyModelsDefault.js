@@ -270,11 +270,13 @@ class PolicyModelsDefault extends HTMLElement{
         </div>
         <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
         <div class="transcript"></div>
-        <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
-        <div class = \"tagsDiv\"></div>
         <div class="conclusion">
         </div>
         <div class="downloadTranscript">
+        </div>
+        <div>
+        <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
+        <div class = \"tagsDiv\"></div>
         </div>
         `;
 
