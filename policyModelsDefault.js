@@ -34,68 +34,72 @@ class TextAssets {
         this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"];
         this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"];
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
-        this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"]
+        this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
+        this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
+        this.hide_tags = ["Hide Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Hide Current Tags (intermediate result)"]
     }
 }
 
 /**
  * temp question bank
  */
-const jsonQuestionBankEnglish = [{
-	"questionID": 1,
-	"question": "Are you a woman?",
-	"answers": ["Yes", "No"]
-},
-{
-	"questionID": 2,
-	"question": "How old are you?",
-	"answers": ["1-14","15-18","19-65","66+"]
-},
-{
-	"questionID": 3,
-	"question": "How did your employment end?",
-	"answers": ["Resignation", "Lawful Termination", "Unlawful Termination", "Death"]
-},
-{
-	"questionID": 4,
-	"question": "What is your favorite chip?",
-	"answers": ["Pringles", "Lays", "Walkers", "Tapuchips", "Other"]
-},
-{
-	"questionID": 5,
-	"question": "How has your day been?",
-	"answers":  ["Best day of my life", "Great", "Ok", "Bad", "Straight up agony"]
-},
-{
-	"questionID": 6,
-	"question": "What is your favorite animal",
-	"answers": ["Dog", "Cat", "Mouse", "Frog", "Hedgehog", "Bee", "Wolf", "Other"]
-},
-{
-	"questionID": 7,
-	"question": "Who is the best?",
-	"answers": ["Shady", "Shelly", "Eilon", "Tbh none of them"]
-},
-{
-	"questionID": 8,
-	"question": "Are you an israeli citizan",
-	"answers": ["Yes", "No"]
-},
-{
-	"questionID": 9,
-	"question": "Who is the best friend?",
-	"answers": ["Ross", "Chandler", "Monica", "Rachel", "Pheobe", "Joey"]
-},
-{
-	"questionID": 10,
-	"question": "HIMYM or Seinfeld?",
-	"answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
-},
-{
-    "questionID": -1,
-    "question": "",
-    "answers": []
-}];
+ const jsonData = {"EmployerObligations":["finalAccountSettlement","jobTerminationConfirmation","workPeriodLetter","form161"],"Benefits":{"Pension":"allowance"},"Assertions":{"AgeGroup":"voluntaryPension","Gender":"female"}};
+ //answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
+ const jsonQuestionBankEnglish = [{
+     "questionID": 1,
+     "question": "Are you a woman?",
+     "answers": ["yes", "no"]
+ },
+ {
+     "questionID": 2,
+     "question": "How old are you?",
+     "answers": ["under 62", "62 to 67", "67 and over"]
+ },
+ {
+     "questionID": 3,
+     "question": "Are you an Israeli citizen?",
+     "answers": ["yes", "no"]
+ },
+ {
+     "questionID": 4,
+     "question": "How was your salary calculated?",
+     "answers": ["monthly", "daily", "hourly"]
+ },
+ {
+     "questionID": 5,
+     "question": "How has your day been?",
+     "answers":  ["Best day of my life", "Great", "Ok", "Bad", "Straight up agony"]
+ },
+ {
+     "questionID": 6,
+     "question": "What is your favorite animal",
+     "answers": ["Dog", "Cat", "Mouse", "Frog", "Hedgehog", "Bee", "Wolf", "Other"]
+ },
+ {
+     "questionID": 7,
+     "question": "Who is the best?",
+     "answers": ["Shady", "Shelly", "Eilon", "Tbh none of them"]
+ },
+ {
+     "questionID": 8,
+     "question": "Are you an israeli citizan",
+     "answers": ["Yes", "No"]
+ },
+ {
+     "questionID": 9,
+     "question": "Who is the best friend?",
+     "answers": ["Ross", "Chandler", "Monica", "Rachel", "Pheobe", "Joey"]
+ },
+ {
+     "questionID": 10,
+     "question": "HIMYM or Seinfeld?",
+     "answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
+ },
+ {
+     "questionID": -1,
+     "question": "",
+     "answers": []
+ }];
 
 //const jsonQuestionBankArabic = [];
 //const jsonQuestionBankHebrew = [];
@@ -266,6 +270,8 @@ class PolicyModelsDefault extends HTMLElement{
         </div>
         <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
         <div class="transcript"></div>
+        <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
+        <div class = \"tagsDiv\"></div>
         <div class="conclusion">
         </div>
         <div class="downloadTranscript">
@@ -292,6 +298,12 @@ class PolicyModelsDefault extends HTMLElement{
         
         this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.home[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => this.backToWelcomePage());
+        this.shadowRoot.querySelector('#tags-toggle').addEventListener('click', () => this.toggleTags());
+        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(jsonData, false);
+        if (this.tagsFlag == true){
+            this.shadowRoot.querySelector('.tagsDiv').style.display = 'block';
+            this.shadowRoot.querySelector('#tags-toggle').innerText = this.textassets.hide_tags[this.language];
+        }
         if (this.transcriptFlag == true){
             this.shadowRoot.querySelector('.transcript').style.display = 'block';
             this.shadowRoot.querySelector('#transcript-toggle').innerText = this.textassets.hide_transcript[this.language];
@@ -541,6 +553,42 @@ class PolicyModelsDefault extends HTMLElement{
             btn.innerText = this.textassets.show_transcript[this.language];
         }
     }
+
+    toggleTags(){
+        let info = this.shadowRoot.querySelector('.tagsDiv');
+        let btn = this.shadowRoot.querySelector('#tags-toggle');
+        this.tagsFlag = !this.tagsFlag;
+        if(this.tagsFlag){
+            info.style.display = 'block';
+            btn.innerText = this.textassets.hide_tags[this.language];
+        }
+        else{
+            info.style.display = 'none';
+            btn.innerText = this.textassets.show_tags[this.language];
+        }
+    }
+
+    parseTags(data, isSub){
+        var html = (isSub)?'<div>':''; // Wrap with div if true
+        html += '<ul>';
+        for(var item in data){
+            html += '<li>';
+            if(typeof(data[item]) === 'object'){ // An array will return 'object'
+                html += item; // Submenu found, but top level list item.
+                html += this.parseTags(data[item], true); // Submenu found. Calling recursively same method (and wrapping it in a div)
+            } else {
+                if(isNaN(item)){
+                  html += item; 
+                  html += `: `; 
+                }
+                html += data[item]; // No submenu
+            }
+            html += '</li>';
+        }
+        html += '</ul>';
+        html += (isSub)?'</div>':'';
+        return html;
+    } 
 }
 
 window.customElements.define('policy-models-default',PolicyModelsDefault); //the name of the tag and the name of the class we want to be connected

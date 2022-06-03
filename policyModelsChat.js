@@ -38,7 +38,7 @@ class TextAssets {
     }
 }
 
-const jsonData = {"EmployerObligations":["finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter",,"form161"],"Benefits":{"Pension":"allowance"},"Assertions":{"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Gender":"female"}};
+const jsonData = {"EmployerObligations":["finalAccountSettlement","jobTerminationConfirmation","workPeriodLetter","form161"],"Benefits":{"Pension":"allowance"},"Assertions":{"AgeGroup":"voluntaryPension","Gender":"female"}};
 //answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
 const jsonQuestionBankEnglish = [{
 	"questionID": 1,

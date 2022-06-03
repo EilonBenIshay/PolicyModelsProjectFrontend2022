@@ -156,5 +156,8 @@
         font-family: 'Nunito', sans-serif;
     }
     .transcript {
-        display: none
+        display: none;
+    }
+    .tagsDiv{
+      display: none;
     }
