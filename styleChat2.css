@@ -90,7 +90,7 @@ input{
   border-radius: 4px; */
 }
 
-.startInterview, .transcriptBtn{
+.startInterview, .transcriptBtn, .btnShowTags{
   align-self: center;
   background-color: #fff;
   background-image: none;
@@ -120,11 +120,11 @@ input{
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-.startInterview:hover, .transcriptBtn:hover{
+.startInterview:hover, .transcriptBtn:hover, .btnShowTags:hover{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
 }
-.startInterview:focus, .transcriptBtn:focus{
+.startInterview:focus, .transcriptBtn:focus, .btnShowTags:focus{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
 
@@ -146,4 +146,27 @@ input{
   grid-template-columns: 2fr 1fr;
 }
 
-
+.btnRevisitQ , .btn{
+  /* background: rgba(51, 51, 51, 0.05); */
+  background: #F4EEFF;
+  border-radius: 8px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  /* margin: 0; */
+  margin-top: 6px;
+  padding: 2px 3px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
