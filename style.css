@@ -142,10 +142,17 @@
 
   
   
-
+  .grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 2fr 1fr;
+  }
 
     .policy-models-default {
         text-align:center
+    }
+    .tags{
+      text-align: left;
     }
      h1,h2,h3 {
         color: #344CB7;

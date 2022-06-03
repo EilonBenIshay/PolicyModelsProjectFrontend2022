@@ -258,6 +258,8 @@ class PolicyModelsDefault extends HTMLElement{
     interviewPage(){
         this.number = 2;
         let div = `
+        <div class = "grid">
+        <div class = "defaultInterview">
         <div>
         <div class="restartClass">
         </div>
@@ -274,9 +276,11 @@ class PolicyModelsDefault extends HTMLElement{
         </div>
         <div class="downloadTranscript">
         </div>
-        <div>
+        </div>
+        <div class = "tags">
         <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
         <div class = \"tagsDiv\"></div>
+        </div>
         </div>
         `;
 
