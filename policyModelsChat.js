@@ -57,8 +57,8 @@ const jsonQuestionBankEnglish = [{
 },
 {
 	"questionID": 4,
-	"question": "What is your favorite chip?",
-	"answers": ["Pringles", "Lays", "Walkers", "Tapuchips", "Other"]
+	"question": "How was your salary calculated?",
+	"answers": ["monthly", "daily", "hourly"]
 },
 {
 	"questionID": 5,
@@ -272,16 +272,12 @@ class PolicyModelsChat extends HTMLElement{
         document.getElementById("inputID").value = "";
         let chat_text = ``;
         this.answers.forEach((value,key) => {
-            let answers_text = "";
-            for (let i = 0; i < value[0].answers.length; i++){
-                answers_text += `<br>(${i}) - ${value[0].answers[i]}`;
-            }
-            answers_text += "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>";
+            let revisit = "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>";
             chat_text += `  <div class=ChatDiv>
                             
                             <div class=\"boxRight question\">
                             <br>${value[0].question}
-                            ${answers_text}
+                            ${revisit}
                             </div>
 
                             <div class=\"boxLeft answer\">
