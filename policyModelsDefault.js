@@ -147,40 +147,16 @@ const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
 
 template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
-                      <div class=\"policy-models-default\">
-                      </div>
+                        <select name="languageSelect" id="mySelect">
+                        <option value="ENGLISH_RAW">ENGLISH_RAW</option>
+                        <option value="HEBREW">עברית</option>
+                        <option value="ARABIC">العربية</option>
+                        <option value="ENGLISH_US">ENGLISH_US</option>
+                        </select>
+                        <div class=\"policy-models-default\">
+                        </div>
                       `; 
 
-function changeLanguage() {
-    var x = document.createElement("SELECT");
-    x.setAttribute("id", "mySelect");
-    document.body.appendChild(x);
-                      
-    var z = document.createElement("option");
-    z.setAttribute("value", "ENGLISH_RAW");
-    var t = document.createTextNode("ENGLISH_RAW");
-    z.appendChild(t);
-    document.getElementById("mySelect").appendChild(z);
-
-    var z2 = document.createElement("option");
-    z2.setAttribute("value", "HEBREW");
-    var t2 = document.createTextNode("עברית");
-    z2.appendChild(t2);
-    document.getElementById("mySelect").appendChild(z2);
-
-    var z3 = document.createElement("option");
-    z3.setAttribute("value", "ARABIC");
-    var t3 = document.createTextNode("العربية");
-    z3.appendChild(t3);
-    document.getElementById("mySelect").appendChild(z3);
-
-    var z4 = document.createElement("option");
-    z4.setAttribute("value", "ENGLISH_US");
-    var t4 = document.createTextNode("ENGLISH_US");
-    z4.appendChild(t4);
-    document.getElementById("mySelect").appendChild(z4);
-
-}
 
 class PolicyModelsDefault extends HTMLElement{
     constructor(){
@@ -201,16 +177,13 @@ class PolicyModelsDefault extends HTMLElement{
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
-        // this.shadowRoot.querySelector('.changeLanguageClass').innerHTML =
-        // "<script type=\"text/javascript\"> changeLanguage();</script>" ;
-        changeLanguage(); //NEW
         this.welcomePage();
         
 
 
         //  NEW (delete the btn and the script)
-        document.getElementById('mySelect').addEventListener('change', () => {
-            var selectElement = document.getElementById('mySelect').value;
+        this.shadowRoot.querySelector('#mySelect').addEventListener('change', () => {
+            var selectElement = this.shadowRoot.querySelector('#mySelect').value;
             switch (selectElement) { //FIX
                 case "ENGLISH_RAW":
                     this.language = Languages.ENGLISH_RAW;

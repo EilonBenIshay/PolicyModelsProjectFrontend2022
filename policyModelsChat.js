@@ -121,7 +121,7 @@ var nameOfFileCss = document.getElementById("style").innerHTML;
 template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
                         <div class=\"policy-models-chat\">
                         <h4>
-                        </h4>
+                        </h4> 
                         </div>`; 
 class PolicyModelsChat extends HTMLElement{
     constructor(){
@@ -146,13 +146,15 @@ class PolicyModelsChat extends HTMLElement{
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
         <h4></h4>
-        <div class=\"startInterview\"></div>
+        <div class=\"startInterview\"></div>  
         </div>`;
         this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
         
     }
+    //  <input class type="text" id="fname" name="fname" value = "test"></input><br>
+    //</div>
     interviewPage(){
         this.number = 2;
         let div = `
@@ -165,6 +167,9 @@ class PolicyModelsChat extends HTMLElement{
             <div>
             <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
             <div class = \"tagsDiv\"></div>
+            </div>
+            <div>
+            <input class = "inputClass" type = "text" id = "inputID" placeholder = "Enter your answer here"></input>
             </div>
         </div>
         `;
@@ -195,17 +200,17 @@ class PolicyModelsChat extends HTMLElement{
     }
     
     createElementInput(){
-        var x = document.createElement("INPUT");
-        x.setAttribute("type", "text");
-        x.setAttribute("id", "inputID");
-        x.setAttribute("class", "inputClass");
-        x.setAttribute("placeholder", "Enter your answer here");
-        document.body.appendChild(x);
-        document.getElementById("inputID").addEventListener("keydown", (e) => {if (e.keyCode == 13) {this.getAnswer()}});
+        // var x = document.createElement("INPUT");
+        // x.setAttribute("type", "text");
+        // x.setAttribute("id", "inputID");
+        // x.setAttribute("class", "inputClass");
+        // x.setAttribute("placeholder", "Enter your answer here");
+        // document.body.appendChild(x);
+        this.shadowRoot.querySelector("#inputID").addEventListener("keydown", (e) => {if (e.keyCode == 13) {this.getAnswer()}});
     }
 
     getAnswer(){
-    var inputAnswer = parseInt(document.getElementById("inputID").value);
+    var inputAnswer = parseInt(this.shadowRoot.querySelector("#inputID").value);
     let valid = 0;
     for (let i = 0; i < this.question.answers.length; i++){
        if(inputAnswer == i){
@@ -217,7 +222,7 @@ class PolicyModelsChat extends HTMLElement{
     }
     else{
         prompt("Oops! Your answer must be a number between 0 and "+ (this.question.answers.length-1));
-        document.getElementById("inputID").value = "";
+        this.shadowRoot.querySelector("#inputID").value = "";
     }
     
     }
@@ -269,7 +274,7 @@ class PolicyModelsChat extends HTMLElement{
      QuestionSetUp(answerNum, answer, overwriteid = undefined){
         this.FetchQuestion(answerNum, answer, overwriteid);
         //this.setTranscript(); 
-        document.getElementById("inputID").value = "";
+        this.shadowRoot.querySelector("#inputID").value = "";
         let chat_text = ``;
         this.answers.forEach((value,key) => {
             let revisit = "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>";
