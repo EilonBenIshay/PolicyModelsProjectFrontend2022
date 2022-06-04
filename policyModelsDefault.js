@@ -34,68 +34,73 @@ class TextAssets {
         this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"];
         this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"];
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
-        this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"]
+        this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
+        this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
+        this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "", "Hide Current Tags (intermediate result)"];
+        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"]
     }
 }
 
 /**
  * temp question bank
  */
-const jsonQuestionBankEnglish = [{
-	"questionID": 1,
-	"question": "Are you a woman?",
-	"answers": ["Yes", "No"]
-},
-{
-	"questionID": 2,
-	"question": "How old are you?",
-	"answers": ["1-14","15-18","19-65","66+"]
-},
-{
-	"questionID": 3,
-	"question": "How did your employment end?",
-	"answers": ["Resignation", "Lawful Termination", "Unlawful Termination", "Death"]
-},
-{
-	"questionID": 4,
-	"question": "What is your favorite chip?",
-	"answers": ["Pringles", "Lays", "Walkers", "Tapuchips", "Other"]
-},
-{
-	"questionID": 5,
-	"question": "How has your day been?",
-	"answers":  ["Best day of my life", "Great", "Ok", "Bad", "Straight up agony"]
-},
-{
-	"questionID": 6,
-	"question": "What is your favorite animal",
-	"answers": ["Dog", "Cat", "Mouse", "Frog", "Hedgehog", "Bee", "Wolf", "Other"]
-},
-{
-	"questionID": 7,
-	"question": "Who is the best?",
-	"answers": ["Shady", "Shelly", "Eilon", "Tbh none of them"]
-},
-{
-	"questionID": 8,
-	"question": "Are you an israeli citizan",
-	"answers": ["Yes", "No"]
-},
-{
-	"questionID": 9,
-	"question": "Who is the best friend?",
-	"answers": ["Ross", "Chandler", "Monica", "Rachel", "Pheobe", "Joey"]
-},
-{
-	"questionID": 10,
-	"question": "HIMYM or Seinfeld?",
-	"answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
-},
-{
-    "questionID": -1,
-    "question": "",
-    "answers": []
-}];
+ const jsonData = {"EmployerObligations":["finalAccountSettlement","jobTerminationConfirmation","workPeriodLetter","form161"],"Benefits":{"Pension":"allowance"},"Assertions":{"AgeGroup":"voluntaryPension","Gender":"female"}};
+ //answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
+ const jsonQuestionBankEnglish = [{
+     "questionID": 1,
+     "question": "Are you a woman?",
+     "answers": ["yes", "no"]
+ },
+ {
+     "questionID": 2,
+     "question": "How old are you?",
+     "answers": ["under 62", "62 to 67", "67 and over"]
+ },
+ {
+     "questionID": 3,
+     "question": "Are you an Israeli citizen?",
+     "answers": ["yes", "no"]
+ },
+ {
+     "questionID": 4,
+     "question": "How was your salary calculated?",
+     "answers": ["monthly", "daily", "hourly"]
+ },
+ {
+     "questionID": 5,
+     "question": "How has your day been?",
+     "answers":  ["Best day of my life", "Great", "Ok", "Bad", "Straight up agony"]
+ },
+ {
+     "questionID": 6,
+     "question": "What is your favorite animal",
+     "answers": ["Dog", "Cat", "Mouse", "Frog", "Hedgehog", "Bee", "Wolf", "Other"]
+ },
+ {
+     "questionID": 7,
+     "question": "Who is the best?",
+     "answers": ["Shady", "Shelly", "Eilon", "Tbh none of them"]
+ },
+ {
+     "questionID": 8,
+     "question": "Are you an israeli citizan",
+     "answers": ["Yes", "No"]
+ },
+ {
+     "questionID": 9,
+     "question": "Who is the best friend?",
+     "answers": ["Ross", "Chandler", "Monica", "Rachel", "Pheobe", "Joey"]
+ },
+ {
+     "questionID": 10,
+     "question": "HIMYM or Seinfeld?",
+     "answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
+ },
+ {
+     "questionID": -1,
+     "question": "",
+     "answers": []
+ }];
 
 //const jsonQuestionBankArabic = [];
 //const jsonQuestionBankHebrew = [];
@@ -143,40 +148,16 @@ const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
 
 template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
-                      <div class=\"policy-models-default\">
-                      </div>
+                        <select name="languageSelect" id="mySelect">
+                        <option value="ENGLISH_RAW">ENGLISH_RAW</option>
+                        <option value="HEBREW">עברית</option>
+                        <option value="ARABIC">العربية</option>
+                        <option value="ENGLISH_US">ENGLISH_US</option>
+                        </select>
+                        <div class=\"policy-models-default\">
+                        </div>
                       `; 
 
-function changeLanguage() {
-    var x = document.createElement("SELECT");
-    x.setAttribute("id", "mySelect");
-    document.body.appendChild(x);
-                      
-    var z = document.createElement("option");
-    z.setAttribute("value", "ENGLISH_RAW");
-    var t = document.createTextNode("ENGLISH_RAW");
-    z.appendChild(t);
-    document.getElementById("mySelect").appendChild(z);
-
-    var z2 = document.createElement("option");
-    z2.setAttribute("value", "HEBREW");
-    var t2 = document.createTextNode("עברית");
-    z2.appendChild(t2);
-    document.getElementById("mySelect").appendChild(z2);
-
-    var z3 = document.createElement("option");
-    z3.setAttribute("value", "ARABIC");
-    var t3 = document.createTextNode("العربية");
-    z3.appendChild(t3);
-    document.getElementById("mySelect").appendChild(z3);
-
-    var z4 = document.createElement("option");
-    z4.setAttribute("value", "ENGLISH_US");
-    var t4 = document.createTextNode("ENGLISH_US");
-    z4.appendChild(t4);
-    document.getElementById("mySelect").appendChild(z4);
-
-}
 
 class PolicyModelsDefault extends HTMLElement{
     constructor(){
@@ -185,6 +166,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.transcriptFlag = false;
         this.feedbackFlag = false;
         this.question;
+        this.tags = jsonData;
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
@@ -197,16 +179,13 @@ class PolicyModelsDefault extends HTMLElement{
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
-        // this.shadowRoot.querySelector('.changeLanguageClass').innerHTML =
-        // "<script type=\"text/javascript\"> changeLanguage();</script>" ;
-        changeLanguage(); //NEW
         this.welcomePage();
         
 
 
         //  NEW (delete the btn and the script)
-        document.getElementById('mySelect').addEventListener('change', () => {
-            var selectElement = document.getElementById('mySelect').value;
+        this.shadowRoot.querySelector('#mySelect').addEventListener('change', () => {
+            var selectElement = this.shadowRoot.querySelector('#mySelect').value;
             switch (selectElement) { //FIX
                 case "ENGLISH_RAW":
                     this.language = Languages.ENGLISH_RAW;
@@ -254,6 +233,8 @@ class PolicyModelsDefault extends HTMLElement{
     interviewPage(){
         this.number = 2;
         let div = `
+        <div class = "grid">
+        <div class = "defaultInterview">
         <div>
         <div class="restartClass">
         </div>
@@ -264,11 +245,18 @@ class PolicyModelsDefault extends HTMLElement{
         </div>
         <div class="feedbackDiv" id="feedbackDivID">
         </div>
+        <div class="feedbackInputDiv"></div>
         <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
         <div class="transcript"></div>
         <div class="conclusion">
         </div>
         <div class="downloadTranscript">
+        </div>
+        </div>
+        <div class = "tags">
+        <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
+        <div class = \"tagsDiv\"></div>
+        </div>
         </div>
         `;
 
@@ -292,6 +280,12 @@ class PolicyModelsDefault extends HTMLElement{
         
         this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.home[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => this.backToWelcomePage());
+        this.shadowRoot.querySelector('#tags-toggle').addEventListener('click', () => this.toggleTags());
+        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
+        if (this.tagsFlag == true){
+            this.shadowRoot.querySelector('.tagsDiv').style.display = 'block';
+            this.shadowRoot.querySelector('#tags-toggle').innerText = this.textassets.hide_tags[this.language];
+        }
         if (this.transcriptFlag == true){
             this.shadowRoot.querySelector('.transcript').style.display = 'block';
             this.shadowRoot.querySelector('#transcript-toggle').innerText = this.textassets.hide_transcript[this.language];
@@ -345,8 +339,8 @@ class PolicyModelsDefault extends HTMLElement{
      */
     conclusion(){
         this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
-        if(document.getElementById("inputID") != null){
-            var e = document.getElementById("inputID");
+        if(this.shadowRoot.querySelector('#inputID')  != null){
+            var e = this.shadowRoot.querySelector('#inputID') ;
             e.parentNode.removeChild(e);
         }
         this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + this.textassets.show_conclusion[this.language] + "</button>\n";
@@ -411,7 +405,7 @@ class PolicyModelsDefault extends HTMLElement{
         }
         else{
             this.ButtonSetUp();
-            var e = document.getElementById("inputID"); //NEW
+            var e = this.shadowRoot.querySelector('#inputID') ; //NEW
             if (e != null){
                 e.parentNode.removeChild(e);
             }
@@ -426,27 +420,28 @@ class PolicyModelsDefault extends HTMLElement{
     // }
 
     createInputFeedback(){
-        if(document.getElementById("inputID") == null){
+        if(this.shadowRoot.querySelector('#inputID') == null){
             this.createElementInput();
         }
         else{
-            var e = document.getElementById("inputID");
+            var e = this.shadowRoot.querySelector('#inputID');
             e.parentNode.removeChild(e);
             this.createElementInput();
         }
         
     }
     createElementInput(){
-        var x = document.createElement("INPUT");
-        x.setAttribute("type", "text");
-        x.setAttribute("id", "inputID");
-        x.setAttribute("value", "My feedback is");
-        //document.getElementsByClassName("downloadTranscript").appendChild(x);
-        document.body.appendChild(x);
+        this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
+        `<input type="text" id="inputID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br><br>`;
+        // var x = document.createElement("INPUT");
+        // x.setAttribute("type", "text");
+        // x.setAttribute("id", "inputID");
+        // x.setAttribute("value", "My feedback is");
+        // document.body.appendChild(x);
     }
 
     feedbackSubmit(){
-        var x = document.getElementById("inputID");
+        var x = this.shadowRoot.querySelector('#inputID');
         prompt(x.value);
         x.parentNode.removeChild(x);
     }
@@ -458,14 +453,12 @@ class PolicyModelsDefault extends HTMLElement{
         let btn = this.shadowRoot.querySelector('#feedbackDivID');
         this.feedbackFlag = !this.feedbackFlag;
         if(this.feedbackFlag){
-            prompt("wowIF");
             this.createInputFeedback();
             this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
             <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
             this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.toggleFeedback());
         }
         else{
-            prompt("wowELSE");
             this.feedbackSubmit();
             this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
             `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
@@ -543,6 +536,42 @@ class PolicyModelsDefault extends HTMLElement{
             btn.innerText = this.textassets.show_transcript[this.language];
         }
     }
+
+    toggleTags(){
+        let info = this.shadowRoot.querySelector('.tagsDiv');
+        let btn = this.shadowRoot.querySelector('#tags-toggle');
+        this.tagsFlag = !this.tagsFlag;
+        if(this.tagsFlag){
+            info.style.display = 'block';
+            btn.innerText = this.textassets.hide_tags[this.language];
+        }
+        else{
+            info.style.display = 'none';
+            btn.innerText = this.textassets.show_tags[this.language];
+        }
+    }
+
+    parseTags(data, isSub){
+        var html = (isSub)?'<div>':''; // Wrap with div if true
+        html += '<ul>';
+        for(var item in data){
+            html += '<li>';
+            if(typeof(data[item]) === 'object'){ // An array will return 'object'
+                html += item; // Submenu found, but top level list item.
+                html += this.parseTags(data[item], true); // Submenu found. Calling recursively same method (and wrapping it in a div)
+            } else {
+                if(isNaN(item)){
+                  html += item; 
+                  html += `: `; 
+                }
+                html += data[item]; // No submenu
+            }
+            html += '</li>';
+        }
+        html += '</ul>';
+        html += (isSub)?'</div>':'';
+        return html;
+    } 
 }
 
 window.customElements.define('policy-models-default',PolicyModelsDefault); //the name of the tag and the name of the class we want to be connected
