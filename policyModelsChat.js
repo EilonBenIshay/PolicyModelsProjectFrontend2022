@@ -139,6 +139,7 @@ class PolicyModelsChat extends HTMLElement{
         // answers are represented in a map  [QuestionID]-->[Question| answer text | answer position]
         this.answers = new Map();  
         this.tagsFlag = false; 
+        this.tags = jsonData;
         this.apiHandler = new APIMock();
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
@@ -224,7 +225,7 @@ class PolicyModelsChat extends HTMLElement{
         //                                                     </div>`
         this.QuestionSetUp(undefined,undefined,-1);
         this.shadowRoot.querySelector('#tags-toggle').addEventListener('click', () => this.toggleTags());
-        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(jsonData, false);
+        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
         if (this.tagsFlag == true){
             this.shadowRoot.querySelector('.tagsDiv').style.display = 'block';
             this.shadowRoot.querySelector('#tags-toggle').innerText = this.textassets.hide_tags[this.language];

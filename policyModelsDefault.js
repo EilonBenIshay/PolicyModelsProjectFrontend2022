@@ -165,6 +165,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.transcriptFlag = false;
         this.feedbackFlag = false;
         this.question;
+        this.tags = jsonData;
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
@@ -279,7 +280,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.home[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => this.backToWelcomePage());
         this.shadowRoot.querySelector('#tags-toggle').addEventListener('click', () => this.toggleTags());
-        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(jsonData, false);
+        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
         if (this.tagsFlag == true){
             this.shadowRoot.querySelector('.tagsDiv').style.display = 'block';
             this.shadowRoot.querySelector('#tags-toggle').innerText = this.textassets.hide_tags[this.language];
