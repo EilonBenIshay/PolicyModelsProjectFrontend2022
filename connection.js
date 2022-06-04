@@ -13,7 +13,15 @@ export class PMAPIHandler {
         this.models
     }
 
-
+    /**
+     * 
+     * @returns 
+     * 
+     * json array of objects
+     * 
+     * [{id,title,versionid},{id,title,versionid}...]
+     * 
+     */
     async getModels() {
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/models/`);
         let data = await response.json();
@@ -21,16 +29,79 @@ export class PMAPIHandler {
         return data;
     }
 
+    /**
+     * 
+     * @returns
+     * 
+     * Json array
+     * 
+     * [language 1, language 2]
+     *  
+     */
+
     async getModelLanguages(modelId) {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/start`);
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/start/`);
         let data = await response.json();
         //this.languages = data;
         return data;
     }
 
+    /**
+     * 
+     * @returns
+     * 
+     * json object
+     * 
+     * {userid, questionId, questionText, Answers[answer1, answer2], AnswersInYourLanguage[answer1, answer2], finished, tags}
+     *  
+     */
+
     async startInterview(modelId,versionId,languageId)
     {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`);
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start/`);
+        let data = await response.json();
+        return data;
+    }
+
+    /**
+     * 
+     * @returns
+     * 
+     * {userid, questionId, questionText, Answers[answer1, answer2], AnswersInYourLanguage[answer1, answer2], finished, tags}
+     *  
+     */
+
+    async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
+    {
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
+        let data = await response.json();
+        return data;
+    }
+
+    /**
+     * 
+     * @returns 
+     * 
+     * json object
+     * 
+     * {questionId, questionText, Answers[answer1, answer2], AnswersInYourLanguage[answer1, answer2],answersHistory[{id, questionText, answer}], finished, tags}
+     * 
+     */
+
+    async askHistory(uuid,modelId,versionId,languageId,questionId)
+    {
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/askHistory/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/`);
+        let data = await response.json();
+        console.log(data);
+        return data;
+    }
+    async askTest(questionId){
+        const ans = await this.askHistory(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId);
+        return ans;
+    }
+
+    async getTags(uuid){
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/getTags/${uuid}/`);
         let data = await response.json();
         return data;
     }
@@ -57,25 +128,6 @@ export class PMAPIHandler {
         this.questionText = ans['questionText'];
         this.activeLangauge = language
         return [ans['questionId'],ans['questionText'],ans['Answers']];
-    }
-
-    async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
-    {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
-        let data = await response.json();
-        return data;
-    }
-
-    async askHistory(uuid,modelId,versionId,languageId,questionId)
-    {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/askHistory/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/`);
-        let data = await response.json();
-        console.log(data);
-        return data;
-    }
-    async askTest(questionId){
-        const ans = await this.askHistory(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId);
-        return ans;
     }
 
     async getNextQuestion(answer, questionId = this.questionId){

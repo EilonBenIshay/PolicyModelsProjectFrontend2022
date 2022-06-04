@@ -7,6 +7,11 @@ class Question {
         this.question = question
         this.answers = answers
     }
+    constructor(array){
+        this.id = array[0]
+        this.question = array[1]
+        this.answers = array[2]
+    }
 }
 
 class AnswerListing{
