@@ -36,7 +36,8 @@ class TextAssets {
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
         this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
         this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
-        this.hide_tags = ["Hide Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Hide Current Tags (intermediate result)"]
+        this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "", "Hide Current Tags (intermediate result)"];
+        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"]
     }
 }
 
@@ -419,14 +420,10 @@ class PolicyModelsDefault extends HTMLElement{
     // }
 
     createInputFeedback(){
-        //prompt("wow3");
         if(this.shadowRoot.querySelector('#inputID') == null){
-            //prompt("wow4");
             this.createElementInput();
-            //prompt("wow5");
         }
         else{
-            //prompt("wow6");
             var e = this.shadowRoot.querySelector('#inputID');
             e.parentNode.removeChild(e);
             this.createElementInput();
@@ -434,10 +431,8 @@ class PolicyModelsDefault extends HTMLElement{
         
     }
     createElementInput(){
-        //prompt("wow1");
         this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
-        `<input type="text" id="inputID" value="My feedback is"><br><br>`;
-        //prompt("wow2");
+        `<input type="text" id="inputID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br><br>`;
         // var x = document.createElement("INPUT");
         // x.setAttribute("type", "text");
         // x.setAttribute("id", "inputID");
@@ -446,7 +441,6 @@ class PolicyModelsDefault extends HTMLElement{
     }
 
     feedbackSubmit(){
-        //prompt("wow7");
         var x = this.shadowRoot.querySelector('#inputID');
         prompt(x.value);
         x.parentNode.removeChild(x);

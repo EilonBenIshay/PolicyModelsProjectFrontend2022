@@ -147,7 +147,7 @@ input{
   grid-template-columns: 2fr 1fr;
 }
 
-.btnRevisitQ , .btn{
+.btnRevisitQ , .btn, .feedbackBtn, .feedbackSubmitBtn{
   /* background: rgba(51, 51, 51, 0.05); */
   background: #F4EEFF;
   border-radius: 8px;
@@ -172,6 +172,11 @@ input{
   touch-action: manipulation;
 }
 
+.feedbackBtn, .feedbackSubmitBtn{
+  margin-right: 500px;
+  /* margin-bottom: 25px; */
+}
+
 #mySelect {
   display: grid;
   grid-template-areas: "select";
@@ -193,4 +198,16 @@ input{
   background-color: #fff;
   background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
   border-radius: inherit;
+}
+
+#inputID{
+  border: none;
+  border-bottom: 2px solid black;
+  width: 70%;
+}
+
+#inputFeedbackID{
+  border: none;
+  border-bottom: 2px solid black;
+  background-color: #F4EEFF;
 }

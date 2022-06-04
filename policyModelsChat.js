@@ -34,7 +34,9 @@ class TextAssets {
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
         this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
         this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
-        this.hide_tags = ["Hide Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Hide Current Tags (intermediate result)"]
+        this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "", "Hide Current Tags (intermediate result)"];
+        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"];
+        this.enterAnswer = ["Enter your answer here", "הכנס את התשובה שלך כאן", "", "Enter your answer here"]
     }
 }
 
@@ -203,7 +205,7 @@ class PolicyModelsChat extends HTMLElement{
             <div class = \"tagsDiv\"></div>
             </div>
             <div>
-            <input class = "inputClass" type = "text" id = "inputID" placeholder = "Enter your answer here"></input>
+            <input class = "inputClass" type = "text" id = "inputID" placeholder = "`+this.textassets.enterAnswer[this.language]+`"></input>
             </div>
         </div>
         `;
@@ -234,24 +236,15 @@ class PolicyModelsChat extends HTMLElement{
     }
     checkElementInput(){
         if(document.getElementById("inputID") == null){
-            this.createElementInput();
+            this.shadowRoot.querySelector("#inputID").addEventListener("keydown", (e) => {if (e.keyCode == 13) {this.getAnswer()}});
         }
         else{
             var e = document.getElementById("inputID");
             e.parentNode.removeChild(e);
-            this.createElementInput();
+            this.shadowRoot.querySelector("#inputID").addEventListener("keydown", (e) => {if (e.keyCode == 13) {this.getAnswer()}});
         }
     }
 
-    createElementInput(){
-        // var x = document.createElement("INPUT");
-        // x.setAttribute("type", "text");
-        // x.setAttribute("id", "inputID");
-        // x.setAttribute("class", "inputClass");
-        // x.setAttribute("placeholder", "Enter your answer here");
-        // document.body.appendChild(x);
-        this.shadowRoot.querySelector("#inputID").addEventListener("keydown", (e) => {if (e.keyCode == 13) {this.getAnswer()}});
-    }
 
     getAnswer(){
     var inputAnswer = parseInt(this.shadowRoot.querySelector("#inputID").value);
@@ -324,7 +317,7 @@ class PolicyModelsChat extends HTMLElement{
             let revisit = "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>";
             chat_text += `  <div class=ChatDiv>
                             
-                            <div class=\"boxRight question\">                            
+                            <div class=\"boxRight question\">                          
                             <br>${value[0].question}
                             ${revisit}
                             </div>
@@ -337,12 +330,14 @@ class PolicyModelsChat extends HTMLElement{
                             `;
         });
         let answers_text = "";
+        let feedbackBtn = `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
         for (let i = 0; i < this.question.answers.length; i++){
             answers_text += `<br>(${i}) - ${this.question.answers[i]}`;
         }
         chat_text += `  <div class=ChatDiv>
                             
                         <div class=\"boxRight question\">
+                        <div class=feedback>${feedbackBtn}</div>
                         <br>${this.question.question}
                         <div class="buttons">
                         </div>
@@ -352,10 +347,8 @@ class PolicyModelsChat extends HTMLElement{
         this.shadowRoot.querySelector('.chat').innerHTML = chat_text; 
         this.answers.forEach((value,key) => {this.shadowRoot.querySelector('#QR' + key.toString()).addEventListener('click', ()=>this.ReturnToQuestion(key))});
         this.buttonSetUp();
-        // this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
-        // `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
-        // this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
-        // this.feedbackFlag = false;
+        this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+        this.feedbackFlag = false;
         if(this.question.id == -1){
             // this.shadowRoot.querySelector('.buttons').innerHTML = 
             //     "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
@@ -366,6 +359,46 @@ class PolicyModelsChat extends HTMLElement{
            // prompt ("stuff");
         }
     }
+
+    createInputFeedback(){
+        if(this.shadowRoot.querySelector('#inputFeedbackID') == null){
+            this.shadowRoot.querySelector('.feedback').innerHTML = 
+            `<input type="text" id="inputFeedbackID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br>
+            <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
+        }
+        else{
+            var e = this.shadowRoot.querySelector('#inputFeedbackID');
+            e.parentNode.removeChild(e);
+            this.shadowRoot.querySelector('.feedback').innerHTML = 
+            `<input type="text" id="inputFeedbackID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br>
+            <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
+        }
+        
+    }
+
+    feedbackSubmit(){
+        var x = this.shadowRoot.querySelector('#inputFeedbackID');
+        prompt(x.value);
+        x.parentNode.removeChild(x);
+    }
+
+    /**
+     * toggles the feedback button
+     */
+    toggleFeedback(){ 
+        this.feedbackFlag = !this.feedbackFlag;
+        if(this.feedbackFlag){
+            this.createInputFeedback();
+            this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.toggleFeedback());
+        }
+        else{
+            this.feedbackSubmit();
+            this.shadowRoot.querySelector('.feedback').innerHTML = 
+            `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
+            this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+        }
+    }
+
     
     buttonSetUp(){
         let btnIDs = [];
