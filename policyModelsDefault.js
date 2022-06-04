@@ -30,14 +30,16 @@ class TextAssets {
         this.home = ["Home", "חזרה לעמוד הבית","","Home"];
         this.welcome_PM = ["Welcome to the PolicyModels test site!", "ברוכים הבאים לאתר הזמני של PolicyModels","","Welcome to the PolicyModels test site!"];
         this.results = ["Your results", "התוצאות שלך", "", "your results"];
-        this.conclusion_page = ["Conclusion Page", "עמוד התוצאות","","Conclusion Page"];
+        this.conclusion_page = ["The conclusions of your interview", "מסקנות הראיון שלך","","The conclusions of your interview"];
         this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"];
         this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"];
+        this.download_conclusions = ["Download Conclusions", "הורד מסקנות", "", "Download Conclusions"];
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
         this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
         this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
         this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "", "Hide Current Tags (intermediate result)"];
-        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"]
+        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"],
+        this.my_name_is = ["My Name is:", "השם שלי הוא:", "", "My Name is:"]
     }
 }
 
@@ -322,9 +324,10 @@ class PolicyModelsDefault extends HTMLElement{
         let div = `
         <div>
         <h3>`+this.textassets.conclusion_page[this.language]+`</h3>  
-        <h4>`+this.textassets.results[this.language]+`:</h4>
         <div class = \"conclusions\"></div>
         <br>
+        <div class="downloadConclusions">
+        </div>
         <div class=backToHome><button class=\"backToWelcomePage\">`+this.textassets.home[this.language]+`</button></div>
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
@@ -332,8 +335,19 @@ class PolicyModelsDefault extends HTMLElement{
         let conclusions = this.getConclusions()
         this.shadowRoot.querySelector('.conclusions').innerText = conclusions;
         this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.backToWelcomePage());
+        this.shadowRoot.querySelector('.downloadConclusions').innerHTML = "<button class=\"btnDownloadConclusions\">" + this.textassets.download_conclusions[this.language] + "</button>";
+        this.shadowRoot.querySelector('.btnDownloadConclusions').addEventListener('click', () => this.downloadConclusions(this.tags, 'conclusions.json'));
     }
 
+    downloadConclusions(obj, name) {
+        // const obj = Object.fromEntries(objToJson);
+        const text = JSON.stringify(obj);
+        const a = document.createElement('a');
+        const type = name.split(".").pop();
+        a.href = URL.createObjectURL( new Blob([text], { type:`text/${type === "txt" ? "plain" : type}` }) );
+        a.download = name;
+        a.click();
+    }
     /**
      * Loads up the conclusion page when press on conclusion btn.
      */
@@ -341,6 +355,10 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
         if(this.shadowRoot.querySelector('#inputID')  != null){
             var e = this.shadowRoot.querySelector('#inputID') ;
+            e.parentNode.removeChild(e);
+        }
+        if(this.shadowRoot.querySelector('#inputNameID')  != null){
+            var e = this.shadowRoot.querySelector('#inputNameID') ;
             e.parentNode.removeChild(e);
         }
         this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + this.textassets.show_conclusion[this.language] + "</button>\n";
@@ -409,6 +427,10 @@ class PolicyModelsDefault extends HTMLElement{
             if (e != null){
                 e.parentNode.removeChild(e);
             }
+            var name = this.shadowRoot.querySelector('#inputNameID') ; //NEW
+            if (name != null){
+                name.parentNode.removeChild(name);
+            }
         }
     }
 
@@ -420,18 +442,21 @@ class PolicyModelsDefault extends HTMLElement{
     // }
 
     createInputFeedback(){
-        if(this.shadowRoot.querySelector('#inputID') == null){
+        if((this.shadowRoot.querySelector('#inputID') == null) && (this.shadowRoot.querySelector('#inputNameID') == null)){
             this.createElementInput();
         }
         else{
             var e = this.shadowRoot.querySelector('#inputID');
             e.parentNode.removeChild(e);
+            var name = this.shadowRoot.querySelector('#inputNameID');
+            name.parentNode.removeChild(name);
             this.createElementInput();
         }
         
     }
     createElementInput(){
         this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
+        `<input type="text" id="inputNameID" placeholder="`+this.textassets.my_name_is[this.language]+`"><br>`+
         `<input type="text" id="inputID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br><br>`;
         // var x = document.createElement("INPUT");
         // x.setAttribute("type", "text");
@@ -442,8 +467,11 @@ class PolicyModelsDefault extends HTMLElement{
 
     feedbackSubmit(){
         var x = this.shadowRoot.querySelector('#inputID');
+        var name = this.shadowRoot.querySelector('#inputNameID');
         prompt(x.value);
+        prompt(name.value);
         x.parentNode.removeChild(x);
+        name.parentNode.removeChild(name);
     }
 
     /**

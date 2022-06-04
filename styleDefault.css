@@ -36,7 +36,11 @@
   margin-top: 40px;
 }
 
- .btnShowTranscript, .btnStart, .btnConclusion, .startInterview, .backToWelcomePage, .restartBtn, .btnDownloadTranscript, .feedbackBtn, .feedbackSubmitBtn, .btnShowTags{
+.btnDownloadConclusions{
+  margin-bottom: 20px;
+}
+
+ .btnShowTranscript, .btnStart, .btnConclusion, .startInterview, .backToWelcomePage, .restartBtn, .btnDownloadTranscript, .btnDownloadConclusions, .feedbackBtn, .feedbackSubmitBtn, .btnShowTags{
   align-self: center;
   background-color: #fff;
   background-image: none;
@@ -67,12 +71,12 @@
   touch-action: manipulation;
   }
 
-.btnShowTranscript:hover, .btnStart:hover, .btnConclusion:hover, .startInterview:hover, .backToWelcomePage:hover, .restartBtn:hover, .btnDownloadTranscript:hover, .feedbackBtn:hover, .feedbackSubmitBtn:hover, .btnShowTags:hover{
+.btnShowTranscript:hover, .btnStart:hover, .btnConclusion:hover, .startInterview:hover, .backToWelcomePage:hover, .restartBtn:hover, .btnDownloadTranscript:hover, .btnDownloadConclusions:hover, .feedbackBtn:hover, .feedbackSubmitBtn:hover, .btnShowTags:hover{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
 }
 
-.btnShowTranscript:focus, .btnStart:focus, .btnConclusion:focus, .startInterview:focus, .backToWelcomePage:focus, .restartBtn:focus, .btnDownloadTranscript:focus, .feedbackBtn:focus, .feedbackSubmitBtn:focus, .btnShowTags:focus{
+.btnShowTranscript:focus, .btnStart:focus, .btnConclusion:focus, .startInterview:focus, .backToWelcomePage:focus, .restartBtn:focus, .btnDownloadTranscript:focus, .btnDownloadConclusions:focus, .feedbackBtn:focus, .feedbackSubmitBtn:focus, .btnShowTags:focus{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
  
@@ -140,7 +144,7 @@
     border-radius: inherit;
   }
   
- #inputID{
+ #inputID , #inputNameID{
   border: none;
   border-bottom: 2px solid black;
   margin-top: 30px;

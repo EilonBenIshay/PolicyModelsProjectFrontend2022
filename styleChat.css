@@ -90,7 +90,24 @@ input{
   border-radius: 4px; */
 }
 
-.startInterview, .transcriptBtn, .btnShowTags{
+.btnDownloadConclusions{
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.downloadConclusions{
+  text-align: center;
+  align-items: center;
+}
+.backToHome{
+  text-align: center;
+  align-items: center;
+}
+.startInterview{
+  text-align: center;
+  align-items: center;
+}
+
+.startInterviewBtn, .transcriptBtn, .btnShowTags, .btnDownloadConclusions, .backToWelcomePage, .btnConclusion, .btnDownloadTranscript, .restartBtn{
   align-self: center;
   background-color: #fff;
   background-image: none;
@@ -120,19 +137,25 @@ input{
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-.startInterview:hover, .transcriptBtn:hover, .btnShowTags:hover{
+.startInterviewBtn:hover, .transcriptBtn:hover, .btnShowTags:hover, .btnDownloadConclusions:hover, .backToWelcomePage:hover, .btnConclusion:hover, .btnDownloadTranscript:hover, .restartBtn:hover{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
 }
-.startInterview:focus, .transcriptBtn:focus, .btnShowTags:focus{
+.startInterviewBtn:focus, .transcriptBtn:focus, .btnShowTags:focus, .btnDownloadConclusions:focus, .backToWelcomePage:focus, .btnConclusion:focus, .btnDownloadTranscript:focus, .restartBtn:focus{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
 
 
+.restartBtn{
+  margin-bottom: 10px;
+}
+
 .btnShowTags{
   position: relative;
-  margin-left: 20px;
-  /* left: 100px; */
+  /* margin-bottom: 20px; */
+}
+.btnDownloadTranscript{
+  margin-top: 10px;
 }
 
 .tagsDiv{
@@ -206,8 +229,42 @@ input{
   width: 70%;
 }
 
-#inputFeedbackID{
+#inputFeedbackID, #inputFeedbacNameID{
   border: none;
   border-bottom: 2px solid black;
   background-color: #F4EEFF;
+}
+#inputFeedbacNameID{
+  margin-bottom: 2px;
+}
+
+.conclusionPage{
+  font-size: 50px;
+  text-align: center;
+  align-content: center;
+  align-items: center;
+  align-self: center;
+}
+
+.conclusion{
+  text-align: center;
+  align-items: center;
+}
+
+.conclusions{
+  font-size: 20px;
+  text-align: center;
+  align-items: center;
+}
+
+.welcome{
+  font-size: 50px;
+  text-align: center;
+  align-items: center;
+}
+
+.pressConclusionBtn{
+  font-size: 20px;
+  text-align: center;
+  align-items: center;
 }
