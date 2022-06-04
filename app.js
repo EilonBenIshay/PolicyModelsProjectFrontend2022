@@ -284,11 +284,13 @@ class PolicyModelsDefault extends HTMLElement{
         if (this.question.id == undefined){
             let obj = await this.apiHandler.initInterview(this.language);
             this.question = new Question(obj[0],obj[1],obj[2]);
-            console.log(this.question);
+            console.log("init");
         }
         else{ 
-            let obj = await this.apiHandler.getNextQuestion(answer,this.question.id);
+            this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
+            let obj = await this.apiHandler.getNextQuestion(answerNum,this.question.id);
             this.question = new Question(obj[0],obj[1],obj[2]);
+            console.log("answer");
         }
     }
     
@@ -314,11 +316,8 @@ class PolicyModelsDefault extends HTMLElement{
      */
     async QuestionSetUp(answer, overwriteid, answerNum){ 
         await this.FetchQuestion(answer,overwriteid, answerNum);
-        console.log(this.question);
         this.setTranscript(); 
-        console.log("test");
         this.shadowRoot.querySelector('h4').innerText = this.question.question; 
-        console.log("test");
         if(this.question.id == -1){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
                 "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
@@ -343,7 +342,7 @@ class PolicyModelsDefault extends HTMLElement{
         } 
         this.shadowRoot.querySelector('.buttons').innerHTML = btnSTR;
         for (let j = 0; j< this.question.answers.length; j++){
-            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(j,undefined,this.question.answers[j]));
+            this.shadowRoot.querySelector(btnIDs[j]).addEventListener('click', () => this.QuestionSetUp(this.question.answers[j],undefined,j));
         }
     }
 
@@ -364,9 +363,7 @@ class PolicyModelsDefault extends HTMLElement{
      */
     ReturnToQuestion(questionNum){
         //TODO remove this condition with the full API implementation
-        if(questionNum > 10 || questionNum < 1){
-            return;
-        }
+        this.apiHandler.askTest(questionNum);
         this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
         this.QuestionSetUp(undefined,questionNum, -1);
     }

@@ -63,55 +63,20 @@ export class PMAPIHandler {
     {
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
         let data = await response.json();
-        console.log(data);
         return data;
     }
 
-    // async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
-    // {
-    //     const postData = {
-    //         'uuid': uuid,
-    //         'modelId':modelId,
-    //         'versionNum':versionId,
-    //         'languageId':languageId,
-    //         'reqNodeId':questionId,
-    //         'answer':answer,
-    //         'languageId':languageId
-    //     };
-                
-    //     //const options = 
-    //     //onst response = await 
-    //     await fetch(`http://localhost:9000/apiInterviewCtrl/answer/`, {
-    //         method: 'POST',
-    //         mode: 'cors',
-    //         headers: {
-    //         'Content-Type': 'application/json'
-    //         //Content-Length': Buffer.byteLength(postData)
-    //         },
-    //         body: JSON.stringify(postData)
-    //     }).then(function(response) {console.log(response)});
-    //     //const q = await response.json(); // parses JSON response into native JavaScript objects
-    //     //console.log(q);
-    //   }
-
-    //   getLastQuestion(uuid,modelId,versionId,languageId,questionId)
-      // {
-      //     
-  
-      //     return new Promise((resolve, reject) =>{
-      //         const req = http.request(options, (res) => {
-                      
-      //             res.on('data', (d) => {
-      //                 resolve(JSON.parse(d));
-      //             });
-      //             req.on('error', (e) => {
-      //                 reject(e);
-      //             });
-      //         });
-      //         req.write(postData);
-      //         req.end();
-      //     })
-      // }
+    async askHistory(uuid,modelId,versionId,languageId,questionId)
+    {
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/askHistory/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/`);
+        let data = await response.json();
+        console.log(data);
+        return data;
+    }
+    async askTest(questionId){
+        const ans = await this.askHistory(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId);
+        return ans;
+    }
 
     async getNextQuestion(answer, questionId = this.questionId){
         const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
