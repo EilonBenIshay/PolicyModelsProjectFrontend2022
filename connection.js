@@ -63,6 +63,17 @@ export class PMAPIHandler {
         return data;
     }
 
+    async initInterview(language){
+        const ans = await this.startInterview(this.modelId,this.versionId,language);
+        console.log(ans);
+        console.log(ans['AnswersInYourLangauge']);
+        this.userId = ans['ssid'];
+        this.questionId = ans['questionId'];
+        this.activeLangauge = language;
+        returnValue =  [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags']];
+        return returnValue; 
+    }
+
     /**
      * 
      * @returns
@@ -76,6 +87,17 @@ export class PMAPIHandler {
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
         let data = await response.json();
         return data;
+    }
+
+    async getNextQuestion(answer, questionId = this.questionId){
+        const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
+        if(ans['finished'] == 'true'){
+            this.questionId = undefined;
+            return [undefined, "", [""]];
+        }
+        this.questionId = ans['questionId'];
+        const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags']];
+        return returnValue;
     }
 
     /**
@@ -97,7 +119,12 @@ export class PMAPIHandler {
     }
     async askTest(questionId){
         const ans = await this.askHistory(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId);
-        return ans;
+        history = new Map();
+        for (var item in ans['answersHistory']){
+            history.set(item['id'], [item['questionText'], item['answer']]);
+        }
+        const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags'], history];
+        return returnValue;
     }
 
     async getTags(uuid){
@@ -119,28 +146,8 @@ export class PMAPIHandler {
         return this.languages
     }
     
-    async initInterview(language){
-        const ans = await this.startInterview(this.modelId,this.versionId,language);
-        console.log(ans);
-        console.log(ans['Answers']);
-        this.userId = ans['ssid'];
-        this.questionId = ans['questionId'];
-        this.questionText = ans['questionText'];
-        this.activeLangauge = language
-        return [ans['questionId'],ans['questionText'],ans['Answers']];
-    }
 
-    async getNextQuestion(answer, questionId = this.questionId){
-        const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
-        if(ans['finished'] == 'true'){
-            this.questionId = undefined;
-            return [undefined, "", [""]];
-        }
-        this.questionId = ans['questionId'];
-        this.questionText = ans['questionText'];
-        const returnValue = [ans['questionId'], ans['questionText'], ans['Answers']];
-        return returnValue;
-    }
+    
 
     // async Work(){
     //     await this.init();
