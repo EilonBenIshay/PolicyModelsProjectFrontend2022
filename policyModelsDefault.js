@@ -1,10 +1,16 @@
 //'use strict'
+import {PMAPIHandler} from './connection.js';
 
 class Question {
     constructor(id, question, answers){
         this.id = id
         this.question = question
         this.answers = answers
+    }
+    constructor(arr){
+        this.id = arr[0]
+        this.question = arr[1]
+        this.answers = arr[2]
     }
 }
 
@@ -112,18 +118,36 @@ class TextAssets {
  */
 class APIMock {
     constructor(){
+        this.langauge = 'ENGLISH_RAW'
         this.questionbank = jsonQuestionBankEnglish
+        this.answers = new Map();
+    }
+    initInterview(langauge){
+        retObject = [[this.questionbank[0]['questionID'],this.questionbank[0]['question'],this.questionbank[0]['answers']], jsonData];
+        return retObject;
     }
 
-    getNextQuestion(questionID, answer) {
+    getNextQuestion(answer, questionId) {
+        this.answers.set(questionId, [this.questionbank[questionId], answer]);
         var retObject
-        if (answer == -1)
-            retObject = JSON.stringify(this.questionbank[questionID - 1]); 
-        else if (questionID == undefined)
-            retObject = JSON.stringify(this.questionbank[0]);
-        else
-            retObject = JSON.stringify(this.questionbank[questionID]);
+        // if (answer == -1)
+        //     retObject = JSON.stringify(this.questionbank[questionID - 1]); 
+        // if (questionId == undefined)
+        //     retObject = JSON.stringify(this.questionbank[0]);
+        // else
+        retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData];
         return retObject;
+    }
+
+    returnToQuestion(questionId){
+        this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
+        retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData, this.answers];
+        return retObject;
+    }
+
+    changeLangauge(langauge){
+        retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData, this.answers];
+        return retObject
     }
 }
 
@@ -354,19 +378,20 @@ class PolicyModelsDefault extends HTMLElement{
      * overwriteid -> if defined, will fetch a specific question. otherwise if undefined will fetch the next question
      * answerNum -> position of the answer in the answer array
      */
-    FetchQuestion(answer, overwriteid, answerNum){ 
-        let jsonQuestion;
-        if (answer != undefined && this.question.id > 0){
+    async FetchQuestion(answer, overwriteid, answerNum){ 
+        if (answer != undefined && this.question.id >= 0){
             this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
         }
         if(overwriteid != undefined){
-            jsonQuestion = this.apiHandler.getNextQuestion(overwriteid, answerNum);
+            let data = await this.apiHandler.returnToQuestion(overwriteid);
+            this.question = new Question(data[0]);
+            this.tags = data[1];
         }
         else{
-            jsonQuestion = this.apiHandler.getNextQuestion(this.question.id);
+            let data = await this.apiHandler.getNextQuestion(answerNum,this.question.id);
+            this.question = new Question(data[0]);
+            this.tags = data[1];
         }
-        let obj = JSON.parse(jsonQuestion);
-        this.question = new Question(obj.questionID,obj.question,Array.from(obj.answers));
     }
     
 
