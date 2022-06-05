@@ -7,11 +7,6 @@ class Question {
         this.question = question
         this.answers = answers
     }
-    constructor(arr){
-        this.id = arr[0]
-        this.question = arr[1]
-        this.answers = arr[2]
-    }
 }
 
 const Languages = {
@@ -119,34 +114,38 @@ class TextAssets {
 class APIMock {
     constructor(){
         this.langauge = 'ENGLISH_RAW'
+        this.questionId;
         this.questionbank = jsonQuestionBankEnglish
         this.answers = new Map();
     }
     initInterview(langauge){
-        retObject = [[this.questionbank[0]['questionID'],this.questionbank[0]['question'],this.questionbank[0]['answers']], jsonData];
+        this.answers = new Map();
+        this.questionId = this.questionbank[0]['questionID'];
+        let retObject = [[this.questionbank[0]['questionID'],this.questionbank[0]['question'],this.questionbank[0]['answers']], jsonData];
         return retObject;
     }
 
     getNextQuestion(answer, questionId) {
         this.answers.set(questionId, [this.questionbank[questionId], answer]);
-        var retObject
         // if (answer == -1)
         //     retObject = JSON.stringify(this.questionbank[questionID - 1]); 
         // if (questionId == undefined)
         //     retObject = JSON.stringify(this.questionbank[0]);
         // else
-        retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData];
+        //console.log(this.questionbank[questionId]);
+        this.questionId = this.questionbank[questionId]['questionID'];
+        let retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData];
         return retObject;
     }
 
     returnToQuestion(questionId){
-        this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
-        retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData, this.answers];
+        this.answers.forEach((value, key) => {if(key >= questionId) this.answers.delete(key)});
+        let retObject = [[this.questionbank[questionId-1]['questionID'],this.questionbank[questionId-1]['question'],this.questionbank[questionId-1]['answers']], jsonData, this.answers];
         return retObject;
     }
 
     changeLangauge(langauge){
-        retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData, this.answers];
+        let retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData, this.answers];
         return retObject
     }
 }
@@ -354,7 +353,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         //the conclusion
         let conclusions = this.getConclusions()
-        this.shadowRoot.querySelector('.conclusions').innerText = conclusions;
+        this.shadowRoot.querySelector('.conclusions').innerHTML = conclusions;
         this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.backToWelcomePage());
     }
 
@@ -382,14 +381,19 @@ class PolicyModelsDefault extends HTMLElement{
         if (answer != undefined && this.question.id >= 0){
             this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
         }
-        if(overwriteid != undefined){
+        if (this.question.id == undefined){
+            let data = await this.apiHandler.initInterview(this.language);
+            this.question = new Question(data[0][0],data[0][1],data[0][2]);
+            this.tags = data[1];
+        }
+        else if(overwriteid != undefined){
             let data = await this.apiHandler.returnToQuestion(overwriteid);
-            this.question = new Question(data[0]);
+            this.question = new Question(data[0][0],data[0][1],data[0][2]);
             this.tags = data[1];
         }
         else{
             let data = await this.apiHandler.getNextQuestion(answerNum,this.question.id);
-            this.question = new Question(data[0]);
+            this.question = new Question(data[0][0],data[0][1],data[0][2]);
             this.tags = data[1];
         }
     }
@@ -414,8 +418,8 @@ class PolicyModelsDefault extends HTMLElement{
      * overwriteid -> if defined, will fetch a specific question. otherwise if undefined will fetch the next question
      * answerNum -> position of the answer in the answer array
      */
-    QuestionSetUp(answer, overwriteid, answerNum){ 
-        this.FetchQuestion(answer,overwriteid, answerNum);
+    async QuestionSetUp(answer, overwriteid, answerNum){ 
+        await this.FetchQuestion(answer,overwriteid, answerNum);
         this.setTranscript(); 
         this.shadowRoot.querySelector('h4').innerText = this.question.question; 
         this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
@@ -525,10 +529,7 @@ class PolicyModelsDefault extends HTMLElement{
      * Concludes the interview
      */
     getConclusions(){
-        let answersStr = "";
-        this.answers.forEach((value, key) => answersStr += (value[1] + ","));
-        answersStr ="[" + answersStr + "]";
-        return answersStr;
+        return this.parseTags(this.tags, false);
     }
 
     /**
