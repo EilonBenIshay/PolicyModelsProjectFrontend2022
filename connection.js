@@ -59,6 +59,7 @@ export class PMAPIHandler {
     async startInterview(modelId,versionId,languageId)
     {
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start/`);
+        console.log("got here!");
         let data = await response.json();
         return data;
     }
@@ -70,7 +71,7 @@ export class PMAPIHandler {
         this.userId = ans['ssid'];
         this.questionId = ans['questionId'];
         this.activeLangauge = language;
-        returnValue =  [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags']];
+        let returnValue =  [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags']];
         return returnValue; 
     }
 
@@ -119,7 +120,7 @@ export class PMAPIHandler {
     }
     async returnToQuestion(questionId){
         const ans = await this.askHistory(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId);
-        history = new Map();
+        var history = new Map();
         for (var item in ans['answersHistory']){
             history.set(item['id'], [item['questionText'], item['answer']]);
         }
@@ -152,6 +153,7 @@ export class PMAPIHandler {
         this.versionId = versionId;
         const ans = await this.getModelLanguages(modelId);
         this.languages = ans;
+        console.log(this.languages);
         return this.languages
     }
     

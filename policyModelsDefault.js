@@ -189,11 +189,11 @@ class PolicyModelsDefault extends HTMLElement{
         this.transcriptFlag = false;
         this.feedbackFlag = false;
         this.question;
-        this.tags = jsonData;
+        this.tags;
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
-        this.apiHandler = new APIMock();
+        this.apiHandler = new PMAPIHandler();
         this.language = Languages.ENGLISH_RAW;
         this.textassets = new TextAssets();  
 
@@ -236,7 +236,7 @@ class PolicyModelsDefault extends HTMLElement{
     /** 
      * a function called to load the welcome page
     */
-    welcomePage(){
+    async welcomePage(){
         this.number = 1;
         let div = `
         <div>
@@ -244,6 +244,7 @@ class PolicyModelsDefault extends HTMLElement{
         <h4></h4>
         <div class=\"startInterview\"></div>
         </div>`;
+        await this.apiHandler.initModel("1","1");
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
@@ -382,7 +383,7 @@ class PolicyModelsDefault extends HTMLElement{
             this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
         }
         if (this.question.id == undefined){
-            let data = await this.apiHandler.initInterview(this.language);
+            let data = await this.apiHandler.initInterview("English-Raw");
             this.question = new Question(data[0][0],data[0][1],data[0][2]);
             this.tags = data[1];
         }
@@ -420,6 +421,7 @@ class PolicyModelsDefault extends HTMLElement{
      */
     async QuestionSetUp(answer, overwriteid, answerNum){ 
         await this.FetchQuestion(answer,overwriteid, answerNum);
+        console.log(this.question);
         this.setTranscript(); 
         this.shadowRoot.querySelector('h4').innerText = this.question.question; 
         this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
