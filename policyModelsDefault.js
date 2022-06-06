@@ -98,7 +98,7 @@ class TextAssets {
      "answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
  },
  {
-     "questionID": -1,
+     "questionID": undefined,
      "question": "",
      "answers": []
  }];
@@ -428,7 +428,7 @@ class PolicyModelsDefault extends HTMLElement{
         `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
-        if(this.question.id == -1){
+        if(this.question.id == undefined){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
                 "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
 
