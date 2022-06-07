@@ -59,15 +59,12 @@ export class PMAPIHandler {
     async startInterview(modelId,versionId,languageId)
     {
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start/`);
-        console.log("got here!");
         let data = await response.json();
         return data;
     }
 
     async initInterview(language){
         const ans = await this.startInterview(this.modelId,this.versionId,language);
-        console.log(ans);
-        console.log(ans['AnswersInYourLangauge']);
         this.userId = ans['ssid'];
         this.questionId = ans['questionId'];
         this.activeLangauge = language;
@@ -94,7 +91,7 @@ export class PMAPIHandler {
         const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
         if(ans['finished'] == 'true'){
             this.questionId = undefined;
-            return [undefined, "", [""]];
+            return [[undefined, "", [""]], ans['tags']];
         }
         this.questionId = ans['questionId'];
         const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags']];
@@ -115,7 +112,6 @@ export class PMAPIHandler {
     {
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/askHistory/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/`);
         let data = await response.json();
-        console.log(data);
         return data;
     }
     async returnToQuestion(questionId){
@@ -153,7 +149,6 @@ export class PMAPIHandler {
         this.versionId = versionId;
         const ans = await this.getModelLanguages(modelId);
         this.languages = ans;
-        console.log(this.languages);
         return this.languages
     }
     

@@ -353,7 +353,7 @@ class PolicyModelsDefault extends HTMLElement{
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         //the conclusion
-        let conclusions = this.getConclusions()
+        let conclusions = this.getConclusions();
         this.shadowRoot.querySelector('.conclusions').innerHTML = conclusions;
         this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.backToWelcomePage());
     }
@@ -394,7 +394,10 @@ class PolicyModelsDefault extends HTMLElement{
         }
         else{
             let data = await this.apiHandler.getNextQuestion(answerNum,this.question.id);
-            this.question = new Question(data[0][0],data[0][1],data[0][2]);
+            if (data[0] != undefined)
+                this.question = new Question(data[0][0],data[0][1],data[0][2]);
+            else
+                this.question = new Question(undefined,"",[""]);
             this.tags = data[1];
         }
     }
@@ -421,8 +424,8 @@ class PolicyModelsDefault extends HTMLElement{
      */
     async QuestionSetUp(answer, overwriteid, answerNum){ 
         await this.FetchQuestion(answer,overwriteid, answerNum);
-        console.log(this.question);
         this.setTranscript(); 
+        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
         this.shadowRoot.querySelector('h4').innerText = this.question.question; 
         this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
         `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
