@@ -1,44 +1,12 @@
 //'use strict'
 import {PMAPIHandler} from './connection.js';
+import {TextAssets} from './languages.js';
 
 class Question {
     constructor(id, question, answers){
         this.id = id
         this.question = question
         this.answers = answers
-    }
-}
-
-const Languages = {
-    ENGLISH_RAW: 0,
-    HEBREW: 1,
-    ARABIC: 2,
-    ENGLISH_US: 3
-};
-
-class TextAssets {
-    constructor(){
-        this.welcome = ["Welcome", "ברוכים הבאים", "", "Welcome"];
-        this.start_interview = ["Start Interview", "התחל ראיון", "","Start Interview"];
-        this.start = ["Start","התחלה","","Start"];
-        this.restart = ["Restart","התחל מחדש","","Restart"];
-        this.show_transcript = ["Show Transcript","הראה תשובות","","Show Transcript"];
-        this.hide_transcript = ["Hide Transcript","הסתר תשובות", "","Hide Transcript"];
-        this.question = ["Question", "שאלה","","Question"];
-        this.your_answer = ["Your answer","התשובה שלך","","Your answer"];
-        this.revisit = ["Revisit this question", "חזור לשאלה זו","","Revisit this question"];
-        this.show_conclusion = ["Show Conclusion", "הראה תוצאות", "", "Show Conclusion"];
-        this.home = ["Home", "חזרה לעמוד הבית","","Home"];
-        this.welcome_PM = ["Welcome to the PolicyModels test site!", "ברוכים הבאים לאתר הזמני של PolicyModels","","Welcome to the PolicyModels test site!"];
-        this.results = ["Your results", "התוצאות שלך", "", "your results"];
-        this.conclusion_page = ["Conclusion Page", "עמוד התוצאות","","Conclusion Page"];
-        this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"];
-        this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"];
-        this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
-        this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
-        this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
-        this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "", "Hide Current Tags (intermediate result)"];
-        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"]
     }
 }
 
@@ -118,6 +86,11 @@ class APIMock {
         this.questionbank = jsonQuestionBankEnglish
         this.answers = new Map();
     }
+
+    initModel(modelId, versionId){
+        return;
+    }
+
     initInterview(langauge){
         this.answers = new Map();
         this.questionId = this.questionbank[0]['questionID'];
@@ -149,33 +122,22 @@ class APIMock {
         return retObject
     }
 }
-
-class APIHandler{
-    userId;
-    modelId;
-    versionNum;
-    nodeId;
-
-    answers;
-
-    constructor(){
-    }
-
-    sendAPIRequest (type){
-    }
-}
  
 
 
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
+let textassets = new TextAssets();
+let selectOption = ``
+for(let i = 0; i < textassets.languages.length; i++){
+    let langauge = textassets.languages[i];
+    selectOption += `<option value = ${i}>${langauge}</option>
+                    `;
+}
 
 template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
                         <select name="languageSelect" id="mySelect">
-                        <option value="ENGLISH_RAW">ENGLISH_RAW</option>
-                        <option value="HEBREW">עברית</option>
-                        <option value="ARABIC">العربية</option>
-                        <option value="ENGLISH_US">ENGLISH_US</option>
+                        ${selectOption}
                         </select>
                         <div class=\"policy-models-default\">
                         </div>
@@ -193,9 +155,9 @@ class PolicyModelsDefault extends HTMLElement{
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
-        this.apiHandler = new PMAPIHandler();
-        this.language = Languages.ENGLISH_RAW;
+        this.apiHandler = new APIMock();
         this.textassets = new TextAssets();  
+        this.language = this.textassets.languages.indexOf('English-Raw');
 
         this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
         this.buttons = ['#a0'];
@@ -208,21 +170,22 @@ class PolicyModelsDefault extends HTMLElement{
 
         //  NEW (delete the btn and the script)
         this.shadowRoot.querySelector('#mySelect').addEventListener('change', () => {
-            var selectElement = this.shadowRoot.querySelector('#mySelect').value;
-            switch (selectElement) { //FIX
-                case "ENGLISH_RAW":
-                    this.language = Languages.ENGLISH_RAW;
-                    break;
-                case "HEBREW":
-                    this.language = Languages.HEBREW;
-                    break;
-                case "ARABIC":
-                    this.language = Languages.ARABIC;
-                    break;
-                case "ENGLISH_US":
-                    this.language = Languages.ENGLISH_US;
-                    break;
-            }
+            this.language = this.shadowRoot.querySelector('#mySelect').value;
+            //var selectElement = this.shadowRoot.querySelector('#mySelect').value;
+            // switch (selectElement) { //FIX
+            //     case "ENGLISH_RAW":
+            //         this.language = Languages.ENGLISH_RAW;
+            //         break;
+            //     case "HEBREW":
+            //         this.language = Languages.HEBREW;
+            //         break;
+            //     case "ARABIC":
+            //         this.language = Languages.ARABIC;
+            //         break;
+            //     case "ENGLISH_US":
+            //         this.language = Languages.ENGLISH_US;
+            //         break;
+            //}
             if(this.number == 1)
                 this.welcomePage();
             else if (this.number == 2)
@@ -299,7 +262,7 @@ class PolicyModelsDefault extends HTMLElement{
             this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
             }
         else{
-            this.QuestionSetUp(undefined,Array.from(this.answers.keys()).pop());
+            this.QuestionSetUp(undefined,this.question.id);
         }
         
         this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.home[this.language] + "</button>\n";
@@ -423,6 +386,7 @@ class PolicyModelsDefault extends HTMLElement{
      * answerNum -> position of the answer in the answer array
      */
     async QuestionSetUp(answer, overwriteid, answerNum){ 
+        console.log(overwriteid);
         await this.FetchQuestion(answer,overwriteid, answerNum);
         this.setTranscript(); 
         this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
