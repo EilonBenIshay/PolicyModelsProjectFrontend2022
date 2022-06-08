@@ -219,7 +219,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.number = 1;
         let div = `
         <div>
-        <h3>`+ this.textassets.welcome[this.language] +`</h3>
+        <p class=welcomeContent>`+ this.textassets.welcome[this.language] +`</p>
         <h4></h4>
         <div class=\"startInterview\"></div>
         </div>`;
@@ -236,29 +236,24 @@ class PolicyModelsDefault extends HTMLElement{
         this.number = 2;
         let div = `
         <div class = "grid">
-        <div class = "defaultInterview">
-        <div>
-        <div class="restartClass">
-        </div>
-        <h3></h3>
-        <h4></h4>
-        </div>
-        <div class="buttons">
-        </div>
-        <div class="feedbackDiv" id="feedbackDivID">
-        </div>
-        <div class="feedbackInputDiv"></div>
-        <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
-        <div class="transcript"></div>
-        <div class="conclusion">
-        </div>
-        <div class="downloadTranscript">
-        </div>
-        </div>
-        <div class = "tags">
-        <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
-        <div class = \"tagsDiv\"></div>
-        </div>
+            <div class = "defaultInterview">
+                <div>
+                    <div class="restartClass"></div>
+                    <p class=namePolicyModels></p>
+                    <p class=questions></p>
+                </div>
+                <div class="buttons"></div>
+                <div class="feedbackDiv" id="feedbackDivID"></div>
+                <div class="feedbackInputDiv"></div>
+                <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
+                <div class="transcript"></div>
+                <div class="conclusion"></div>
+                <div class="downloadTranscript"></div>
+            </div>
+            <div class = "tags">
+                <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
+                <div class = \"tagsDiv\"></div>
+            </div>
         </div>
         `;
 
@@ -270,8 +265,8 @@ class PolicyModelsDefault extends HTMLElement{
         //this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
         //this.buttons = ['#a0'];
 
-        this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
-        this.shadowRoot.querySelector('h4').innerText = this.question.question;
+        this.shadowRoot.querySelector('.namePolicyModels').innerText = this.getAttribute('name');
+        this.shadowRoot.querySelector('.questions').innerText = this.question.question;
         if (this.question.id == undefined){
             this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.textassets.start[this.language] + "</button>\n";
             this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
@@ -323,7 +318,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.number = 3;
         let div = `
         <div>
-        <h3>`+this.textassets.conclusion_page[this.language]+`</h3>  
+        <p class=conclusionContent>`+this.textassets.conclusion_page[this.language]+`</p>  
         <div class = \"conclusions\"></div>
         <br>
         <div class="downloadConclusions">
@@ -410,14 +405,14 @@ class PolicyModelsDefault extends HTMLElement{
     QuestionSetUp(answer, overwriteid, answerNum){ 
         this.FetchQuestion(answer,overwriteid, answerNum);
         this.setTranscript(); 
-        this.shadowRoot.querySelector('h4').innerText = this.question.question; 
+        this.shadowRoot.querySelector('.questions').innerText = this.question.question; 
         this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
         `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
         if(this.question.id == -1){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
-                "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
+                "<p class=transitionToConclusionPageContent>"+this.textassets.press_conclusions[this.language]+"</p>";
 
             this.conclusion();
         }

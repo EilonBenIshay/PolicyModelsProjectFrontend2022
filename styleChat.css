@@ -1,28 +1,4 @@
-/* .question{
-    background-color: #E4D8DC;
-    text-align: left;
-    width: 250px;
-    border: 5px solid #E4D8DC;
-    padding: 80px 0px;
-    margin: 30px auto;
-    border-radius: 50%;
-    font-size: 24px;
-    font-weight: 900;
-    font-family: arial;
-    position: relative;
-    color: black;
-}
-
-.answer{
-    background-color: #FFE3E3;
-    text-align: right;
-} */
-
-/* h3{
-  text-align: center;
-} */
-
-.boxLeft {
+.boxRight {
     width: 300px;
     margin: 50px auto;
     background: #DCD6F7;
@@ -35,7 +11,7 @@
     left: 60px;
   }
 
-  .boxRight {
+  .boxLeft {
     width: 300px;
     margin: 50px auto;
     background: #A6B1E1;
@@ -81,15 +57,6 @@
   border-color: black;
 }
 
-input{
-  width: 100%;
-  /* padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border: 2px solid #E4D8DC;
-  border-radius: 4px; */
-}
-
 .btnDownloadConclusions{
   margin-top: 30px;
   margin-bottom: 30px;
@@ -107,7 +74,7 @@ input{
   align-items: center;
 }
 
-.startInterviewBtn, .transcriptBtn, .btnShowTags, .btnDownloadConclusions, .backToWelcomePage, .btnConclusion, .btnDownloadTranscript, .restartBtn{
+.startInterviewBtn, .btnShowTags, .btnDownloadConclusions, .backToWelcomePage, .btnConclusion, .btnDownloadTranscript, .restartBtn{
   align-self: center;
   background-color: #fff;
   background-image: none;
@@ -137,11 +104,11 @@ input{
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-.startInterviewBtn:hover, .transcriptBtn:hover, .btnShowTags:hover, .btnDownloadConclusions:hover, .backToWelcomePage:hover, .btnConclusion:hover, .btnDownloadTranscript:hover, .restartBtn:hover{
+.startInterviewBtn:hover, .btnShowTags:hover, .btnDownloadConclusions:hover, .backToWelcomePage:hover, .btnConclusion:hover, .btnDownloadTranscript:hover, .restartBtn:hover{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
 }
-.startInterviewBtn:focus, .transcriptBtn:focus, .btnShowTags:focus, .btnDownloadConclusions:focus, .backToWelcomePage:focus, .btnConclusion:focus, .btnDownloadTranscript:focus, .restartBtn:focus{
+.startInterviewBtn:focus, .btnShowTags:focus, .btnDownloadConclusions:focus, .backToWelcomePage:focus, .btnConclusion:focus, .btnDownloadTranscript:focus, .restartBtn:focus{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
 
@@ -238,7 +205,7 @@ input{
   margin-bottom: 2px;
 }
 
-.conclusionPage{
+.conclusionContent{
   font-size: 50px;
   text-align: center;
   align-content: center;
@@ -257,13 +224,13 @@ input{
   align-items: center;
 }
 
-.welcome{
+.welcomeContent{
   font-size: 50px;
   text-align: center;
   align-items: center;
 }
 
-.pressConclusionBtn{
+.transitionToConclusionPageContent{
   font-size: 20px;
   text-align: center;
   align-items: center;

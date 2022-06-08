@@ -182,7 +182,7 @@ class PolicyModelsChat extends HTMLElement{
         this.number = 1;
         let div = `
         <div>
-        <p class=welcome>`+ this.textassets.welcome[this.language] +`</p>
+        <p class=welcomeContent>`+ this.textassets.welcome[this.language] +`</p>
         <h4></h4>
         <div class=\"startInterview\"></div>  
         </div>`;
@@ -346,12 +346,12 @@ class PolicyModelsChat extends HTMLElement{
             let revisit = "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>";
             chat_text += `  <div class=ChatDiv>
                             
-                            <div class=\"boxRight question\">                          
+                            <div class=\"boxLeft question\">                          
                             <br>${value[0].question}
                             ${revisit}
                             </div>
 
-                            <div class=\"boxLeft answer\">
+                            <div class=\"boxRight answer\">
                             <br>${value[1]}<br>
                             </div>
                             
@@ -365,7 +365,7 @@ class PolicyModelsChat extends HTMLElement{
         }
         chat_text += `  <div class=ChatDiv>
                             
-                        <div class=\"boxRight question\">
+                        <div class=\"boxLeft question\">
                         <div class=feedback>${feedbackBtn}</div>
                         <br>${this.question.question}
                         <div class="buttons">
@@ -380,7 +380,7 @@ class PolicyModelsChat extends HTMLElement{
         this.feedbackFlag = false;
         if(this.question.id == -1){
             this.shadowRoot.querySelector('.chat').innerHTML = 
-                "<p class=pressConclusionBtn>"+this.textassets.press_conclusions[this.language]+"</p>";
+                "<p class=transitionToConclusionPageContent>"+this.textassets.press_conclusions[this.language]+"</p>";
             this.conclusion();
         }
         else{
@@ -401,7 +401,7 @@ class PolicyModelsChat extends HTMLElement{
         this.number = 3;
         let div = `
         <div>
-        <p class="conclusionPage">`+this.textassets.conclusion_page[this.language]+`<p>  
+        <p class="conclusionContent">`+this.textassets.conclusion_page[this.language]+`<p>  
         <div class = \"conclusions\"></div>
         <br>
         <div class="downloadConclusions">
