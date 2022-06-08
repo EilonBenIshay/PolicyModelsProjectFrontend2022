@@ -508,9 +508,9 @@ class PolicyModelsDefault extends HTMLElement{
      */
     ReturnToQuestion(questionNum){
         //TODO remove this condition with the full API implementation
-        if(questionNum > 10 || questionNum < 1){
-            return;
-        }
+        // if(questionNum > 10 || questionNum < 1){
+        //     return;
+        // }
         this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
         this.QuestionSetUp(undefined,questionNum, -1);
     }
