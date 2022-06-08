@@ -1,6 +1,6 @@
 //'use strict'
 import {PMAPIHandler} from './connection.js';
-import {TextAssets} from './languages.js';
+import {TextAssets} from './textAssets.js';
 
 class Question {
     constructor(id, question, answers){
@@ -156,8 +156,10 @@ class PolicyModelsDefault extends HTMLElement{
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
         this.apiHandler = new APIMock();
-        this.textassets = new TextAssets();  
-        this.language = this.textassets.languages.indexOf('English-Raw');
+        this.textassets = new TextAssets(); 
+        
+        //base language will always be the langauge in index '0' at textAssets.langauges.
+        this.language = 0;
 
         this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
         this.buttons = ['#a0'];
@@ -346,7 +348,7 @@ class PolicyModelsDefault extends HTMLElement{
             this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
         }
         if (this.question.id == undefined){
-            let data = await this.apiHandler.initInterview("English-Raw");
+            let data = await this.apiHandler.initInterview(this.textassets.languages[this.language]);
             this.question = new Question(data[0][0],data[0][1],data[0][2]);
             this.tags = data[1];
         }

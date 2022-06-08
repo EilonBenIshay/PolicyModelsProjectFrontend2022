@@ -1,10 +1,3 @@
-// export const Languages = {
-//     ENGLISH_RAW: 0,
-//     HEBREW: 1,
-//     ARABIC: 2,
-//     ENGLISH_US: 3
-// };
-
 export class TextAssets {
     constructor(){
         this.languages = ["English-Raw", "he-IL", "ar-IL","en-US"];
