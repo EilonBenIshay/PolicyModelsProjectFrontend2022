@@ -255,9 +255,7 @@ class PolicyModelsChat extends HTMLElement{
     backToWelcomePage(){
         this.answers = new Map();   
         this.tagsFlag = false;
-        this.QuestionSetUp(undefined,undefined,-1);
-        // this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
-        // this.buttons = ['#a0'];
+        this.tags = undefined;
         this.welcomePage();
     }
 
@@ -416,6 +414,8 @@ class PolicyModelsChat extends HTMLElement{
         this.shadowRoot.querySelector('.downloadConclusions').innerHTML = "<button class=\"btnDownloadConclusions\">" + this.textassets.download_conclusions[this.language] + "</button>";
         this.shadowRoot.querySelector('.btnDownloadConclusions').addEventListener('click', () => this.downloadConclusions(this.tags, 'conclusions.json'));
     }
+
+
 
     downloadConclusions(obj, name) {
         // const obj = Object.fromEntries(objToJson);
