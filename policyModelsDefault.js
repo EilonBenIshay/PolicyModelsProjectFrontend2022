@@ -155,7 +155,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
-        this.apiHandler = new APIMock();
+        this.apiHandler = new PMAPIHandler();
         this.textassets = new TextAssets(); 
         
         //base language will always be the langauge in index '0' at textAssets.langauges.
@@ -171,12 +171,18 @@ class PolicyModelsDefault extends HTMLElement{
 
 
         //  NEW (delete the btn and the script)
-        this.shadowRoot.querySelector('#mySelect').addEventListener('change', () => {
-            this.language = this.shadowRoot.querySelector('#mySelect').value;
-            let languageAnswers = await this.apiHandler.changeLangauge(this.textassets.languages[this.language]);
+        this.shadowRoot.querySelector('#mySelect').addEventListener('change', () => {this.changeLanguage();});
+        
+
+    }
+    async changeLanguage(){
+        this.language = this.shadowRoot.querySelector('#mySelect').value;
+            let changeLanguageData = await this.apiHandler.changeLanguage(this.textassets.languages[this.language]);
+            let languageAnswers = changeLanguageData[2];
             let newAnswers = new Map();
+            this.question = new Question(changeLanguageData[0][0],changeLanguageData[0][1],changeLanguageData[0][2]);
             this.answers.forEach((value,key) => { 
-                newAnswers.set(key, [languageAnswers[key][0], languageAnswers[key][1], value[2]]);
+                newAnswers.set(key, [languageAnswers.get(key)[0], languageAnswers.get(key)[1], value[2]]);
             });
             this.answers = newAnswers;
             //test
@@ -201,9 +207,6 @@ class PolicyModelsDefault extends HTMLElement{
                 this.interviewPage();
             else if (this.number == 3)
                 this.conclusionPage();
-        });
-        
-
     }
     /** 
      * a function called to load the welcome page

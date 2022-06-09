@@ -124,11 +124,11 @@ export class PMAPIHandler {
         return returnValue;
     }
     async changeLanguage(langauge){
-        this.langauge = langauge;
+        this.activeLangauge = langauge;
         const ans = await this.askHistory(this.userId,this.modelId,this.versionId,langauge,this.questionId);
-        history = new Map();
-        for (var item in ans['answersHistory']){
-            history.set(item['id'], [item['questionText'], item['answer']]);
+        let history = new Map();
+        for (var item in ans['answerHistory']){
+            history.set(ans['answerHistory'][item]['id'], [ans['answerHistory'][item]['questionText'], ans['answerHistory'][item]['answer']]);
         }
         const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags'], history];
         return returnValue;
