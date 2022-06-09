@@ -173,6 +173,12 @@ class PolicyModelsDefault extends HTMLElement{
         //  NEW (delete the btn and the script)
         this.shadowRoot.querySelector('#mySelect').addEventListener('change', () => {
             this.language = this.shadowRoot.querySelector('#mySelect').value;
+            let languageAnswers = await this.apiHandler.changeLangauge(this.textassets.languages[this.language]);
+            let newAnswers = new Map();
+            this.answers.forEach((value,key) => { 
+                newAnswers.set(key, [languageAnswers[key][0], languageAnswers[key][1], value[2]]);
+            });
+            this.answers = newAnswers;
             //var selectElement = this.shadowRoot.querySelector('#mySelect').value;
             // switch (selectElement) { //FIX
             //     case "ENGLISH_RAW":

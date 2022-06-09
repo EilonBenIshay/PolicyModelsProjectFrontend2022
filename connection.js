@@ -124,6 +124,7 @@ export class PMAPIHandler {
         return returnValue;
     }
     async changeLanguage(langauge){
+        this.langauge = langauge;
         const ans = await this.askHistory(this.userId,this.modelId,this.versionId,langauge,this.questionId);
         history = new Map();
         for (var item in ans['answersHistory']){
