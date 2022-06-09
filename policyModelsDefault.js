@@ -179,6 +179,7 @@ class PolicyModelsDefault extends HTMLElement{
                 newAnswers.set(key, [languageAnswers[key][0], languageAnswers[key][1], value[2]]);
             });
             this.answers = newAnswers;
+            //test
             //var selectElement = this.shadowRoot.querySelector('#mySelect').value;
             // switch (selectElement) { //FIX
             //     case "ENGLISH_RAW":
