@@ -81,7 +81,7 @@ class Question {
  */
 class APIMock {
     constructor(){
-        this.langauge = 'ENGLISH_RAW'
+        this.language = 'English-Raw'
         this.questionId;
         this.questionbank = jsonQuestionBankEnglish
         this.answers = new Map();
@@ -91,7 +91,7 @@ class APIMock {
         return;
     }
 
-    initInterview(langauge){
+    initInterview(language){
         this.answers = new Map();
         this.questionId = this.questionbank[0]['questionID'];
         let retObject = [[this.questionbank[0]['questionID'],this.questionbank[0]['question'],this.questionbank[0]['answers']], jsonData];
@@ -117,9 +117,13 @@ class APIMock {
         return retObject;
     }
 
-    changeLangauge(langauge){
+    changeLanguage(language){
         let retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData, this.answers];
         return retObject
+    }
+
+    changeHandlerLanguage(language){
+        this.language = language;
     }
 }
  
@@ -130,8 +134,8 @@ var nameOfFileCss = document.getElementById("style").innerHTML;
 let textassets = new TextAssets();
 let selectOption = ``
 for(let i = 0; i < textassets.languages.length; i++){
-    let langauge = textassets.languages[i];
-    selectOption += `<option value = ${i}>${langauge}</option>
+    let language = textassets.languages[i];
+    selectOption += `<option value = ${i}>${language}</option>
                     `;
 }
 
@@ -147,7 +151,7 @@ template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
 class PolicyModelsDefault extends HTMLElement{
     constructor(){
         super();
-        this.number = 1;
+        this.pageIdentifyer = 1;
         this.transcriptFlag = false;
         this.feedbackFlag = false;
         this.question;
@@ -158,7 +162,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.apiHandler = new PMAPIHandler();
         this.textassets = new TextAssets(); 
         
-        //base language will always be the langauge in index '0' at textAssets.langauges.
+        //base language will always be the language in index '0' at textAssets.languages.
         this.language = 0;
 
         this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
@@ -177,42 +181,30 @@ class PolicyModelsDefault extends HTMLElement{
     }
     async changeLanguage(){
         this.language = this.shadowRoot.querySelector('#mySelect').value;
-            let changeLanguageData = await this.apiHandler.changeLanguage(this.textassets.languages[this.language]);
-            let languageAnswers = changeLanguageData[2];
-            let newAnswers = new Map();
-            this.question = new Question(changeLanguageData[0][0],changeLanguageData[0][1],changeLanguageData[0][2]);
-            this.answers.forEach((value,key) => { 
-                newAnswers.set(key, [languageAnswers.get(key)[0], languageAnswers.get(key)[1], value[2]]);
-            });
-            this.answers = newAnswers;
-            //test
-            //var selectElement = this.shadowRoot.querySelector('#mySelect').value;
-            // switch (selectElement) { //FIX
-            //     case "ENGLISH_RAW":
-            //         this.language = Languages.ENGLISH_RAW;
-            //         break;
-            //     case "HEBREW":
-            //         this.language = Languages.HEBREW;
-            //         break;
-            //     case "ARABIC":
-            //         this.language = Languages.ARABIC;
-            //         break;
-            //     case "ENGLISH_US":
-            //         this.language = Languages.ENGLISH_US;
-            //         break;
-            //}
-            if(this.number == 1)
+            if(this.pageIdentifyer == 1){
+                this.apiHandler.changeHandlerLanguage(this.textassets.languages[this.language]);
                 this.welcomePage();
-            else if (this.number == 2)
+            }
+            else if (this.pageIdentifyer == 2){
+                let changeLanguageData = await this.apiHandler.changeLanguage(this.textassets.languages[this.language]);
+                let languageAnswers = changeLanguageData[2];
+                let newAnswers = new Map();
+                this.question = new Question(changeLanguageData[0][0],changeLanguageData[0][1],changeLanguageData[0][2]);
+                this.answers.forEach((value,key) => { 
+                    newAnswers.set(key, [languageAnswers.get(key)[0], languageAnswers.get(key)[1], value[2]]);
+                });
+                this.answers = newAnswers;
                 this.interviewPage();
-            else if (this.number == 3)
+            }
+            else if (this.pageIdentifyer == 3){
                 this.conclusionPage();
+            }
     }
     /** 
      * a function called to load the welcome page
     */
     async welcomePage(){
-        this.number = 1;
+        this.pageIdentifyer = 1;
         let div = `
         <div>
         <h3>`+ this.textassets.welcome[this.language] +`</h3>
@@ -230,7 +222,7 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the interview page
      */
     interviewPage(){
-        this.number = 2;
+        this.pageIdentifyer = 2;
         let div = `
         <div class = "grid">
         <div class = "defaultInterview">
@@ -270,8 +262,9 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
         this.shadowRoot.querySelector('h4').innerText = this.question.question;
         if (this.question.id == undefined){
-            this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.textassets.start[this.language] + "</button>\n";
-            this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
+            this.QuestionSetUp(undefined,undefined,-1);
+            // this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.textassets.start[this.language] + "</button>\n";
+            // this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
             }
         else{
             this.QuestionSetUp(undefined,this.question.id);
@@ -317,7 +310,7 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the conclusion page
      */
     conclusionPage(){ //TODO add text assets
-        this.number = 3;
+        this.pageIdentifyer = 3;
         let div = `
         <div>
         <h3>`+this.textassets.conclusion_page[this.language]+`</h3>  
