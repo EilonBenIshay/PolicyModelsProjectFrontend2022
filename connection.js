@@ -7,7 +7,7 @@ export class PMAPIHandler {
         this.questionText;
         this.answers;
         this.languages;
-        this.activeLangauge;
+        this.activeLanguage;
         this.models;
         this.versionId;
         this.models
@@ -88,7 +88,7 @@ export class PMAPIHandler {
     }
 
     async getNextQuestion(answer, questionId = this.questionId){
-        const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId,answer);
+        const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,questionId,answer);
         if(ans['finished'] == 'true'){
             this.questionId = undefined;
             return [[undefined, "", [""]], ans['tagsInYourLanguage']];
@@ -115,7 +115,7 @@ export class PMAPIHandler {
         return data;
     }
     async returnToQuestion(questionId){
-        const ans = await this.askHistory(this.userId,this.modelId,this.versionId,this.activeLangauge,questionId);
+        const ans = await this.askHistory(this.userId,this.modelId,this.versionId,this.activeLanguage,questionId);
         var history = new Map();
         for (var item in ans['answersHistory']){
             history.set(item['id'], [item['questionText'], item['answer']]);
@@ -123,9 +123,9 @@ export class PMAPIHandler {
         const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tagsInYourLanguage'], history];
         return returnValue;
     }
-    async changeLanguage(langauge){
-        this.activeLangauge = langauge;
-        const ans = await this.askHistory(this.userId,this.modelId,this.versionId,langauge,this.questionId);
+    async changeLanguage(language){
+        this.activeLanguage = language;
+        const ans = await this.askHistory(this.userId,this.modelId,this.versionId,language,this.questionId);
         let history = new Map();
         for (var item in ans['answerHistory']){
             history.set(ans['answerHistory'][item]['id'], [ans['answerHistory'][item]['questionText'], ans['answerHistory'][item]['answer']]);
@@ -138,6 +138,10 @@ export class PMAPIHandler {
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/getTags/${uuid}/${language}/`);
         let data = await response.json();
         return data;
+    }
+
+    changeHandlerLanguage(language){
+        this.activeLanguage = language;
     }
 
     async init(){
@@ -183,32 +187,32 @@ export class PMAPIHandler {
     //     var shady = await this.getNextQuestion(this.questionId,'accident during my work');
     //     console.log(this.questionText);
     //     console.log(shady)
-    //     /***ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'under 62');
+    //     /***ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'under 62');
     //     this.question = ansResult['questionId'];
     
     
-    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'yes');
+    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'yes');
     //     this.question = ansResult['questionId'];
     
-    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'monthly');
+    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'monthly');
     //     this.question = ansResult['questionId'];
     
     //     //return to the secend question
     //     // ansResult = await answerQuestion(uuid,modelId,versionId,language,returnedQuestion,'yes',language);
     //     // questionId = ansResult['questionId'];
     
-    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'direct');
+    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'direct');
     //     this.question = ansResult['questionId'];
     
-    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'full');
+    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'full');
     //     this.question = ansResult['questionId'];
-    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'11 months or more');
+    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'11 months or more');
     //     this.question = ansResult['questionId'];
-    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'my initiative');
+    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'my initiative');
     //     this.question = ansResult['questionId'];
-    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'health issues');
+    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'health issues');
     //     this.question = ansResult['questionId'];
-    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLangauge,this.question,'accident during my work');**/
+    //     ansResult = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,this.question,'accident during my work');**/
         
     //     //here is the answer 
     //     //var isFinished = ansResult['finished'];
