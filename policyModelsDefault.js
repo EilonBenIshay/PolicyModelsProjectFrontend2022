@@ -99,7 +99,7 @@ class APIMock {
     }
 
     getNextQuestion(answer, questionId) {
-        this.answers.set(questionId, [this.questionbank[questionId], answer]);
+        this.answers.set(questionId, [this.questionbank[questionId]['question'], answer]);
         // if (answer == -1)
         //     retObject = JSON.stringify(this.questionbank[questionID - 1]); 
         // if (questionId == undefined)
@@ -118,7 +118,7 @@ class APIMock {
     }
 
     changeLanguage(language){
-        let retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData, this.answers];
+        let retObject = [[this.questionbank[this.questionId]['questionID'],this.questionbank[this.questionId]['question'],this.questionbank[this.questionId]['answers']], jsonData, this.answers];
         return retObject
     }
 
@@ -159,14 +159,14 @@ class PolicyModelsDefault extends HTMLElement{
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
-        this.apiHandler = new PMAPIHandler();
+        this.apiHandler = new APIMock();
         this.textassets = new TextAssets(); 
         
         //base language will always be the language in index '0' at textAssets.languages.
         this.language = 0;
 
-        this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
-        this.buttons = ['#a0'];
+        // this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        // this.buttons = ['#a0'];
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -261,7 +261,7 @@ class PolicyModelsDefault extends HTMLElement{
 
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
         //this.shadowRoot.querySelector('h4').innerText = this.question.question;
-        if (this.question.id == undefined){
+        if (this.question == undefined){
             this.QuestionSetUp(undefined,undefined,-1);
             // this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.textassets.start[this.language] + "</button>\n";
             // this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
@@ -350,7 +350,7 @@ class PolicyModelsDefault extends HTMLElement{
         if (answer != undefined && this.question.id >= 0){
             this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
         }
-        if (this.question.id == undefined){
+        if (this.question == undefined){
             let data = await this.apiHandler.initInterview(this.textassets.languages[this.language]);
             this.question = new Question(data[0][0],data[0][1],data[0][2]);
             this.tags = data[1];
