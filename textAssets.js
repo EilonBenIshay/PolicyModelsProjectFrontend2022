@@ -11,7 +11,7 @@ export class TextAssets {
         this.your_answer = ["Your answer","התשובה שלך","جوابك","Your answer"];
         this.revisit = ["Revisit this question", "חזור לשאלה זו","العوده الى هذا السؤال","Revisit this question"];
         this.show_conclusion = ["Show Conclusion", "הראה תוצאות", "اعرض النتائج", "Show Conclusion"];
-        this.home = ["Home", "חזרה לעמוד הבית","ارجع لعمود الدار","Home"];
+        this.home = ["Home", "חזרה לעמוד הבית","العودة للصفحة الرئيسية","Home"];
         this.welcome_PM = ["Welcome to the PolicyModels test site!", "ברוכים הבאים לאתר הזמני של PolicyModels","","Welcome to the PolicyModels test site!"];
         this.results = ["Your results", "התוצאות שלך", "نتائجك", "your results"];
         this.conclusion_page = ["Conclusion Page", "עמוד התוצאות","صفحة النتائج","Conclusion Page"];
@@ -21,6 +21,6 @@ export class TextAssets {
         this.submitFeedback = ["Submit Feedback", "שלח משוב", "ارسل مجددا", "Submit Feedback"];
         this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "اعرض النتائج", "Show Current Tags (intermediate result)"];
         this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "اخفي النتائج", "Hide Current Tags (intermediate result)"];
-        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "ملاحظتي هي ", "My Feedback is:"]
+        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "ملاحظتي هي: ", "My Feedback is:"]
     }
 }
