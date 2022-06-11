@@ -67,7 +67,7 @@ export class PMAPIHandler {
         const ans = await this.startInterview(this.modelId,this.versionId,language);
         this.userId = ans['ssid'];
         this.questionId = ans['questionId'];
-        this.activeLangauge = language;
+        this.activeLanguage = language;
         let returnValue =  [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tagsInYourLanguage']];
         return returnValue; 
     }

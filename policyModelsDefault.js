@@ -260,7 +260,7 @@ class PolicyModelsDefault extends HTMLElement{
         //this.buttons = ['#a0'];
 
         this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
-        this.shadowRoot.querySelector('h4').innerText = this.question.question;
+        //this.shadowRoot.querySelector('h4').innerText = this.question.question;
         if (this.question.id == undefined){
             this.QuestionSetUp(undefined,undefined,-1);
             // this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.textassets.start[this.language] + "</button>\n";
@@ -391,7 +391,6 @@ class PolicyModelsDefault extends HTMLElement{
      * answerNum -> position of the answer in the answer array
      */
     async QuestionSetUp(answer, overwriteid, answerNum){ 
-        console.log(overwriteid);
         await this.FetchQuestion(answer,overwriteid, answerNum);
         this.setTranscript(); 
         this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
