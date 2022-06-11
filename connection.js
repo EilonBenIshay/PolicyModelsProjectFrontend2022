@@ -68,7 +68,7 @@ export class PMAPIHandler {
         this.userId = ans['ssid'];
         this.questionId = ans['questionId'];
         this.activeLanguage = language;
-        let returnValue =  [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags']];
+        let returnValue =  [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tagsInYourLanguage']];
         return returnValue; 
     }
 
@@ -91,10 +91,10 @@ export class PMAPIHandler {
         const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,questionId,answer);
         if(ans['finished'] == 'true'){
             this.questionId = undefined;
-            return [[undefined, "", [""]], ans['tags']];
+            return [[undefined, "", [""]], ans['tagsInYourLanguage']];
         }
         this.questionId = ans['questionId'];
-        const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags']];
+        const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tagsInYourLanguage']];
         return returnValue;
     }
 
@@ -120,7 +120,7 @@ export class PMAPIHandler {
         for (var item in ans['answersHistory']){
             history.set(item['id'], [item['questionText'], item['answer']]);
         }
-        const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags'], history];
+        const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tagsInYourLanguage'], history];
         return returnValue;
     }
     async changeLanguage(language){
@@ -130,12 +130,12 @@ export class PMAPIHandler {
         for (var item in ans['answerHistory']){
             history.set(ans['answerHistory'][item]['id'], [ans['answerHistory'][item]['questionText'], ans['answerHistory'][item]['answer']]);
         }
-        const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tags'], history];
+        const returnValue = [[ans['questionId'], ans['questionText'], ans['AnswersInYourLanguage']],ans['tagsInYourLanguage'], history];
         return returnValue;
     }
 
-    async getTags(uuid){
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/getTags/${uuid}/`);
+    async getTags(uuid, language){
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/getTags/${uuid}/${language}/`);
         let data = await response.json();
         return data;
     }

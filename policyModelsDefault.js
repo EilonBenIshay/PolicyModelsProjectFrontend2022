@@ -391,7 +391,6 @@ class PolicyModelsDefault extends HTMLElement{
      * answerNum -> position of the answer in the answer array
      */
     async QuestionSetUp(answer, overwriteid, answerNum){ 
-        console.log(overwriteid);
         await this.FetchQuestion(answer,overwriteid, answerNum);
         this.setTranscript(); 
         this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
