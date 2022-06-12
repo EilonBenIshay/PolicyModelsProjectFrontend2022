@@ -167,6 +167,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.number = 1;
         this.transcriptFlag = false;
         this.feedbackFlag = false;
+        this.tagsFlag = false;
         this.question;
         this.tags = jsonData;
         this.buttons;
