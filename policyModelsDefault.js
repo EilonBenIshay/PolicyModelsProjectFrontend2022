@@ -36,9 +36,12 @@ class TextAssets {
         this.download_conclusions = ["Download Conclusions", "הורד מסקנות", "", "Download Conclusions"];
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
         this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
+        this.writeComment = ["Write Personal Comment", "כתוב תגובה אישית", "", "Write Personal Comment"];
+        this.submitComment = ["Submit Personal Comment", "שלח תגובה אישית", "", "Submit Personal Comment"];
         this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
         this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "", "Hide Current Tags (intermediate result)"];
         this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"],
+        this.my_comment_is = ["My Comment is:", "התגובה שלי הוא:", "", "My Comment is:"],
         this.my_name_is = ["My Name is:", "השם שלי הוא:", "", "My Name is:"]
     }
 }
@@ -167,6 +170,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.number = 1;
         this.transcriptFlag = false;
         this.feedbackFlag = false;
+        this.commentFlag = false;
         this.tagsFlag = false;
         this.question;
         this.tags = jsonData;
@@ -246,6 +250,8 @@ class PolicyModelsDefault extends HTMLElement{
                 <div class="buttons"></div>
                 <div class="feedbackDiv" id="feedbackDivID"></div>
                 <div class="feedbackInputDiv"></div>
+                <div class="commentDiv" id="commentDivID"></div>
+                <div class="commentInputDiv"></div>
                 <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
                 <div class="transcript"></div>
                 <div class="conclusion"></div>
@@ -349,6 +355,7 @@ class PolicyModelsDefault extends HTMLElement{
      */
     conclusion(){
         this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
+        this.shadowRoot.querySelector('.commentBtn').style.display = 'none';
         if(this.shadowRoot.querySelector('#inputID')  != null){
             var e = this.shadowRoot.querySelector('#inputID') ;
             e.parentNode.removeChild(e);
@@ -411,6 +418,10 @@ class PolicyModelsDefault extends HTMLElement{
         `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
+        this.shadowRoot.querySelector('.commentDiv').innerHTML = 
+        `<button class = commentBtn id = commentBtnID>`+this.textassets.writeComment[this.language]+`</button>`;
+        this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
+        this.commentFlag = false;
         if(this.question.id == -1){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
                 "<p class=transitionToConclusionPageContent>"+this.textassets.press_conclusions[this.language]+"</p>";
@@ -427,15 +438,13 @@ class PolicyModelsDefault extends HTMLElement{
             if (name != null){
                 name.parentNode.removeChild(name);
             }
+            var c = this.shadowRoot.querySelector('#inputCommentID') ; //NEW
+            if (c != null){
+                c.parentNode.removeChild(c);
+            }
         }
     }
 
-    // feedback(){
-    //     this.createInputFeedback();
-    //     this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
-    //     <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
-    //     this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.feedbackSubmit());
-    // }
 
     createInputFeedback(){
         if((this.shadowRoot.querySelector('#inputID') == null) && (this.shadowRoot.querySelector('#inputNameID') == null)){
@@ -448,26 +457,55 @@ class PolicyModelsDefault extends HTMLElement{
             name.parentNode.removeChild(name);
             this.createElementInput();
         }
+    }
+
+    createInputComment(){
+        if(this.shadowRoot.querySelector('#inputCommentID') == null){
+            this.createElementCommentInput();
+        }
+        else{
+            var e = this.shadowRoot.querySelector('#inputCommentID');
+            e.parentNode.removeChild(e);
+            this.createElementCommentInput();
+        }
         
     }
+    createElementCommentInput(){
+        this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
+        `<input type="text" id="inputCommentID" placeholder="`+this.textassets.my_comment_is[this.language]+`"><br><br>`;
+    }
+
     createElementInput(){
         this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
         `<input type="text" id="inputNameID" placeholder="`+this.textassets.my_name_is[this.language]+`"><br>`+
         `<input type="text" id="inputID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br><br>`;
-        // var x = document.createElement("INPUT");
-        // x.setAttribute("type", "text");
-        // x.setAttribute("id", "inputID");
-        // x.setAttribute("value", "My feedback is");
-        // document.body.appendChild(x);
     }
 
     feedbackSubmit(){
+        const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
         var x = this.shadowRoot.querySelector('#inputID');
+        var strFeedback = String(x.value);
         var name = this.shadowRoot.querySelector('#inputNameID');
-        prompt(x.value);
-        prompt(name.value);
+        var strName = String(name.value);
+        if((!specialChars.test(strFeedback)) && (!specialChars.test(strName))){
+            prompt(strFeedback);
+            prompt(strName);
+        }
+        else{
+            if(specialChars.test(strFeedback)){
+                prompt("Error : Your feedback contains special characters like : `!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?~ ")
+            } else if(specialChars.test(strName)){
+                prompt("Error: Your name contains special characters like : `!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?~ ")
+            }
+        }
         x.parentNode.removeChild(x);
         name.parentNode.removeChild(name);
+    }
+
+    commentSubmit(){
+        var x = this.shadowRoot.querySelector('#inputCommentID');
+        prompt(x.value);
+        x.parentNode.removeChild(x);
     }
 
     /**
@@ -490,18 +528,21 @@ class PolicyModelsDefault extends HTMLElement{
         }
     }
 
-    // let info = this.shadowRoot.querySelector('.transcript');
-    //     let btn = this.shadowRoot.querySelector('#transcript-toggle');
-    //     this.transcriptFlag = !this.transcriptFlag;
-    //     if(this.transcriptFlag){
-    //         info.style.display = 'block';
-    //         btn.innerText = this.textassets.hide_transcript[this.language];
-    //     }
-    //     else{
-    //         info.style.display = 'none';
-    //         btn.innerText = this.textassets.show_transcript[this.language];
-    //     }
-
+    toggleComment(){ 
+        this.commentFlag = !this.commentFlag;
+        if(this.commentFlag){
+            this.createInputComment();
+            this.shadowRoot.querySelector('.commentDiv').innerHTML = `
+            <button class = commentSubmitBtn>`+this.textassets.submitComment[this.language]+`</button>`;
+            this.shadowRoot.querySelector('.commentSubmitBtn').addEventListener('click', () => this.toggleComment());
+        }
+        else{
+            this.commentSubmit();
+            this.shadowRoot.querySelector('.commentDiv').innerHTML = 
+            `<button class = commentBtn id = commentBtnID>`+this.textassets.writeComment[this.language]+`</button>`;
+            this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
+        }
+    }
 
     /**
      * sets up the buttons for the current question.
