@@ -207,7 +207,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.pageIdentifyer = 1;
         let div = `
         <div>
-        <h3>`+ this.textassets.welcome[this.language] +`</h3>
+        <p class=welcomeContent>`+ this.textassets.welcome[this.language] +`</p>
         <h4></h4>
         <div class=\"startInterview\"></div>
         </div>`;
@@ -225,29 +225,24 @@ class PolicyModelsDefault extends HTMLElement{
         this.pageIdentifyer = 2;
         let div = `
         <div class = "grid">
-        <div class = "defaultInterview">
-        <div>
-        <div class="restartClass">
-        </div>
-        <h3></h3>
-        <h4></h4>
-        </div>
-        <div class="buttons">
-        </div>
-        <div class="feedbackDiv" id="feedbackDivID">
-        </div>
-        <div class="feedbackInputDiv"></div>
-        <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
-        <div class="transcript"></div>
-        <div class="conclusion">
-        </div>
-        <div class="downloadTranscript">
-        </div>
-        </div>
-        <div class = "tags">
-        <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
-        <div class = \"tagsDiv\"></div>
-        </div>
+            <div class = "defaultInterview">
+                <div>
+                    <div class="restartClass"></div>
+                    <p class=namePolicyModels></p>
+                    <p class=questions></p>
+                </div>
+                <div class="buttons"></div>
+                <div class="feedbackDiv" id="feedbackDivID"></div>
+                <div class="feedbackInputDiv"></div>
+                <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
+                <div class="transcript"></div>
+                <div class="conclusion"></div>
+                <div class="downloadTranscript"></div>
+            </div>
+            <div class = "tags">
+                <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
+                <div class = \"tagsDiv\"></div>
+            </div>
         </div>
         `;
 
@@ -258,8 +253,7 @@ class PolicyModelsDefault extends HTMLElement{
         //this.transcriptFlag = false;
         //this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
         //this.buttons = ['#a0'];
-
-        this.shadowRoot.querySelector('h3').innerText = this.getAttribute('name');
+        this.shadowRoot.querySelector('.namePolicyModels').innerText = this.getAttribute('name');
         //this.shadowRoot.querySelector('h4').innerText = this.question.question;
         if (this.question == undefined){
             this.QuestionSetUp(undefined,undefined,-1);
@@ -313,10 +307,11 @@ class PolicyModelsDefault extends HTMLElement{
         this.pageIdentifyer = 3;
         let div = `
         <div>
-        <h3>`+this.textassets.conclusion_page[this.language]+`</h3>  
-        <h4>`+this.textassets.results[this.language]+`:</h4>
+        <p class=conclusionContent>`+this.textassets.conclusion_page[this.language]+`</p>  
         <div class = \"conclusions\"></div>
         <br>
+        <div class="downloadConclusions">
+        </div>
         <div class=backToHome><button class=\"backToWelcomePage\">`+this.textassets.home[this.language]+`</button></div>
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
@@ -324,8 +319,19 @@ class PolicyModelsDefault extends HTMLElement{
         let conclusions = this.getConclusions();
         this.shadowRoot.querySelector('.conclusions').innerHTML = conclusions;
         this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.backToWelcomePage());
+        this.shadowRoot.querySelector('.downloadConclusions').innerHTML = "<button class=\"btnDownloadConclusions\">" + this.textassets.download_conclusions[this.language] + "</button>";
+        this.shadowRoot.querySelector('.btnDownloadConclusions').addEventListener('click', () => this.downloadConclusions(this.tags, 'conclusions.json'));
     }
 
+    downloadConclusions(obj, name) {
+        // const obj = Object.fromEntries(objToJson);
+        const text = JSON.stringify(obj);
+        const a = document.createElement('a');
+        const type = name.split(".").pop();
+        a.href = URL.createObjectURL( new Blob([text], { type:`text/${type === "txt" ? "plain" : type}` }) );
+        a.download = name;
+        a.click();
+    }
     /**
      * Loads up the conclusion page when press on conclusion btn.
      */
@@ -333,6 +339,10 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
         if(this.shadowRoot.querySelector('#inputID')  != null){
             var e = this.shadowRoot.querySelector('#inputID') ;
+            e.parentNode.removeChild(e);
+        }
+        if(this.shadowRoot.querySelector('#inputNameID')  != null){
+            var e = this.shadowRoot.querySelector('#inputNameID') ;
             e.parentNode.removeChild(e);
         }
         this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + this.textassets.show_conclusion[this.language] + "</button>\n";
@@ -394,14 +404,14 @@ class PolicyModelsDefault extends HTMLElement{
         await this.FetchQuestion(answer,overwriteid, answerNum);
         this.setTranscript(); 
         this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
-        this.shadowRoot.querySelector('h4').innerText = this.question.question; 
+        this.shadowRoot.querySelector('.questions').innerText = this.question.question; 
         this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
         `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
         if(this.question.id == undefined){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
-                "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
+                "<p class=transitionToConclusionPageContent>"+this.textassets.press_conclusions[this.language]+"</p>";
 
             this.conclusion();
         }
@@ -410,6 +420,10 @@ class PolicyModelsDefault extends HTMLElement{
             var e = this.shadowRoot.querySelector('#inputID') ; //NEW
             if (e != null){
                 e.parentNode.removeChild(e);
+            }
+            var name = this.shadowRoot.querySelector('#inputNameID') ; //NEW
+            if (name != null){
+                name.parentNode.removeChild(name);
             }
         }
     }
@@ -422,18 +436,21 @@ class PolicyModelsDefault extends HTMLElement{
     // }
 
     createInputFeedback(){
-        if(this.shadowRoot.querySelector('#inputID') == null){
+        if((this.shadowRoot.querySelector('#inputID') == null) && (this.shadowRoot.querySelector('#inputNameID') == null)){
             this.createElementInput();
         }
         else{
             var e = this.shadowRoot.querySelector('#inputID');
             e.parentNode.removeChild(e);
+            var name = this.shadowRoot.querySelector('#inputNameID');
+            name.parentNode.removeChild(name);
             this.createElementInput();
         }
         
     }
     createElementInput(){
         this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
+        `<input type="text" id="inputNameID" placeholder="`+this.textassets.my_name_is[this.language]+`"><br>`+
         `<input type="text" id="inputID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br><br>`;
         // var x = document.createElement("INPUT");
         // x.setAttribute("type", "text");
@@ -444,8 +461,11 @@ class PolicyModelsDefault extends HTMLElement{
 
     feedbackSubmit(){
         var x = this.shadowRoot.querySelector('#inputID');
+        var name = this.shadowRoot.querySelector('#inputNameID');
         prompt(x.value);
+        prompt(name.value);
         x.parentNode.removeChild(x);
+        name.parentNode.removeChild(name);
     }
 
     /**

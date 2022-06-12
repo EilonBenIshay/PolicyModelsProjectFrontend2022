@@ -28,14 +28,16 @@ class TextAssets {
         this.home = ["Home", "חזרה לעמוד הבית","","Home"];
         this.welcome_PM = ["Welcome to the PolicyModels test site!", "ברוכים הבאים לאתר הזמני של PolicyModels","","Welcome to the PolicyModels test site!"];
         this.results = ["Your results", "התוצאות שלך", "", "your results"];
-        this.conclusion_page = ["Conclusion Page", "עמוד התוצאות","","Conclusion Page"];
+        this.conclusion_page = ["The conclusions of your interview", "מסקנות הראיון שלך","","The conclusions of your interview"];
         this.press_conclusions = ["Press the \"show conclusion\" button to see the conclusion of your interview","לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון","","Press the \"show conclusion\" button to see the conclusion of your interview"];
         this.download_transcript = ["Download Transcript", "הורד גיליון תשובות", "", "Download Transcript"];
+        this.download_conclusions = ["Download Conclusions", "הורד מסקנות", "", "Download Conclusions"];
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
         this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
         this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
         this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "", "Hide Current Tags (intermediate result)"];
         this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"];
+        this.my_name_is = ["My Name is:", "השם שלי הוא:", "", "My Name is:"];
         this.enterAnswer = ["Enter your answer here", "הכנס את התשובה שלך כאן", "", "Enter your answer here"]
     }
 }
@@ -170,8 +172,8 @@ class PolicyModelsChat extends HTMLElement{
                 this.welcomePage();
             else if (this.number == 2)
                 this.interviewPage();
-            // else if (this.number == 3)
-            //     this.conclusionPage();
+            else if (this.number == 3)
+                this.conclusionPage();
         });
 
     }
@@ -180,13 +182,13 @@ class PolicyModelsChat extends HTMLElement{
         this.number = 1;
         let div = `
         <div>
-        <h3>`+ this.textassets.welcome[this.language] +`</h3>
+        <p class=welcomeContent>`+ this.textassets.welcome[this.language] +`</p>
         <h4></h4>
         <div class=\"startInterview\"></div>  
         </div>`;
         this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
-        this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
-        this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
+        this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterviewBtn\">" + this.textassets.start_interview[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.startInterviewBtn').addEventListener('click', () => this.interviewPage());
         
     }
     //  <input class type="text" id="fname" name="fname" value = "test"></input><br>
@@ -201,11 +203,14 @@ class PolicyModelsChat extends HTMLElement{
             <div class = \"chat\">
             </div>
             <div>
-            <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
-            <div class = \"tagsDiv\"></div>
+                <div class="restartClass"></div>
+                <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
+                <div class = \"tagsDiv\"></div>
+                <div class = \"downloadTranscript\"></div>
             </div>
             <div>
-            <input class = "inputClass" type = "text" id = "inputID" placeholder = "`+this.textassets.enterAnswer[this.language]+`"></input>
+                <input class = "inputClass" type = "text" id = "inputID" placeholder = "`+this.textassets.enterAnswer[this.language]+`"></input>
+                <div class="conclusion"></div>
             </div>
         </div>
         `;
@@ -226,14 +231,36 @@ class PolicyModelsChat extends HTMLElement{
                                                             
         //                                                     </div>`
         this.QuestionSetUp(undefined,undefined,-1);
+        this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.home[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => this.backToWelcomePage());
         this.shadowRoot.querySelector('#tags-toggle').addEventListener('click', () => this.toggleTags());
         this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
         if (this.tagsFlag == true){
             this.shadowRoot.querySelector('.tagsDiv').style.display = 'block';
             this.shadowRoot.querySelector('#tags-toggle').innerText = this.textassets.hide_tags[this.language];
         }
-
+        this.shadowRoot.querySelector('.downloadTranscript').innerHTML = "<button class=\"btnDownloadTranscript\">" + this.textassets.download_transcript[this.language] + "</button>";
+        this.shadowRoot.querySelector('.btnDownloadTranscript').addEventListener('click', () => this.downloadTranscript(this.answers, 'myTranscript.json'));
     }
+    downloadTranscript(objToJson, name) {
+        const obj = Object.fromEntries(objToJson);
+        const text = JSON.stringify(obj);
+        const a = document.createElement('a');
+        const type = name.split(".").pop();
+        a.href = URL.createObjectURL( new Blob([text], { type:`text/${type === "txt" ? "plain" : type}` }) );
+        a.download = name;
+        a.click();
+    }
+
+    backToWelcomePage(){
+        this.answers = new Map();   
+        this.tagsFlag = false;
+        this.QuestionSetUp(undefined,undefined,-1);
+        // this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        // this.buttons = ['#a0'];
+        this.welcomePage();
+    }
+
     checkElementInput(){
         if(document.getElementById("inputID") == null){
             this.shadowRoot.querySelector("#inputID").addEventListener("keydown", (e) => {if (e.keyCode == 13) {this.getAnswer()}});
@@ -311,18 +338,20 @@ class PolicyModelsChat extends HTMLElement{
      QuestionSetUp(answerNum, answer, overwriteid = undefined){
         this.FetchQuestion(answerNum, answer, overwriteid);
         //this.setTranscript(); 
-        this.shadowRoot.querySelector("#inputID").value = "";
+        if(this.shadowRoot.querySelector("#inputID") != null){
+            this.shadowRoot.querySelector("#inputID").value = "";
+        }
         let chat_text = ``;
         this.answers.forEach((value,key) => {
             let revisit = "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>";
             chat_text += `  <div class=ChatDiv>
                             
-                            <div class=\"boxRight question\">                          
+                            <div class=\"boxLeft question\">                          
                             <br>${value[0].question}
                             ${revisit}
                             </div>
 
-                            <div class=\"boxLeft answer\">
+                            <div class=\"boxRight answer\">
                             <br>${value[1]}<br>
                             </div>
                             
@@ -336,7 +365,7 @@ class PolicyModelsChat extends HTMLElement{
         }
         chat_text += `  <div class=ChatDiv>
                             
-                        <div class=\"boxRight question\">
+                        <div class=\"boxLeft question\">
                         <div class=feedback>${feedbackBtn}</div>
                         <br>${this.question.question}
                         <div class="buttons">
@@ -350,9 +379,8 @@ class PolicyModelsChat extends HTMLElement{
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
         if(this.question.id == -1){
-            // this.shadowRoot.querySelector('.buttons').innerHTML = 
-            //     "<h4>"+this.textassets.press_conclusions[this.language]+"</h4>";
-
+            this.shadowRoot.querySelector('.chat').innerHTML = 
+                "<p class=transitionToConclusionPageContent>"+this.textassets.press_conclusions[this.language]+"</p>";
             this.conclusion();
         }
         else{
@@ -360,17 +388,68 @@ class PolicyModelsChat extends HTMLElement{
         }
     }
 
+    /**
+     * Loads up the conclusion page when press on conclusion btn.
+     */
+     conclusion(){
+        this.shadowRoot.querySelector('#inputID').style.display = 'none';
+        this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + this.textassets.show_conclusion[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.conclusion').addEventListener('click', () => this.conclusionPage());
+    }
+
+    conclusionPage(){ 
+        this.number = 3;
+        let div = `
+        <div>
+        <p class="conclusionContent">`+this.textassets.conclusion_page[this.language]+`<p>  
+        <div class = \"conclusions\"></div>
+        <br>
+        <div class="downloadConclusions">
+        </div>
+        <div class=backToHome><button class=\"backToWelcomePage\">`+this.textassets.home[this.language]+`</button></div>
+        </div>`;
+        this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
+        //the conclusion
+        let conclusions = this.getConclusions()
+        this.shadowRoot.querySelector('.conclusions').innerText = conclusions;
+        this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.backToWelcomePage());
+        this.shadowRoot.querySelector('.downloadConclusions').innerHTML = "<button class=\"btnDownloadConclusions\">" + this.textassets.download_conclusions[this.language] + "</button>";
+        this.shadowRoot.querySelector('.btnDownloadConclusions').addEventListener('click', () => this.downloadConclusions(this.tags, 'conclusions.json'));
+    }
+
+    downloadConclusions(obj, name) {
+        // const obj = Object.fromEntries(objToJson);
+        const text = JSON.stringify(obj);
+        const a = document.createElement('a');
+        const type = name.split(".").pop();
+        a.href = URL.createObjectURL( new Blob([text], { type:`text/${type === "txt" ? "plain" : type}` }) );
+        a.download = name;
+        a.click();
+    }
+
+    getConclusions(){
+        let answersStr = "";
+        this.answers.forEach((value, key) => answersStr += (value[1] + ","));
+        answersStr ="[" + answersStr + "]";
+        return answersStr;
+    }
+
+    
     createInputFeedback(){
-        if(this.shadowRoot.querySelector('#inputFeedbackID') == null){
+        if((this.shadowRoot.querySelector('#inputFeedbackID') == null) && (this.shadowRoot.querySelector('#inputFeedbacNameID') == null)){ //AND OR OR TODO
             this.shadowRoot.querySelector('.feedback').innerHTML = 
-            `<input type="text" id="inputFeedbackID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br>
+            `<input type="text" id="inputFeedbacNameID" placeholder="`+this.textassets.my_name_is[this.language]+`"><br>
+            <input type="text" id="inputFeedbackID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br>
             <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
         }
         else{
             var e = this.shadowRoot.querySelector('#inputFeedbackID');
             e.parentNode.removeChild(e);
+            var name = this.shadowRoot.querySelector('#inputFeedbacNameID');
+            name.parentNode.removeChild(name);
             this.shadowRoot.querySelector('.feedback').innerHTML = 
-            `<input type="text" id="inputFeedbackID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br>
+            `<input type="text" id="inputFeedbacNameID" placeholder="`+this.textassets.my_name_is[this.language]+`"><br>
+            <input type="text" id="inputFeedbackID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br>
             <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
         }
         
@@ -378,8 +457,11 @@ class PolicyModelsChat extends HTMLElement{
 
     feedbackSubmit(){
         var x = this.shadowRoot.querySelector('#inputFeedbackID');
+        var name = this.shadowRoot.querySelector('#inputFeedbacNameID');
         prompt(x.value);
+        prompt(name.value);
         x.parentNode.removeChild(x);
+        name.parentNode.removeChild(name);
     }
 
     /**
