@@ -163,6 +163,8 @@ class PolicyModelsDefault extends HTMLElement{
         this.pageIdentifyer = 1;
         this.transcriptFlag = false;
         this.feedbackFlag = false;
+        this.commentFlag = false;
+        this.tagsFlag = false;
         this.question;
         this.tags;
         this.buttons;
@@ -244,6 +246,8 @@ class PolicyModelsDefault extends HTMLElement{
                 <div class="buttons"></div>
                 <div class="feedbackDiv" id="feedbackDivID"></div>
                 <div class="feedbackInputDiv"></div>
+                <div class="commentDiv" id="commentDivID"></div>
+                <div class="commentInputDiv"></div>
                 <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ TextAssets.get(this.language).show_transcript +`</button></div>
                 <div class="transcript"></div>
                 <div class="conclusion"></div>
@@ -346,6 +350,7 @@ class PolicyModelsDefault extends HTMLElement{
      */
     conclusion(){
         this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
+        this.shadowRoot.querySelector('.commentBtn').style.display = 'none';
         if(this.shadowRoot.querySelector('#inputID')  != null){
             var e = this.shadowRoot.querySelector('#inputID') ;
             e.parentNode.removeChild(e);
@@ -418,6 +423,10 @@ class PolicyModelsDefault extends HTMLElement{
         `<button class = feedbackBtn id = feedbackBtnID>`+TextAssets.get(this.language).write_feedback+`</button>`;
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
+        this.shadowRoot.querySelector('.commentDiv').innerHTML = 
+        `<button class = commentBtn id = commentBtnID>`+ TextAssets.get(this.this.language).write_comment +`</button>`;
+        this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
+        this.commentFlag = false;
         if(this.question.id == undefined){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
                 "<p class=transitionToConclusionPageContent>"+TextAssets.get(this.language).press_conclusions+"</p>";
@@ -434,15 +443,13 @@ class PolicyModelsDefault extends HTMLElement{
             if (name != null){
                 name.parentNode.removeChild(name);
             }
+            var c = this.shadowRoot.querySelector('#inputCommentID') ; //NEW
+            if (c != null){
+                c.parentNode.removeChild(c);
+            }
         }
     }
 
-    // feedback(){
-    //     this.createInputFeedback();
-    //     this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
-    //     <button class = feedbackSubmitBtn>`+TextAssets.get(this.language).submit_feedback+`</button>`;
-    //     this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.feedbackSubmit());
-    // }
 
     createInputFeedback(){
         if((this.shadowRoot.querySelector('#inputID') == null) && (this.shadowRoot.querySelector('#inputNameID') == null)){
@@ -455,25 +462,55 @@ class PolicyModelsDefault extends HTMLElement{
             name.parentNode.removeChild(name);
             this.createElementInput();
         }
+    }
+
+    createInputComment(){
+        if(this.shadowRoot.querySelector('#inputCommentID') == null){
+            this.createElementCommentInput();
+        }
+        else{
+            var e = this.shadowRoot.querySelector('#inputCommentID');
+            e.parentNode.removeChild(e);
+            this.createElementCommentInput();
+        }
         
     }
+    createElementCommentInput(){
+        this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
+        `<input type="text" id="inputCommentID" placeholder="`+this.textassets.my_comment_is[this.language]+`"><br><br>`;
+    }
+
     createElementInput(){
         this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
         `<input type="text" id="inputNameID" placeholder="`+TextAssets.get(this.language).my_name_is+`"><br>`+
         `<input type="text" id="inputID" placeholder="`+TextAssets.get(this.language).my_feedback_is+`"><br><br>`;
-        // var x = document.createElement("INPUT");
-        // x.setAttribute("type", "text");
-        // x.setAttribute("id", "inputID");
-        // x.setAttribute("value", "My feedback is");
-        // document.body.appendChild(x);
     }
 
-    async feedbackSubmit(){
-        var feedback = this.shadowRoot.querySelector('#inputID');
+    feedbackSubmit(){
+        const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+        var x = this.shadowRoot.querySelector('#inputID');
+        var strFeedback = String(x.value);
         var name = this.shadowRoot.querySelector('#inputNameID');
-        await this.apiHandler.sendFeedback(name.value, feedback.value);
-        feedback.parentNode.removeChild(feedback);
+        var strName = String(name.value);
+        if((!specialChars.test(strFeedback)) && (!specialChars.test(strName))){
+            prompt(strFeedback);
+            prompt(strName);
+        }
+        else{
+            if(specialChars.test(strFeedback)){
+                prompt("Error : Your feedback contains special characters like : `!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?~ ")
+            } else if(specialChars.test(strName)){
+                prompt("Error: Your name contains special characters like : `!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?~ ")
+            }
+        }
+        x.parentNode.removeChild(x);
         name.parentNode.removeChild(name);
+    }
+
+    commentSubmit(){
+        var x = this.shadowRoot.querySelector('#inputCommentID');
+        prompt(x.value);
+        x.parentNode.removeChild(x);
     }
 
     /**
@@ -496,18 +533,21 @@ class PolicyModelsDefault extends HTMLElement{
         }
     }
 
-    // let info = this.shadowRoot.querySelector('.transcript');
-    //     let btn = this.shadowRoot.querySelector('#transcript-toggle');
-    //     this.transcriptFlag = !this.transcriptFlag;
-    //     if(this.transcriptFlag){
-    //         info.style.display = 'block';
-    //         btn.innerText = TextAssets.get(this.language).hide_transcript;
-    //     }
-    //     else{
-    //         info.style.display = 'none';
-    //         btn.innerText = TextAssets.get(this.language).show_transcript;
-    //     }
-
+    toggleComment(){ 
+        this.commentFlag = !this.commentFlag;
+        if(this.commentFlag){
+            this.createInputComment();
+            this.shadowRoot.querySelector('.commentDiv').innerHTML = `
+            <button class = commentSubmitBtn>`+TextAssets.get(this.language).submit_comment+`</button>`;
+            this.shadowRoot.querySelector('.commentSubmitBtn').addEventListener('click', () => this.toggleComment());
+        }
+        else{
+            this.commentSubmit();
+            this.shadowRoot.querySelector('.commentDiv').innerHTML = 
+            `<button class = commentBtn id = commentBtnID>`+TextAssets.get(this.language).write_comment+`</button>`;
+            this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
+        }
+    }
 
     /**
      * sets up the buttons for the current question.

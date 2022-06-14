@@ -34,10 +34,13 @@ class TextAssets {
         this.download_conclusions = ["Download Conclusions", "הורד מסקנות", "", "Download Conclusions"];
         this.writeFeedback = ["Write Feedback", "כתוב משוב", "", "Write Feedback"];
         this.submitFeedback = ["Submit Feedback", "שלח משוב", "", "Submit Feedback"];
+        this.writeComment = ["Write Personal Comment", "כתוב תגובה אישית", "", "Write Personal Comment"];
+        this.submitComment = ["Submit Personal Comment", "שלח תגובה אישית", "", "Submit Personal Comment"];
         this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "", "Show Current Tags (intermediate result)"];
         this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "", "Hide Current Tags (intermediate result)"];
         this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "", "My Feedback is:"];
         this.my_name_is = ["My Name is:", "השם שלי הוא:", "", "My Name is:"];
+        this.my_comment_is = ["My Comment is:", "התגובה שלי הוא:", "", "My Comment is:"],
         this.enterAnswer = ["Enter your answer here", "הכנס את התשובה שלך כאן", "", "Enter your answer here"]
     }
 }
@@ -143,6 +146,8 @@ class PolicyModelsChat extends HTMLElement{
         // answers are represented in a map  [QuestionID]-->[Question| answer text | answer position]
         this.answers = new Map();  
         this.tagsFlag = false; 
+        this.feedbackFlag = false;
+        this.commentFlag = false;
         this.tags = jsonData;
         this.apiHandler = new APIMock();
         this.language = Languages.ENGLISH_RAW;
@@ -255,9 +260,7 @@ class PolicyModelsChat extends HTMLElement{
     backToWelcomePage(){
         this.answers = new Map();   
         this.tagsFlag = false;
-        this.QuestionSetUp(undefined,undefined,-1);
-        // this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
-        // this.buttons = ['#a0'];
+        this.tags = undefined;
         this.welcomePage();
     }
 
@@ -360,6 +363,7 @@ class PolicyModelsChat extends HTMLElement{
         });
         let answers_text = "";
         let feedbackBtn = `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
+        let commentBtn = `<button class = commentBtn id = commentBtnID>`+this.textassets.writeComment[this.language]+`</button>`;
         for (let i = 0; i < this.question.answers.length; i++){
             answers_text += `<br>(${i}) - ${this.question.answers[i]}`;
         }
@@ -367,6 +371,7 @@ class PolicyModelsChat extends HTMLElement{
                             
                         <div class=\"boxLeft question\">
                         <div class=feedback>${feedbackBtn}</div>
+                        <div class=comment>${commentBtn}</div>
                         <br>${this.question.question}
                         <div class="buttons">
                         </div>
@@ -378,6 +383,8 @@ class PolicyModelsChat extends HTMLElement{
         this.buttonSetUp();
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
+        this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
+        this.commentFlag = false;
         if(this.question.id == -1){
             this.shadowRoot.querySelector('.chat').innerHTML = 
                 "<p class=transitionToConclusionPageContent>"+this.textassets.press_conclusions[this.language]+"</p>";
@@ -416,6 +423,8 @@ class PolicyModelsChat extends HTMLElement{
         this.shadowRoot.querySelector('.downloadConclusions').innerHTML = "<button class=\"btnDownloadConclusions\">" + this.textassets.download_conclusions[this.language] + "</button>";
         this.shadowRoot.querySelector('.btnDownloadConclusions').addEventListener('click', () => this.downloadConclusions(this.tags, 'conclusions.json'));
     }
+
+
 
     downloadConclusions(obj, name) {
         // const obj = Object.fromEntries(objToJson);
@@ -456,12 +465,45 @@ class PolicyModelsChat extends HTMLElement{
     }
 
     feedbackSubmit(){
+        const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
         var x = this.shadowRoot.querySelector('#inputFeedbackID');
+        var strFeedback = String(x.value);
         var name = this.shadowRoot.querySelector('#inputFeedbacNameID');
-        prompt(x.value);
-        prompt(name.value);
+        var strName = String(name.value);
+        if((!specialChars.test(strFeedback)) && (!specialChars.test(strName))){
+            prompt(strFeedback);
+            prompt(strName);
+        }
+        else{
+            if(specialChars.test(strFeedback)){
+                prompt("Error : Your feedback contains special characters like : `!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?~ ")
+            } else if(specialChars.test(strName)){
+                prompt("Error: Your name contains special characters like : `!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?~ ")
+            }
+        }
         x.parentNode.removeChild(x);
         name.parentNode.removeChild(name);
+    }
+
+    commentSubmit(){
+        var x = this.shadowRoot.querySelector('#inputCommentID');
+        prompt(x.value);
+        x.parentNode.removeChild(x);
+    }
+    createInputComment(){
+        if(this.shadowRoot.querySelector('#inputCommentID') == null){ 
+            this.shadowRoot.querySelector('.comment').innerHTML = 
+            `<input type="text" id="inputCommentID" placeholder="`+this.textassets.my_comment_is[this.language]+`"><br>
+            <button class = commentSubmitBtn>`+this.textassets.submitComment[this.language]+`</button>`;
+        }
+        else{
+            var e = this.shadowRoot.querySelector('#inputCommentID');
+            e.parentNode.removeChild(e);
+            this.shadowRoot.querySelector('.comment').innerHTML = 
+            `<input type="text" id="inputCommentID" placeholder="`+this.textassets.my_comment_is[this.language]+`"><br>
+            <button class = commentSubmitBtn>`+this.textassets.submitComment[this.language]+`</button>`;
+        }
+        
     }
 
     /**
@@ -478,6 +520,20 @@ class PolicyModelsChat extends HTMLElement{
             this.shadowRoot.querySelector('.feedback').innerHTML = 
             `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
             this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+        }
+    }
+
+    toggleComment(){ 
+        this.commentFlag = !this.commentFlag;
+        if(this.commentFlag){
+            this.createInputComment();
+            this.shadowRoot.querySelector('.commentSubmitBtn').addEventListener('click', () => this.toggleComment());
+        }
+        else{
+            this.commentSubmit();
+            this.shadowRoot.querySelector('.comment').innerHTML = 
+            `<button class = commentBtn id = commentBtnID>`+this.textassets.writeComment[this.language]+`</button>`;
+            this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
         }
     }
 
