@@ -42,7 +42,7 @@ class TextAssets {
     }
 }
 
-const jsonData = {"EmployerObligations":["finalAccountSettlement","jobTerminationConfirmation","workPeriodLetter","form161"],"Assertions":{"Gender":"female"}};
+const jsonData ={"Recommendations":["checkElderlyAllowance"],"Duties":["employeePriorNotice"],"EmployerObligations":["honorFormerContractorSeniority","finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter","form161"],"Notices":["severancePayMethod_Monthly","priorNoticePeriod_Varied"],"Benefits":{"Pension":"allowance","Properties":["possiblePersonalAccidentsInsurance"]},"Assertions":{"Employment":{"Type":"contractor","Scope":"full","SalaryUnits":"monthly","Duration":"_6_11"},"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Gender":"female"}};
 //answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
 const jsonQuestionBankEnglish = [{
 	"questionID": 1,
@@ -410,8 +410,8 @@ class PolicyModelsChat extends HTMLElement{
         </div>`;
         this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;
         //the conclusion
-        let conclusions = this.getConclusions()
-        this.shadowRoot.querySelector('.conclusions').innerText = conclusions;
+        let conclusions = this.parseTags(this.tags, false);
+        this.shadowRoot.querySelector('.conclusions').innerHTML = conclusions;
         this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.backToWelcomePage());
         this.shadowRoot.querySelector('.downloadConclusions').innerHTML = "<button class=\"btnDownloadConclusions\">" + this.textassets.download_conclusions[this.language] + "</button>";
         this.shadowRoot.querySelector('.btnDownloadConclusions').addEventListener('click', () => this.downloadConclusions(this.tags, 'conclusions.json'));
