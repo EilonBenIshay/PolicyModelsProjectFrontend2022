@@ -424,7 +424,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
         this.shadowRoot.querySelector('.commentDiv').innerHTML = 
-        `<button class = commentBtn id = commentBtnID>`+ TextAssets.get(this.this.language).write_comment +`</button>`;
+        `<button class = commentBtn id = commentBtnID>`+ TextAssets.get(this.language).write_comment +`</button>`;
         this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
         this.commentFlag = false;
         if(this.question.id == undefined){
@@ -477,7 +477,7 @@ class PolicyModelsDefault extends HTMLElement{
     }
     createElementCommentInput(){
         this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
-        `<input type="text" id="inputCommentID" placeholder="`+this.textassets.my_comment_is[this.language]+`"><br><br>`;
+        `<input type="text" id="inputCommentID" placeholder="`+TextAssets.get(this.language).my_comment_is+`"><br><br>`;
     }
 
     createElementInput(){

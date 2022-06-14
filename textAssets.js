@@ -23,7 +23,10 @@ TextAssets.set("English-Raw", {
     my_feedback_is: "My Feedback is:",
     my_name_is: "My name is:",
     download_conclusions: "Download Conclusions",
-    enterAnswer: "Enter your answer here"
+    enterAnswer: "Enter your answer here",
+    write_comment: "Add personal note",
+    submit_comment: "Sumbit note",
+    my_comment_is: "my note is:"
 });
 TextAssets.set("en-US", {
     welcome: "Welcome",
@@ -49,7 +52,10 @@ TextAssets.set("en-US", {
     my_feedback_is: "My Feedback is:",
     my_name_is: "My name is:",
     download_conclusions: "Download Conclusions",
-    enterAnswer: "Enter your answer here"
+    enterAnswer: "Enter your answer here",
+    write_comment: "Add personal note",
+    submit_comment: "Sumbit note",
+    my_comment_is: "my note is:"
 });
 TextAssets.set("he-IL", {
     welcome: "ברוכים הבאים",
@@ -75,6 +81,9 @@ TextAssets.set("he-IL", {
     my_feedback_is: "המשוב שלי הוא:",
     my_name_is: "השם שלי הוא:",
     download_conclusions: "הורד תוצאות",
-    enterAnswer: "הכנס את התשובה שלך כאן"
+    enterAnswer: "הכנס את התשובה שלך כאן",
+    write_comment: "הוסף הערה אישית",
+    submit_comment: "עדכן הערה",
+    my_comment_is: "ההערה שלי היא:"
 });
 
