@@ -169,7 +169,12 @@ class PolicyModelsDefault extends HTMLElement{
         this.tags;
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
-        this.answers = new Map();   
+        this.answers = new Map(); 
+
+        //comments are stored in the form of [QuestionID => Comment]
+        this.comments = new Map();  
+
+
         this.apiHandler = new APIMock();
         
         //base language will always be the language in index '0' at textAssets.languages.
@@ -476,14 +481,21 @@ class PolicyModelsDefault extends HTMLElement{
         
     }
     createElementCommentInput(){
-        this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
-        `<input type="text" id="inputCommentID" placeholder="`+TextAssets.get(this.language).my_comment_is+`"><br><br>`;
+        if (this.comments.has(this.question.id)){
+            this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
+            `<textarea rows="4" cols="40" id="inputCommentID" placeholder="${TextAssets.get(this.language).my_comment_is}" >${this.comments.get(this.question.id)}</textarea><br><br>`;
+            this.shadowRoot.querySelector("#inputCommentID").addEventListener('keyup', () => this.updateComment())
+        }
+        else{
+            this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
+            `<textarea rows="4" cols="40" id="inputCommentID" placeholder="`+TextAssets.get(this.language).my_comment_is+`"></textarea><br><br>`;}
+            this.shadowRoot.querySelector("#inputCommentID").addEventListener('keyup', () => this.updateComment())
     }
 
     createElementInput(){
         this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
         `<input type="text" id="inputNameID" placeholder="`+TextAssets.get(this.language).my_name_is+`"><br>`+
-        `<input type="text" id="inputID" placeholder="`+TextAssets.get(this.language).my_feedback_is+`"><br><br>`;
+        `<textarea rows="4" cols="40" id="inputID" placeholder="`+TextAssets.get(this.language).my_feedback_is+`"></textarea><br><br>`;
     }
 
     feedbackSubmit(){
@@ -493,8 +505,7 @@ class PolicyModelsDefault extends HTMLElement{
         var name = this.shadowRoot.querySelector('#inputNameID');
         var strName = String(name.value);
         if((!specialChars.test(strFeedback)) && (!specialChars.test(strName))){
-            prompt(strFeedback);
-            prompt(strName);
+            this.apiHandler.sendFeedback(name, strFeedback);
         }
         else{
             if(specialChars.test(strFeedback)){
@@ -507,10 +518,14 @@ class PolicyModelsDefault extends HTMLElement{
         name.parentNode.removeChild(name);
     }
 
-    commentSubmit(){
+    hideComment(){
         var x = this.shadowRoot.querySelector('#inputCommentID');
-        prompt(x.value);
         x.parentNode.removeChild(x);
+    }
+
+    updateComment(){
+        let comment = this.shadowRoot.querySelector("#inputCommentID").value;
+        this.comments.set(this.question.id, comment);
     }
 
     /**
@@ -538,11 +553,11 @@ class PolicyModelsDefault extends HTMLElement{
         if(this.commentFlag){
             this.createInputComment();
             this.shadowRoot.querySelector('.commentDiv').innerHTML = `
-            <button class = commentSubmitBtn>`+TextAssets.get(this.language).submit_comment+`</button>`;
+            <button class = commentSubmitBtn>`+TextAssets.get(this.language).hide_comment+`</button>`;
             this.shadowRoot.querySelector('.commentSubmitBtn').addEventListener('click', () => this.toggleComment());
         }
         else{
-            this.commentSubmit();
+            this.hideComment();
             this.shadowRoot.querySelector('.commentDiv').innerHTML = 
             `<button class = commentBtn id = commentBtnID>`+TextAssets.get(this.language).write_comment+`</button>`;
             this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
@@ -584,6 +599,7 @@ class PolicyModelsDefault extends HTMLElement{
         //     return;
         // }
         this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
+        this.comments.forEach((value,key) => {if(key > questionNum) this.comments.delete(key)})
         this.QuestionSetUp(undefined,questionNum, -1);
     }
 

@@ -191,11 +191,16 @@
 }
 
 #inputID,
-#inputNameID,
 #inputCommentID {
+  border: 2px solid black;
+  margin-top: 30px;
+}
+
+#inputNameID{
   border: none;
   border-bottom: 2px solid black;
   margin-top: 30px;
+  width: 315px;
 }
 
 
