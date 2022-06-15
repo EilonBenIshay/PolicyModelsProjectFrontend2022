@@ -222,6 +222,9 @@ h4 {
 .tagsDiv {
   display: none;
 }
+.conclusions{
+  text-align: left;
+}
 
 .welcomeContent {
   color: #344CB7;

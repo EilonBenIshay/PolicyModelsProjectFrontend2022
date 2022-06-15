@@ -159,7 +159,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
         this.answers = new Map();   
-        this.apiHandler = new APIMock();
+        this.apiHandler = new PMAPIHandler();
         this.textassets = new TextAssets(); 
         
         //base language will always be the language in index '0' at textAssets.languages.
@@ -294,8 +294,7 @@ class PolicyModelsDefault extends HTMLElement{
     backToWelcomePage(){
         this.answers = new Map();   
         this.transcriptFlag = false;
-        this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
-        this.buttons = ['#a0'];
+        this.question = undefined;
         this.welcomePage();
     }
       

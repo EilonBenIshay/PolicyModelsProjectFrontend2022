@@ -21,6 +21,9 @@ export class TextAssets {
         this.submitFeedback = ["Submit Feedback", "שלח משוב", "ارسل مجددا", "Submit Feedback"];
         this.show_tags = ["Show Current Tags (intermediate result)", "הראה תוצאות ביניים", "اعرض النتائج", "Show Current Tags (intermediate result)"];
         this.hide_tags = ["Hide Current Tags (intermediate result)", "הסתר תוצאות ביניים", "اخفي النتائج", "Hide Current Tags (intermediate result)"];
-        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "ملاحظتي هي: ", "My Feedback is:"]
+        this.my_feedback_is = ["My Feedback is:", "המשוב שלי הוא:", "ملاحظتي هي: ", "My Feedback is:"];
+        this.my_name_is = ["My Name is:", "השם שלי הוא:", "", "My Name is:"];
+        this.download_conclusions = ["Download Conclusions", "הורד מסקנות", "", "Download Conclusions"];
+        this.enterAnswer = ["Enter your answer here", "הכנס את התשובה שלך כאן", "", "Enter your answer here"]
     }
 }
