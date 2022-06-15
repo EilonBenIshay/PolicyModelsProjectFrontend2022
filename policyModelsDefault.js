@@ -140,6 +140,7 @@ class APIMock {
 
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
+
 let languagesSelect = Array.from(TextAssets.keys());
 let selectOption = ``
 for(let i = 0; i < languagesSelect.length; i++){
@@ -228,7 +229,11 @@ class PolicyModelsDefault extends HTMLElement{
         <h4></h4>
         <div class=\"startInterview\"></div>
         </div>`;
-        await this.apiHandler.initModel("1","1");
+
+        let model = document.getElementById("model").innerHTML;
+        let version = document.getElementById("version").innerHTML;
+
+        await this.apiHandler.initModel(model, version);
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + TextAssets.get(this.language).start_interview + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
@@ -314,6 +319,8 @@ class PolicyModelsDefault extends HTMLElement{
         this.answers = new Map();   
         this.transcriptFlag = false;
         this.question = undefined;
+        this.tagsFlag = false;
+        this.tags = undefined;
         this.welcomePage();
     }
       
@@ -328,7 +335,7 @@ class PolicyModelsDefault extends HTMLElement{
         <p class=conclusionContent>`+TextAssets.get(this.language).conclusion_page+`</p>  
         <div class = \"conclusions\"></div>
         <br>
-        <div class="downloadConclusions">
+        <div class="downloadConclusions"> 
         </div>
         <div class=backToHome><button class=\"backToWelcomePage\">`+TextAssets.get(this.language).home+`</button></div>
         </div>`;
@@ -439,7 +446,7 @@ class PolicyModelsDefault extends HTMLElement{
             this.conclusion();
         }
         else{
-            this.ButtonSetUp();
+            this.buttonSetUp();
             var e = this.shadowRoot.querySelector('#inputID') ; //NEW
             if (e != null){
                 e.parentNode.removeChild(e);
@@ -568,7 +575,7 @@ class PolicyModelsDefault extends HTMLElement{
      * sets up the buttons for the current question.
      * button IDs are "#a" + the answers number
      */
-    ButtonSetUp(){
+    buttonSetUp(){
         let btnIDs = [];
         let btnSTR = ""; 
         for (let i = 0; i< this.question.answers.length; i++){
