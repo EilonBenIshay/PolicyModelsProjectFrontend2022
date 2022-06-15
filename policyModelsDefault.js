@@ -13,7 +13,7 @@ class Question {
 /**
  * temp question bank
  */
- const jsonData = {"EmployerObligations":["finalAccountSettlement","jobTerminationConfirmation","workPeriodLetter","form161"],"Benefits":{"Pension":"allowance"},"Assertions":{"AgeGroup":"voluntaryPension","Gender":"female"}};
+ const jsonData = {"Recommendations":["checkElderlyAllowance"],"Duties":["employeePriorNotice"],"EmployerObligations":["honorFormerContractorSeniority","finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter","form161"],"Notices":["severancePayMethod_Monthly","priorNoticePeriod_Varied"],"Benefits":{"Pension":"allowance","Properties":["possiblePersonalAccidentsInsurance"]},"Assertions":{"Employment":{"Type":"contractor","Scope":"full","SalaryUnits":"monthly","Duration":"_6_11"},"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Gender":"female"}};
  //answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
  const jsonQuestionBankEnglish = [{
      "questionID": 1,
@@ -125,17 +125,27 @@ class APIMock {
     changeHandlerLanguage(language){
         this.language = language;
     }
+
+    getTags(language){
+        return jsonData;
+    }
+
+    sendFeedback(name, feedback){
+        console.log(name);
+        console.log(feedback);
+    }
 }
  
 
 
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
-let textassets = new TextAssets();
+
+let languagesSelect = Array.from(TextAssets.keys());
 let selectOption = ``
-for(let i = 0; i < textassets.languages.length; i++){
-    let language = textassets.languages[i];
-    selectOption += `<option value = ${i}>${language}</option>
+for(let i = 0; i < languagesSelect.length; i++){
+    let language = languagesSelect[i];
+    selectOption += `<option value = ${language}>${language}</option>
                     `;
 }
 
@@ -154,18 +164,24 @@ class PolicyModelsDefault extends HTMLElement{
         this.pageIdentifyer = 1;
         this.transcriptFlag = false;
         this.feedbackFlag = false;
+        this.commentFlag = false;
+        this.tagsFlag = false;
         this.question;
         this.tags;
         this.buttons;
         // answers arre represented in a map  [QuestionID]-->[question text | answer text | answer position]
-        this.answers = new Map();   
+        this.answers = new Map(); 
+
+        //comments are stored in the form of [QuestionID => Comment]
+        this.comments = new Map();  
+
+
         this.apiHandler = new PMAPIHandler();
-        this.textassets = new TextAssets(); 
         
         //base language will always be the language in index '0' at textAssets.languages.
-        this.language = 0;
+        this.language = TextAssets.keys().next().value;
 
-        // this.question = new Question(undefined,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        // this.question = new Question(undefined,TextAssets.get(this.language).welcome_PM, [TextAssets.get(this.language).start]);
         // this.buttons = ['#a0'];
 
         this.attachShadow({ mode: 'open' });
@@ -182,11 +198,11 @@ class PolicyModelsDefault extends HTMLElement{
     async changeLanguage(){
         this.language = this.shadowRoot.querySelector('#mySelect').value;
             if(this.pageIdentifyer == 1){
-                this.apiHandler.changeHandlerLanguage(this.textassets.languages[this.language]);
+                this.apiHandler.changeHandlerLanguage(this.language);
                 this.welcomePage();
             }
             else if (this.pageIdentifyer == 2){
-                let changeLanguageData = await this.apiHandler.changeLanguage(this.textassets.languages[this.language]);
+                let changeLanguageData = await this.apiHandler.changeLanguage(this.language);
                 let languageAnswers = changeLanguageData[2];
                 let newAnswers = new Map();
                 this.question = new Question(changeLanguageData[0][0],changeLanguageData[0][1],changeLanguageData[0][2]);
@@ -197,6 +213,8 @@ class PolicyModelsDefault extends HTMLElement{
                 this.interviewPage();
             }
             else if (this.pageIdentifyer == 3){
+                this.apiHandler.changeHandlerLanguage(this.language);
+                this.tags = await this.apiHandler.getTags(this.language);
                 this.conclusionPage();
             }
     }
@@ -207,13 +225,17 @@ class PolicyModelsDefault extends HTMLElement{
         this.pageIdentifyer = 1;
         let div = `
         <div>
-        <p class=welcomeContent>`+ this.textassets.welcome[this.language] +`</p>
+        <p class=welcomeContent>`+ TextAssets.get(this.language).welcome +`</p>
         <h4></h4>
         <div class=\"startInterview\"></div>
         </div>`;
-        await this.apiHandler.initModel("1","1");
+
+        let model = document.getElementById("model").innerHTML;
+        let version = document.getElementById("version").innerHTML;
+
+        await this.apiHandler.initModel(model, version);
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
-        this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + this.textassets.start_interview[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.startInterview').innerHTML = "<button class = \"startInterview\">" + TextAssets.get(this.language).start_interview + "</button>\n";
         this.shadowRoot.querySelector('.startInterview').addEventListener('click', () => this.interviewPage());
         
     }
@@ -234,13 +256,15 @@ class PolicyModelsDefault extends HTMLElement{
                 <div class="buttons"></div>
                 <div class="feedbackDiv" id="feedbackDivID"></div>
                 <div class="feedbackInputDiv"></div>
-                <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ this.textassets.show_transcript[this.language] +`</button></div>
+                <div class="commentDiv" id="commentDivID"></div>
+                <div class="commentInputDiv"></div>
+                <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">`+ TextAssets.get(this.language).show_transcript +`</button></div>
                 <div class="transcript"></div>
                 <div class="conclusion"></div>
                 <div class="downloadTranscript"></div>
             </div>
             <div class = "tags">
-                <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ this.textassets.show_tags[this.language] +`</button></div>
+                <div class = divBtnShowTags><button class = btnShowTags id="tags-toggle">`+ TextAssets.get(this.language).show_tags +`</button></div>
                 <div class = \"tagsDiv\"></div>
             </div>
         </div>
@@ -251,33 +275,33 @@ class PolicyModelsDefault extends HTMLElement{
         
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
         //this.transcriptFlag = false;
-        //this.question = new Question(0,this.textassets.welcome_PM[this.language], [this.textassets.start[this.language]]);
+        //this.question = new Question(0,TextAssets.get(this.language).welcome_PM, [TextAssets.get(this.language).start]);
         //this.buttons = ['#a0'];
         this.shadowRoot.querySelector('.namePolicyModels').innerText = this.getAttribute('name');
         //this.shadowRoot.querySelector('h4').innerText = this.question.question;
         if (this.question == undefined){
             this.QuestionSetUp(undefined,undefined,-1);
-            // this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + this.textassets.start[this.language] + "</button>\n";
+            // this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + TextAssets.get(this.language).start + "</button>\n";
             // this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
             }
         else{
             this.QuestionSetUp(undefined,this.question.id);
         }
         
-        this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + this.textassets.home[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.restartClass').innerHTML = "<button class = \"restartBtn\">" + TextAssets.get(this.language).home + "</button>\n";
         this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => this.backToWelcomePage());
         this.shadowRoot.querySelector('#tags-toggle').addEventListener('click', () => this.toggleTags());
         this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
         if (this.tagsFlag == true){
             this.shadowRoot.querySelector('.tagsDiv').style.display = 'block';
-            this.shadowRoot.querySelector('#tags-toggle').innerText = this.textassets.hide_tags[this.language];
+            this.shadowRoot.querySelector('#tags-toggle').innerText = TextAssets.get(this.language).hide_tags;
         }
         if (this.transcriptFlag == true){
             this.shadowRoot.querySelector('.transcript').style.display = 'block';
-            this.shadowRoot.querySelector('#transcript-toggle').innerText = this.textassets.hide_transcript[this.language];
+            this.shadowRoot.querySelector('#transcript-toggle').innerText = TextAssets.get(this.language).hide_transcript;
         }
                 
-        this.shadowRoot.querySelector('.downloadTranscript').innerHTML = "<button class=\"btnDownloadTranscript\">" + this.textassets.download_transcript[this.language] + "</button>";
+        this.shadowRoot.querySelector('.downloadTranscript').innerHTML = "<button class=\"btnDownloadTranscript\">" + TextAssets.get(this.language).download_transcript + "</button>";
         this.shadowRoot.querySelector('.btnDownloadTranscript').addEventListener('click', () => this.downloadTranscript(this.answers, 'myTranscript.json'));
     }
 
@@ -295,6 +319,8 @@ class PolicyModelsDefault extends HTMLElement{
         this.answers = new Map();   
         this.transcriptFlag = false;
         this.question = undefined;
+        this.tagsFlag = false;
+        this.tags = undefined;
         this.welcomePage();
     }
       
@@ -306,20 +332,20 @@ class PolicyModelsDefault extends HTMLElement{
         this.pageIdentifyer = 3;
         let div = `
         <div>
-        <p class=conclusionContent>`+this.textassets.conclusion_page[this.language]+`</p>  
+        <p class=conclusionContent>`+TextAssets.get(this.language).conclusion_page+`</p>  
         <div class = \"conclusions\"></div>
         <br>
-        <div class="downloadConclusions">
+        <div class="downloadConclusions"> 
         </div>
-        <div class=backToHome><button class=\"backToWelcomePage\">`+this.textassets.home[this.language]+`</button></div>
+        <div class=backToHome><button class=\"backToWelcomePage\">`+TextAssets.get(this.language).home+`</button></div>
         </div>`;
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         //the conclusion
         let conclusions = this.getConclusions();
         this.shadowRoot.querySelector('.conclusions').innerHTML = conclusions;
         this.shadowRoot.querySelector('.backToWelcomePage').addEventListener('click', () => this.backToWelcomePage());
-        this.shadowRoot.querySelector('.downloadConclusions').innerHTML = "<button class=\"btnDownloadConclusions\">" + this.textassets.download_conclusions[this.language] + "</button>";
-        this.shadowRoot.querySelector('.btnDownloadConclusions').addEventListener('click', () => this.downloadConclusions(this.tags, 'conclusions.json'));
+        this.shadowRoot.querySelector('.downloadConclusions').innerHTML = "<button class=\"btnDownloadConclusions\">" + TextAssets.get(this.language).download_conclusions + "</button>";
+        this.shadowRoot.querySelector('.btnDownloadConclusions').addEventListener('click', () => this.downloadConclusions(this.apiHandler.getTags(TextAssets.keys().next().value), 'conclusions.json'));
     }
 
     downloadConclusions(obj, name) {
@@ -336,6 +362,7 @@ class PolicyModelsDefault extends HTMLElement{
      */
     conclusion(){
         this.shadowRoot.querySelector('.feedbackBtn').style.display = 'none';
+        this.shadowRoot.querySelector('.commentBtn').style.display = 'none';
         if(this.shadowRoot.querySelector('#inputID')  != null){
             var e = this.shadowRoot.querySelector('#inputID') ;
             e.parentNode.removeChild(e);
@@ -344,7 +371,7 @@ class PolicyModelsDefault extends HTMLElement{
             var e = this.shadowRoot.querySelector('#inputNameID') ;
             e.parentNode.removeChild(e);
         }
-        this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + this.textassets.show_conclusion[this.language] + "</button>\n";
+        this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + TextAssets.get(this.language).show_conclusion + "</button>\n";
         this.shadowRoot.querySelector('.conclusion').addEventListener('click', () => this.conclusionPage());
     }
 
@@ -360,7 +387,7 @@ class PolicyModelsDefault extends HTMLElement{
             this.answers.set(this.question.id, [this.question.question, answer, answerNum]);
         }
         if (this.question == undefined){
-            let data = await this.apiHandler.initInterview(this.textassets.languages[this.language]);
+            let data = await this.apiHandler.initInterview(this.language);
             this.question = new Question(data[0][0],data[0][1],data[0][2]);
             this.tags = data[1];
         }
@@ -386,8 +413,8 @@ class PolicyModelsDefault extends HTMLElement{
     setTranscript(){
         let transcriptSTR = "";
         let transcript = this.shadowRoot.querySelector('.transcript');
-        this.answers.forEach((value,key) => {transcriptSTR += ("<div>" +this.textassets.question[this.language]+ " "+ key.toString() +": " + value[0] +"&emsp;|&emsp;" +this.textassets.your_answer[this.language]+ ": " +
-        value[1] + "&emsp;|&emsp;<button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+this.textassets.revisit[this.language]+"</button></div>")});
+        this.answers.forEach((value,key) => {transcriptSTR += ("<div>" +TextAssets.get(this.language).question+ " "+ key.toString() +": " + value[0] +"&emsp;|&emsp;" +TextAssets.get(this.language).your_answer+ ": " +
+        value[1] + "&emsp;|&emsp;<button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+TextAssets.get(this.language).revisit+"</button></div>")});
         transcript.innerHTML = transcriptSTR;
         this.answers.forEach((value,key) => {this.shadowRoot.querySelector('#QR' + key.toString()).addEventListener('click', ()=>this.ReturnToQuestion(key))});
     }
@@ -405,17 +432,21 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
         this.shadowRoot.querySelector('.questions').innerText = this.question.question; 
         this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
-        `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
+        `<button class = feedbackBtn id = feedbackBtnID>`+TextAssets.get(this.language).write_feedback+`</button>`;
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         this.feedbackFlag = false;
+        this.shadowRoot.querySelector('.commentDiv').innerHTML = 
+        `<button class = commentBtn id = commentBtnID>`+ TextAssets.get(this.language).write_comment +`</button>`;
+        this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
+        this.commentFlag = false;
         if(this.question.id == undefined){
             this.shadowRoot.querySelector('.buttons').innerHTML = 
-                "<p class=transitionToConclusionPageContent>"+this.textassets.press_conclusions[this.language]+"</p>";
+                "<p class=transitionToConclusionPageContent>"+TextAssets.get(this.language).press_conclusions+"</p>";
 
             this.conclusion();
         }
         else{
-            this.ButtonSetUp();
+            this.buttonSetUp();
             var e = this.shadowRoot.querySelector('#inputID') ; //NEW
             if (e != null){
                 e.parentNode.removeChild(e);
@@ -424,15 +455,13 @@ class PolicyModelsDefault extends HTMLElement{
             if (name != null){
                 name.parentNode.removeChild(name);
             }
+            var c = this.shadowRoot.querySelector('#inputCommentID') ; //NEW
+            if (c != null){
+                c.parentNode.removeChild(c);
+            }
         }
     }
 
-    // feedback(){
-    //     this.createInputFeedback();
-    //     this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
-    //     <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
-    //     this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.feedbackSubmit());
-    // }
 
     createInputFeedback(){
         if((this.shadowRoot.querySelector('#inputID') == null) && (this.shadowRoot.querySelector('#inputNameID') == null)){
@@ -445,26 +474,65 @@ class PolicyModelsDefault extends HTMLElement{
             name.parentNode.removeChild(name);
             this.createElementInput();
         }
+    }
+
+    createInputComment(){
+        if(this.shadowRoot.querySelector('#inputCommentID') == null){
+            this.createElementCommentInput();
+        }
+        else{
+            var e = this.shadowRoot.querySelector('#inputCommentID');
+            e.parentNode.removeChild(e);
+            this.createElementCommentInput();
+        }
         
     }
+    createElementCommentInput(){
+        if (this.comments.has(this.question.id)){
+            this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
+            `<textarea rows="4" cols="40" id="inputCommentID" placeholder="${TextAssets.get(this.language).my_comment_is}" >${this.comments.get(this.question.id)}</textarea><br><br>`;
+            this.shadowRoot.querySelector("#inputCommentID").addEventListener('keyup', () => this.updateComment())
+        }
+        else{
+            this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
+            `<textarea rows="4" cols="40" id="inputCommentID" placeholder="`+TextAssets.get(this.language).my_comment_is+`"></textarea><br><br>`;}
+            this.shadowRoot.querySelector("#inputCommentID").addEventListener('keyup', () => this.updateComment())
+    }
+
     createElementInput(){
         this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
-        `<input type="text" id="inputNameID" placeholder="`+this.textassets.my_name_is[this.language]+`"><br>`+
-        `<input type="text" id="inputID" placeholder="`+this.textassets.my_feedback_is[this.language]+`"><br><br>`;
-        // var x = document.createElement("INPUT");
-        // x.setAttribute("type", "text");
-        // x.setAttribute("id", "inputID");
-        // x.setAttribute("value", "My feedback is");
-        // document.body.appendChild(x);
+        `<input type="text" id="inputNameID" placeholder="`+TextAssets.get(this.language).my_name_is+`"><br>`+
+        `<textarea rows="4" cols="40" id="inputID" placeholder="`+TextAssets.get(this.language).my_feedback_is+`"></textarea><br><br>`;
     }
 
     feedbackSubmit(){
+        const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
         var x = this.shadowRoot.querySelector('#inputID');
+        var strFeedback = String(x.value);
         var name = this.shadowRoot.querySelector('#inputNameID');
-        prompt(x.value);
-        prompt(name.value);
+        var strName = String(name.value);
+        if((!specialChars.test(strFeedback)) && (!specialChars.test(strName))){
+            this.apiHandler.sendFeedback(name, strFeedback);
+        }
+        else{
+            if(specialChars.test(strFeedback)){
+                prompt("Error : Your feedback contains special characters like : `!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?~ ")
+            } else if(specialChars.test(strName)){
+                prompt("Error: Your name contains special characters like : `!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?~ ")
+            }
+        }
         x.parentNode.removeChild(x);
         name.parentNode.removeChild(name);
+    }
+
+    hideComment(){
+        var x = this.shadowRoot.querySelector('#inputCommentID');
+        x.parentNode.removeChild(x);
+    }
+
+    updateComment(){
+        let comment = this.shadowRoot.querySelector("#inputCommentID").value;
+        this.comments.set(this.question.id, comment);
     }
 
     /**
@@ -476,35 +544,38 @@ class PolicyModelsDefault extends HTMLElement{
         if(this.feedbackFlag){
             this.createInputFeedback();
             this.shadowRoot.querySelector('.feedbackDiv').innerHTML = `
-            <button class = feedbackSubmitBtn>`+this.textassets.submitFeedback[this.language]+`</button>`;
+            <button class = feedbackSubmitBtn>`+TextAssets.get(this.language).submit_feedback+`</button>`;
             this.shadowRoot.querySelector('.feedbackSubmitBtn').addEventListener('click', () => this.toggleFeedback());
         }
         else{
             this.feedbackSubmit();
             this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
-            `<button class = feedbackBtn id = feedbackBtnID>`+this.textassets.writeFeedback[this.language]+`</button>`;
+            `<button class = feedbackBtn id = feedbackBtnID>`+TextAssets.get(this.language).write_feedback+`</button>`;
             this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
         }
     }
 
-    // let info = this.shadowRoot.querySelector('.transcript');
-    //     let btn = this.shadowRoot.querySelector('#transcript-toggle');
-    //     this.transcriptFlag = !this.transcriptFlag;
-    //     if(this.transcriptFlag){
-    //         info.style.display = 'block';
-    //         btn.innerText = this.textassets.hide_transcript[this.language];
-    //     }
-    //     else{
-    //         info.style.display = 'none';
-    //         btn.innerText = this.textassets.show_transcript[this.language];
-    //     }
-
+    toggleComment(){ 
+        this.commentFlag = !this.commentFlag;
+        if(this.commentFlag){
+            this.createInputComment();
+            this.shadowRoot.querySelector('.commentDiv').innerHTML = `
+            <button class = commentSubmitBtn>`+TextAssets.get(this.language).hide_comment+`</button>`;
+            this.shadowRoot.querySelector('.commentSubmitBtn').addEventListener('click', () => this.toggleComment());
+        }
+        else{
+            this.hideComment();
+            this.shadowRoot.querySelector('.commentDiv').innerHTML = 
+            `<button class = commentBtn id = commentBtnID>`+TextAssets.get(this.language).write_comment+`</button>`;
+            this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
+        }
+    }
 
     /**
      * sets up the buttons for the current question.
      * button IDs are "#a" + the answers number
      */
-    ButtonSetUp(){
+    buttonSetUp(){
         let btnIDs = [];
         let btnSTR = ""; 
         for (let i = 0; i< this.question.answers.length; i++){
@@ -535,6 +606,7 @@ class PolicyModelsDefault extends HTMLElement{
         //     return;
         // }
         this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
+        this.comments.forEach((value,key) => {if(key > questionNum) this.comments.delete(key)})
         this.QuestionSetUp(undefined,questionNum, -1);
     }
 
@@ -547,11 +619,11 @@ class PolicyModelsDefault extends HTMLElement{
         this.transcriptFlag = !this.transcriptFlag;
         if(this.transcriptFlag){
             info.style.display = 'block';
-            btn.innerText = this.textassets.hide_transcript[this.language];
+            btn.innerText = TextAssets.get(this.language).hide_transcript;
         }
         else{
             info.style.display = 'none';
-            btn.innerText = this.textassets.show_transcript[this.language];
+            btn.innerText = TextAssets.get(this.language).show_transcript;
         }
     }
 
@@ -561,11 +633,11 @@ class PolicyModelsDefault extends HTMLElement{
         this.tagsFlag = !this.tagsFlag;
         if(this.tagsFlag){
             info.style.display = 'block';
-            btn.innerText = this.textassets.hide_tags[this.language];
+            btn.innerText = TextAssets.get(this.language).hide_tags;
         }
         else{
             info.style.display = 'none';
-            btn.innerText = this.textassets.show_tags[this.language];
+            btn.innerText = TextAssets.get(this.language).show_tags;
         }
     }
 

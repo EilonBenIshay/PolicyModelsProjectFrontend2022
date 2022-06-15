@@ -8,7 +8,7 @@ export class PMAPIHandler {
         this.answers;
         this.languages;
         this.activeLanguage;
-        this.models;
+        this.modelId;
         this.versionId;
         this.models
     }
@@ -134,10 +134,18 @@ export class PMAPIHandler {
         return returnValue;
     }
 
-    async getTags(uuid, language){
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/getTags/${uuid}/${language}/`);
+    async getTags(language){
+        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/getTags/${this.userId}/${this.modelId}/${this.versionId}/${language}/`);
         let data = await response.json();
         return data;
+    }
+
+    async feedback(userId, modelId, versionId, language, questionId, name, feedback){
+        await fetch(`http://localhost:9000/apiInterviewCtrl/feedback/${userId}/${modelId}/${versionId}/${language}/${questionId}/${name}/${feedback}/`);
+    }
+
+    async sendFeedback(name, feedback){
+        await feedback(this.userId, this.modelId, this.versionId, this.language, this.questionId, name, feedback);
     }
 
     changeHandlerLanguage(language){

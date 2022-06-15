@@ -41,6 +41,11 @@
   margin-top: 40px;
 }
 
+.commentBtn,
+.commentSubmitBtn{
+  margin-top: 10px;
+}
+
 .btnDownloadConclusions {
   margin-bottom: 20px;
 }
@@ -55,6 +60,8 @@
 .btnDownloadConclusions,
 .feedbackBtn,
 .feedbackSubmitBtn,
+.commentBtn,
+.commentSubmitBtn,
 .btnShowTags {
   align-self: center;
   background-color: #fff;
@@ -96,6 +103,8 @@
 .btnDownloadConclusions:hover,
 .feedbackBtn:hover,
 .feedbackSubmitBtn:hover,
+.commentBtn:hover,
+.commentSubmitBtn:hover,
 .btnShowTags:hover {
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
@@ -111,6 +120,8 @@
 .btnDownloadConclusions:focus,
 .feedbackBtn:focus,
 .feedbackSubmitBtn:focus,
+.commentBtn:focus,
+.commentSubmitBtn:focus,
 .btnShowTags:focus {
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
@@ -180,10 +191,16 @@
 }
 
 #inputID,
-#inputNameID {
+#inputCommentID {
+  border: 2px solid black;
+  margin-top: 30px;
+}
+
+#inputNameID{
   border: none;
   border-bottom: 2px solid black;
   margin-top: 30px;
+  width: 315px;
 }
 
 
