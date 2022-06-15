@@ -69,7 +69,7 @@ TextAssets.set("he-IL", {
     revisit: "חזור לשאלה זו",
     show_conclusion: "הראה תוצאות",
     home: "חזרה לעמוד הבית",
-    welcome: "ברוכים הבאים לאתר השמני של PolicyModels",
+    welcome: "ברוכים הבאים לאתר הזמני של PolicyModels",
     result: "התוצאות שלך",
     conclusion_page: "עמוד התוצאות",
     press_conclusions: "לחץ על כפתור \"הראה תוצאות\" על מנת לראות את תוצאות הראיון",

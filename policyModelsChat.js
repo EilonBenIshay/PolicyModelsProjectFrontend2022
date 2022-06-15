@@ -100,6 +100,7 @@ class APIMock {
     }
 
     returnToQuestion(questionId){
+        console.log("hi");
         this.answers.forEach((value, key) => {if(key >= questionId) this.answers.delete(key)});
         let retObject = [[this.questionbank[questionId-1]['questionID'],this.questionbank[questionId-1]['question'],this.questionbank[questionId-1]['answers']], jsonData, this.answers];
         return retObject;
@@ -420,7 +421,7 @@ class PolicyModelsChat extends HTMLElement{
         this.feedbackFlag = false;
         this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
         this.commentFlag = false;
-        if(this.question.id == -1){
+        if(this.question.id == undefined){
             this.shadowRoot.querySelector('.chat').innerHTML = 
                 "<p class=transitionToConclusionPageContent>"+TextAssets.get(this.language).press_conclusions+"</p>";
             this.conclusion();
@@ -617,9 +618,6 @@ class PolicyModelsChat extends HTMLElement{
      */
     ReturnToQuestion(questionNum){
         //TODO remove this condition with the full API implementation
-        if(questionNum > 10 || questionNum < 1){
-            return;
-        }
         this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
         this.comments.forEach((value,key) => {if(key > questionNum) this.comments.delete(key)})
         this.QuestionSetUp(undefined,questionNum, -1);
