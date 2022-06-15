@@ -140,12 +140,12 @@ export class PMAPIHandler {
         return data;
     }
 
-    async feedback(userId, modelId, versionId, language, questionId, name, feedback){
+    async feedbackHandle(userId, modelId, versionId, language, questionId, name, feedback){
         await fetch(`http://localhost:9000/apiInterviewCtrl/feedback/${userId}/${modelId}/${versionId}/${language}/${questionId}/${name}/${feedback}/`);
     }
 
     async sendFeedback(name, feedback){
-        await feedback(this.userId, this.modelId, this.versionId, this.language, this.questionId, name, feedback);
+        await this.feedbackHandle(this.userId, this.modelId, this.versionId, this.activeLanguage, this.questionId, name, feedback);
     }
 
     changeHandlerLanguage(language){
