@@ -135,6 +135,7 @@ export class PMAPIHandler {
     }
 
     async getTags(language){
+        console.log(language);
         let response = await fetch(`http://localhost:9000/apiInterviewCtrl/getTags/${this.userId}/${this.modelId}/${this.versionId}/${language}/`);
         let data = await response.json();
         return data;
