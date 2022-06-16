@@ -62,7 +62,12 @@ const jsonQuestionBankEnglish = [{
 	"answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
 },
 {
-    "questionID": -1,
+    "questionID": 11,
+	"question": "test or Seinfeld?",
+	"answers": ["test", "test", "F.r.i.e.n.d.s", "test"]
+},
+{
+    "questionID": undefined,
     "question": "",
     "answers": []
 }];
@@ -161,7 +166,7 @@ class PolicyModelsChat extends HTMLElement{
         this.feedbackFlag = false;
         this.commentFlag = false;
         this.tags;
-        this.apiHandler = new PMAPIHandler();
+        this.apiHandler = new APIMock();
         this.language = TextAssets.keys().next().value;
 
         //this.question = this.apiHandler.initInterview("English-Raw");
@@ -385,24 +390,37 @@ class PolicyModelsChat extends HTMLElement{
             let revisit = "<br><button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+TextAssets.get(this.language).revisit+"</button></div>";
             chat_text += `  <div class=ChatDiv>
                             
-                            <div class=\"boxLeft question\">                          
+                            <div class="boxLeft question">                          
                             <br>${value[0]}
                             ${revisit}
                             </div>
 
-                            <div class=\"boxRight answer\">
+                            <div class="boxRight answer">
                             <br>${value[1]}<br>
                             </div>
                             
                             </div>
                             `;
-        });
-        let answers_text = "";
-        let feedbackBtn = `<button class = feedbackBtn id = feedbackBtnID>`+TextAssets.get(this.language).write_feedback+`</button>`;
-        let commentBtn = `<button class = commentBtn id = commentBtnID>`+TextAssets.get(this.language).write_comment+`</button>`;
-        for (let i = 0; i < this.question.answers.length; i++){
-            answers_text += `<br>(${i}) - ${this.question.answers[i]}`;
+        })
+        if(this.question.id == undefined){
+            chat_text +=   ` <div class=ChatDiv>
+                            
+                            <div class=\"boxLeft question\">
+                            <br>${TextAssets.get(this.language).press_conclusions}
+                            <div class="buttons">
+                            <button class = "btnConclusion">${TextAssets.get(this.language).show_conclusion}</button>
+                            </div>
+                            </div>
+                            </div>
+                            `;
+            this.shadowRoot.querySelector('.chat').innerHTML = chat_text;
+            this.answers.forEach((value,key) => {this.shadowRoot.querySelector('#QR' + key.toString()).addEventListener('click', ()=>this.ReturnToQuestion(key))});
+            this.shadowRoot.querySelector('#inputID').style.display = 'none';
+            this.shadowRoot.querySelector('.btnConclusion').addEventListener('click', () => this.conclusionPage());
         }
+        else{
+        let feedbackBtn = `<button class = feedbackBtn id = feedbackBtnID>${TextAssets.get(this.language).write_feedback}</button>`;
+        let commentBtn = `<button class = commentBtn id = commentBtnID>${TextAssets.get(this.language).write_comment}</button>`;
         chat_text += `  <div class=ChatDiv>
                             
                         <div class=\"boxLeft question\">
@@ -421,20 +439,7 @@ class PolicyModelsChat extends HTMLElement{
         this.feedbackFlag = false;
         this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
         this.commentFlag = false;
-        if(this.question.id == undefined){
-            this.shadowRoot.querySelector('.chat').innerHTML = 
-                "<p class=transitionToConclusionPageContent>"+TextAssets.get(this.language).press_conclusions+"</p>";
-            this.conclusion();
         }
-    }
-
-    /**
-     * Loads up the conclusion page when press on conclusion btn.
-     */
-     conclusion(){
-        this.shadowRoot.querySelector('#inputID').style.display = 'none';
-        this.shadowRoot.querySelector('.conclusion').innerHTML = "<button class = \"btnConclusion\">" + TextAssets.get(this.language).show_conclusion + "</button>\n";
-        this.shadowRoot.querySelector('.conclusion').addEventListener('click', () => this.conclusionPage());
     }
 
     conclusionPage(){ 
