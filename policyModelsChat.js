@@ -420,7 +420,7 @@ class PolicyModelsChat extends HTMLElement{
         this.feedbackFlag = false;
         this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
         this.commentFlag = false;
-        if(this.question.id == -1){
+        if(this.question.id == undefined){
             this.shadowRoot.querySelector('.chat').innerHTML = 
                 "<p class=transitionToConclusionPageContent>"+TextAssets.get(this.language).press_conclusions+"</p>";
             this.conclusion();
