@@ -490,19 +490,19 @@ class PolicyModelsDefault extends HTMLElement{
     createElementCommentInput(){
         if (this.comments.has(this.question.id)){
             this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
-            `<textarea rows="4" cols="40" id="inputCommentID" placeholder="${TextAssets.get(this.language).my_comment_is}" >${this.comments.get(this.question.id)}</textarea><br><br>`;
+            `<textarea rows="4" cols="40" id="inputCommentID" placeholder="${TextAssets.get(this.language).my_comment_is}" >${this.comments.get(this.question.id)}</textarea>`;
             this.shadowRoot.querySelector("#inputCommentID").addEventListener('keyup', () => this.updateComment())
         }
         else{
             this.shadowRoot.querySelector('.commentInputDiv').innerHTML = 
-            `<textarea rows="4" cols="40" id="inputCommentID" placeholder="`+TextAssets.get(this.language).my_comment_is+`"></textarea><br><br>`;}
+            `<textarea rows="4" cols="40" id="inputCommentID" placeholder="`+TextAssets.get(this.language).my_comment_is+`"></textarea>`;}
             this.shadowRoot.querySelector("#inputCommentID").addEventListener('keyup', () => this.updateComment())
     }
 
     createElementInput(){
         this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = 
-        `<input type="text" id="inputNameID" placeholder="`+TextAssets.get(this.language).my_name_is+`"><br>`+
-        `<textarea rows="4" cols="40" id="inputID" placeholder="`+TextAssets.get(this.language).my_feedback_is+`"></textarea><br><br>`;
+        `<input type="text" id="inputNameID" placeholder="`+TextAssets.get(this.language).my_name_is+`">
+        <br><textarea rows="4" cols="40" id="inputID" placeholder="`+TextAssets.get(this.language).my_feedback_is+`"></textarea>`;
     }
 
     feedbackSubmit(){
@@ -552,6 +552,7 @@ class PolicyModelsDefault extends HTMLElement{
             this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
             `<button class = feedbackBtn id = feedbackBtnID>`+TextAssets.get(this.language).write_feedback+`</button>`;
             this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+            this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = '';
         }
     }
 
