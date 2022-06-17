@@ -431,6 +431,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.setTranscript(); 
         this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
         this.shadowRoot.querySelector('.questions').innerText = this.question.question; 
+        this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = '';
         this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
         `<button class = feedbackBtn id = feedbackBtnID>`+TextAssets.get(this.language).write_feedback+`</button>`;
         this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
