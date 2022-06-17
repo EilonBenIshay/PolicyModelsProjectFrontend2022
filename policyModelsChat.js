@@ -9,126 +9,126 @@ class Question {
     }
 }
 
-const jsonData ={"Recommendations":["checkElderlyAllowance"],"Duties":["employeePriorNotice"],"EmployerObligations":["honorFormerContractorSeniority","finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter","form161"],"Notices":["severancePayMethod_Monthly","priorNoticePeriod_Varied"],"Benefits":{"Pension":"allowance","Properties":["possiblePersonalAccidentsInsurance"]},"Assertions":{"Employment":{"Type":"contractor","Scope":"full","SalaryUnits":"monthly","Duration":"_6_11"},"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Gender":"female"}};
-//answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
-const jsonQuestionBankEnglish = [{
-	"questionID": 1,
-	"question": "Are you a woman?",
-	"answers": ["yes", "no"]
-},
-{
-	"questionID": 2,
-	"question": "How old are you?",
-	"answers": ["under 62", "62 to 67", "67 and over"]
-},
-{
-	"questionID": 3,
-	"question": "Are you an Israeli citizen?",
-	"answers": ["yes", "no"]
-},
-{
-	"questionID": 4,
-	"question": "How was your salary calculated?",
-	"answers": ["monthly", "daily", "hourly"]
-},
-{
-	"questionID": 5,
-	"question": "How has your day been?",
-	"answers":  ["Best day of my life", "Great", "Ok", "Bad", "Straight up agony"]
-},
-{
-	"questionID": 6,
-	"question": "What is your favorite animal",
-	"answers": ["Dog", "Cat", "Mouse", "Frog", "Hedgehog", "Bee", "Wolf", "Other"]
-},
-{
-	"questionID": 7,
-	"question": "Who is the best?",
-	"answers": ["Shady", "Shelly", "Eilon", "Tbh none of them"]
-},
-{
-	"questionID": 8,
-	"question": "Are you an israeli citizan",
-	"answers": ["Yes", "No"]
-},
-{
-	"questionID": 9,
-	"question": "Who is the best friend?",
-	"answers": ["Ross", "Chandler", "Monica", "Rachel", "Pheobe", "Joey"]
-},
-{
-	"questionID": 10,
-	"question": "HIMYM or Seinfeld?",
-	"answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
-},
-{
-    "questionID": 11,
-	"question": "test or Seinfeld?",
-	"answers": ["test", "test", "F.r.i.e.n.d.s", "test"]
-},
-{
-    "questionID": undefined,
-    "question": "",
-    "answers": []
-}];
+// const jsonData ={"Recommendations":["checkElderlyAllowance"],"Duties":["employeePriorNotice"],"EmployerObligations":["honorFormerContractorSeniority","finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter","form161"],"Notices":["severancePayMethod_Monthly","priorNoticePeriod_Varied"],"Benefits":{"Pension":"allowance","Properties":["possiblePersonalAccidentsInsurance"]},"Assertions":{"Employment":{"Type":"contractor","Scope":"full","SalaryUnits":"monthly","Duration":"_6_11"},"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Gender":"female"}};
+// //answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
+// const jsonQuestionBankEnglish = [{
+// 	"questionID": 1,
+// 	"question": "Are you a woman?",
+// 	"answers": ["yes", "no"]
+// },
+// {
+// 	"questionID": 2,
+// 	"question": "How old are you?",
+// 	"answers": ["under 62", "62 to 67", "67 and over"]
+// },
+// {
+// 	"questionID": 3,
+// 	"question": "Are you an Israeli citizen?",
+// 	"answers": ["yes", "no"]
+// },
+// {
+// 	"questionID": 4,
+// 	"question": "How was your salary calculated?",
+// 	"answers": ["monthly", "daily", "hourly"]
+// },
+// {
+// 	"questionID": 5,
+// 	"question": "How has your day been?",
+// 	"answers":  ["Best day of my life", "Great", "Ok", "Bad", "Straight up agony"]
+// },
+// {
+// 	"questionID": 6,
+// 	"question": "What is your favorite animal",
+// 	"answers": ["Dog", "Cat", "Mouse", "Frog", "Hedgehog", "Bee", "Wolf", "Other"]
+// },
+// {
+// 	"questionID": 7,
+// 	"question": "Who is the best?",
+// 	"answers": ["Shady", "Shelly", "Eilon", "Tbh none of them"]
+// },
+// {
+// 	"questionID": 8,
+// 	"question": "Are you an israeli citizan",
+// 	"answers": ["Yes", "No"]
+// },
+// {
+// 	"questionID": 9,
+// 	"question": "Who is the best friend?",
+// 	"answers": ["Ross", "Chandler", "Monica", "Rachel", "Pheobe", "Joey"]
+// },
+// {
+// 	"questionID": 10,
+// 	"question": "HIMYM or Seinfeld?",
+// 	"answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
+// },
+// {
+//     "questionID": 11,
+// 	"question": "test or Seinfeld?",
+// 	"answers": ["test", "test", "F.r.i.e.n.d.s", "test"]
+// },
+// {
+//     "questionID": undefined,
+//     "question": "",
+//     "answers": []
+// }];
 
-class APIMock {
-    constructor(){
-        this.language = 'English-Raw'
-        this.questionId;
-        this.questionbank = jsonQuestionBankEnglish
-        this.answers = new Map();
-    }
+// class APIMock {
+//     constructor(){
+//         this.language = 'English-Raw'
+//         this.questionId;
+//         this.questionbank = jsonQuestionBankEnglish
+//         this.answers = new Map();
+//     }
 
-    initModel(modelId, versionId){
-        return;
-    }
+//     initModel(modelId, versionId){
+//         return;
+//     }
 
-    initInterview(language){
-        this.answers = new Map();
-        this.questionId = this.questionbank[0]['questionID'];
-        let retObject = [[this.questionbank[0]['questionID'],this.questionbank[0]['question'],this.questionbank[0]['answers']], jsonData];
-        return retObject;
-    }
+//     initInterview(language){
+//         this.answers = new Map();
+//         this.questionId = this.questionbank[0]['questionID'];
+//         let retObject = [[this.questionbank[0]['questionID'],this.questionbank[0]['question'],this.questionbank[0]['answers']], jsonData];
+//         return retObject;
+//     }
 
-    getNextQuestion(answer, questionId) {
-        this.answers.set(questionId, [this.questionbank[questionId]['question'], answer]);
-        // if (answer == -1)
-        //     retObject = JSON.stringify(this.questionbank[questionID - 1]); 
-        // if (questionId == undefined)
-        //     retObject = JSON.stringify(this.questionbank[0]);
-        // else
-        //console.log(this.questionbank[questionId]);
-        this.questionId = this.questionbank[questionId]['questionID'];
-        let retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData];
-        return retObject;
-    }
+//     getNextQuestion(answer, questionId) {
+//         this.answers.set(questionId, [this.questionbank[questionId]['question'], answer]);
+//         // if (answer == -1)
+//         //     retObject = JSON.stringify(this.questionbank[questionID - 1]); 
+//         // if (questionId == undefined)
+//         //     retObject = JSON.stringify(this.questionbank[0]);
+//         // else
+//         //console.log(this.questionbank[questionId]);
+//         this.questionId = this.questionbank[questionId]['questionID'];
+//         let retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData];
+//         return retObject;
+//     }
 
-    returnToQuestion(questionId){
-        console.log("hi");
-        this.answers.forEach((value, key) => {if(key >= questionId) this.answers.delete(key)});
-        let retObject = [[this.questionbank[questionId-1]['questionID'],this.questionbank[questionId-1]['question'],this.questionbank[questionId-1]['answers']], jsonData, this.answers];
-        return retObject;
-    }
+//     returnToQuestion(questionId){
+//         console.log("hi");
+//         this.answers.forEach((value, key) => {if(key >= questionId) this.answers.delete(key)});
+//         let retObject = [[this.questionbank[questionId-1]['questionID'],this.questionbank[questionId-1]['question'],this.questionbank[questionId-1]['answers']], jsonData, this.answers];
+//         return retObject;
+//     }
 
-    changeLanguage(language){
-        let retObject = [[this.questionbank[this.questionId]['questionID'],this.questionbank[this.questionId]['question'],this.questionbank[this.questionId]['answers']], jsonData, this.answers];
-        return retObject
-    }
+//     changeLanguage(language){
+//         let retObject = [[this.questionbank[this.questionId]['questionID'],this.questionbank[this.questionId]['question'],this.questionbank[this.questionId]['answers']], jsonData, this.answers];
+//         return retObject
+//     }
 
-    changeHandlerLanguage(language){
-        this.language = language;
-    }
+//     changeHandlerLanguage(language){
+//         this.language = language;
+//     }
 
-    getTags(language){
-        return jsonData;
-    }
+//     getTags(language){
+//         return jsonData;
+//     }
 
-    sendFeedback(name, feedback){
-        console.log(name);
-        console.log(feedback);
-    }
-}
+//     sendFeedback(name, feedback){
+//         console.log(name);
+//         console.log(feedback);
+//     }
+// }
 
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
