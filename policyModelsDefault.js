@@ -230,8 +230,8 @@ class PolicyModelsDefault extends HTMLElement{
         <div class=\"startInterview\"></div>
         </div>`;
 
-        let model = document.getElementById("model").innerHTML;
-        let version = document.getElementById("version").innerHTML;
+        let model = document.getElementById("modelId").innerHTML;
+        let version = document.getElementById("versionId").innerHTML;
 
         await this.apiHandler.initModel(model, version);
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;

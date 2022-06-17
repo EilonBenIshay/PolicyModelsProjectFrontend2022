@@ -152,7 +152,6 @@ template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
 class PolicyModelsChat extends HTMLElement{
     constructor(){
         super();
-        var model = document.getElementById("model").innerHTML;
         this.question;
         this.pageIdentifyer = 1;
 
@@ -212,8 +211,8 @@ class PolicyModelsChat extends HTMLElement{
         <div class=\"startInterview\"></div>  
         </div>`;
         
-        let model = document.getElementById("model").innerHTML;
-        let version = document.getElementById("version").innerHTML;
+        let model = document.getElementById("modelId").innerHTML;
+        let version = document.getElementById("versionId").innerHTML;
 
         await this.apiHandler.initModel(model, version);
         this.shadowRoot.querySelector('.policy-models-chat').innerHTML = div;

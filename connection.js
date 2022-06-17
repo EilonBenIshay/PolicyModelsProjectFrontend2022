@@ -2,7 +2,7 @@
 //const http = require('http');
 export class PMAPIHandler {
     constructor(){
-        this.serverDomain = `https://policymodelsserver.azurewebsites.net/`
+        this.serverDomain = `https://policymodelsserver.azurewebsites.net`
         this.userId;
         this.questionId;
         this.questionText;
