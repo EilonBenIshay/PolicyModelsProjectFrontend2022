@@ -105,7 +105,6 @@ class APIMock {
         // if (questionId == undefined)
         //     retObject = JSON.stringify(this.questionbank[0]);
         // else
-        //console.log(this.questionbank[questionId]);
         this.questionId = this.questionbank[questionId]['questionID'];
         let retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData];
         return retObject;
@@ -207,7 +206,6 @@ class PolicyModelsDefault extends HTMLElement{
                 let newAnswers = new Map();
                 this.question = new Question(changeLanguageData[0][0],changeLanguageData[0][1],changeLanguageData[0][2]);
                 this.answers.forEach((value,key) => { 
-                    console.log(key);
                     newAnswers.set(key, [languageAnswers.get(key)[0], languageAnswers.get(key)[1], value[2]]);
                 });
                 this.answers = newAnswers;
@@ -515,7 +513,7 @@ class PolicyModelsDefault extends HTMLElement{
         var name = this.shadowRoot.querySelector('#inputNameID');
         var strName = String(name.value);
         if((!specialChars.test(strFeedback)) && (!specialChars.test(strName))){
-            this.apiHandler.sendFeedback(name, strFeedback);
+            this.apiHandler.sendFeedback(strName, strFeedback);
         }
         else{
             if(specialChars.test(strFeedback)){
