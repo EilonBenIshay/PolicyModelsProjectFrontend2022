@@ -2,6 +2,7 @@
 //const http = require('http');
 export class PMAPIHandler {
     constructor(){
+        this.serverDomain = `https://policymodelsserver.azurewebsites.net/`
         this.userId;
         this.questionId;
         this.questionText;
@@ -23,7 +24,7 @@ export class PMAPIHandler {
      * 
      */
     async getModels() {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/models/`);
+        let response = await fetch(`${this.serverDomain}/apiInterviewCtrl/models/`);
         let data = await response.json();
         //this.models = data;
         return data;
@@ -40,7 +41,7 @@ export class PMAPIHandler {
      */
 
     async getModelLanguages(modelId) {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/start/`);
+        let response = await fetch(`${this.serverDomain}/apiInterviewCtrl/${modelId}/start/`);
         let data = await response.json();
         //this.languages = data;
         return data;
@@ -58,7 +59,7 @@ export class PMAPIHandler {
 
     async startInterview(modelId,versionId,languageId)
     {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start/`);
+        let response = await fetch(`${this.serverDomain}/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start/`);
         let data = await response.json();
         return data;
     }
@@ -82,7 +83,7 @@ export class PMAPIHandler {
 
     async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
     {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
+        let response = await fetch(`${this.serverDomain}/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
         let data = await response.json();
         return data;
     }
@@ -110,7 +111,7 @@ export class PMAPIHandler {
 
     async askHistory(uuid,modelId,versionId,languageId,questionId)
     {
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/askHistory/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/`);
+        let response = await fetch(`${this.serverDomain}/apiInterviewCtrl/askHistory/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/`);
         let data = await response.json();
         return data;
     }
@@ -136,13 +137,13 @@ export class PMAPIHandler {
 
     async getTags(language){
         console.log(language);
-        let response = await fetch(`http://localhost:9000/apiInterviewCtrl/getTags/${this.userId}/${this.modelId}/${this.versionId}/${language}/`);
+        let response = await fetch(`${this.serverDomain}/apiInterviewCtrl/getTags/${this.userId}/${this.modelId}/${this.versionId}/${language}/`);
         let data = await response.json();
         return data;
     }
 
     async feedbackHandle(userId, modelId, versionId, language, questionId, name, feedback){
-        await fetch(`http://localhost:9000/apiInterviewCtrl/feedback/${userId}/${modelId}/${versionId}/${language}/${questionId}/${name}/${feedback}/`);
+        await fetch(`${this.serverDomain}/apiInterviewCtrl/feedback/${userId}/${modelId}/${versionId}/${language}/${questionId}/${name}/${feedback}/`);
     }
 
     async sendFeedback(name, feedback){
@@ -235,7 +236,7 @@ export class PMAPIHandler {
 
     // getModels()
     // {
-    //     let url = `http://localhost:9000/apiInterviewCtrl/models/`
+    //     let url = `${this.serverDomain}/apiInterviewCtrl/models/`
     //     return new Promise((resolve, reject) =>{
     //         http.get(url, (res) => {
     //             // console.log('statusCode:', res.statusCode);
@@ -253,7 +254,7 @@ export class PMAPIHandler {
     
     // getModelLanguages(modelId)
     // {
-    //     let url = `http://localhost:9000/apiInterviewCtrl/${modelId}/start`
+    //     let url = `${this.serverDomain}/apiInterviewCtrl/${modelId}/start`
     //     return new Promise((resolve, reject) =>{
     //         http.get(url, (res) => {
     //             res.on('data', (d) => {
@@ -268,7 +269,7 @@ export class PMAPIHandler {
 
     // startInterview(modelId,versionId,languageId)
     // {
-    //     let url = `http://localhost:9000/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`
+    //     let url = `${this.serverDomain}/apiInterviewCtrl/${modelId}/${versionId}/${languageId}/start`
     //     return new Promise((resolve, reject) =>{
     //         http.get(url, (res) => {
     //             // console.log('statusCode:', res.statusCode);
