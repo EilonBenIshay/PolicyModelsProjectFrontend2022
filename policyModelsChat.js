@@ -165,7 +165,7 @@ class PolicyModelsChat extends HTMLElement{
         this.feedbackFlag = false;
         this.commentFlag = false;
         this.tags;
-        this.apiHandler = new APIMock();
+        this.apiHandler = new PMAPIHandler();
         this.language = TextAssets.keys().next().value;
 
         //this.question = this.apiHandler.initInterview("English-Raw");
