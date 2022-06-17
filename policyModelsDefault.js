@@ -207,6 +207,7 @@ class PolicyModelsDefault extends HTMLElement{
                 let newAnswers = new Map();
                 this.question = new Question(changeLanguageData[0][0],changeLanguageData[0][1],changeLanguageData[0][2]);
                 this.answers.forEach((value,key) => { 
+                    console.log(key);
                     newAnswers.set(key, [languageAnswers.get(key)[0], languageAnswers.get(key)[1], value[2]]);
                 });
                 this.answers = newAnswers;
