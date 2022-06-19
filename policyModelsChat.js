@@ -130,6 +130,143 @@ class Question {
 //     }
 // }
 
+if(document.getElementById('internalCheckUp') != null){
+    //test css
+    try{
+        let css = document.getElementById("style").innerHTML;
+    }
+    catch(e){
+        prompt("Could not find CSS file!");
+    }
+    //test Text Assets
+    try{
+        let keys = TextAssets.keys();
+    }
+    catch(e){
+        prompt("Could not find \"textAssets.js\" file!");
+    }
+    Array.from(TextAssets.keys()).forEach((key) =>
+    {
+    
+        let welcome = TextAssets.get(key).welcome;
+        if (welcome  == undefined){
+            prompt(`textAssets is missing 'welcome' for ${key}!`);
+        }
+        let start_interview = TextAssets.get(key).start_interview;
+        if (start_interview  == undefined){
+            prompt(`textAssets is missing 'start_interview' for ${key}!`);
+        }
+        let start = TextAssets.get(key).start;
+        if (start  == undefined){
+            prompt(`textAssets is missing 'start' for ${key}!`);
+        }
+        let show_transcript = TextAssets.get(key).show_transcript;
+        if (show_transcript  == undefined){
+            prompt(`textAssets is missing 'show_transcript' for ${key}!`);
+        }
+        let hide_transcript = TextAssets.get(key).hide_transcript;
+        if (hide_transcript  == undefined){
+            prompt(`textAssets is missing 'hide_transcript' for ${key}!`);
+        }
+        let question = TextAssets.get(key).question;
+        if (question  == undefined){
+            prompt(`textAssets is missing 'question' for ${key}!`);
+        }
+        let your_answer = TextAssets.get(key).your_answer;
+        if (your_answer  == undefined){
+            prompt(`textAssets is missing 'your_answer' for ${key}!`);
+        }
+        let revisit = TextAssets.get(key).revisit;
+        if (revisit  == undefined){
+            prompt(`textAssets is missing 'revisit' for ${key}!`);
+        }
+        let show_conclusion = TextAssets.get(key).show_conclusion;
+        if (show_conclusion  == undefined){
+            prompt(`textAssets is missing 'show_conclusion' for ${key}!`);
+        }
+        let home = TextAssets.get(key).home;
+        if (home  == undefined){
+            prompt(`textAssets is missing 'home' for ${key}!`);
+        }
+        let result = TextAssets.get(key).result;
+        if (result  == undefined){
+            prompt(`textAssets is missing 'result' for ${key}!`);
+        }
+        let conclusion_page = TextAssets.get(key).conclusion_page;
+        if (conclusion_page  == undefined){
+            prompt(`textAssets is missing 'conclusion_page' for ${key}!`);
+        }
+        let press_conclusions = TextAssets.get(key).press_conclusions;
+        if (press_conclusions  == undefined){
+            prompt(`textAssets is missing 'press_conclusions' for ${key}!`);
+        }
+        let download_transcript = TextAssets.get(key).download_transcript;
+        if (download_transcript  == undefined){
+            prompt(`textAssets is missing 'download_transcript' for ${key}!`);
+        }
+        let write_feedback = TextAssets.get(key).write_feedback;
+        if (write_feedback  == undefined){
+            prompt(`textAssets is missing 'write_feedback' for ${key}!`);
+        }
+        let submit_feedback = TextAssets.get(key).submit_feedback;
+        if (submit_feedback  == undefined){
+            prompt(`textAssets is missing 'submit_feedback' for ${key}!`);
+        }
+        let show_tags = TextAssets.get(key).show_tags;
+        if (show_tags  == undefined){
+            prompt(`textAssets is missing 'show_tags' for ${key}!`);
+        }
+        let hide_tags = TextAssets.get(key).hide_tags;
+        if (hide_tags  == undefined){
+            prompt(`textAssets is missing 'hide_tags' for ${key}!`);
+        }
+        let my_feedback_is = TextAssets.get(key).my_feedback_is;
+        if (my_feedback_is  == undefined){
+            prompt(`textAssets is missing 'my_feedback_is' for ${key}!`);
+        }
+        let my_name_is = TextAssets.get(key).my_name_is;
+        if (my_name_is  == undefined){
+            prompt(`textAssets is missing 'my_name_is' for ${key}!`);
+        }
+        let download_conclusions = TextAssets.get(key).download_conclusions;
+        if (download_conclusions  == undefined){
+            prompt(`textAssets is missing 'download_conclusions' for ${key}!`);
+        }
+        let enter_answer = TextAssets.get(key).enter_answer;
+        if (enter_answer  == undefined){
+            prompt(`textAssets is missing 'enter_answer' for ${key}!`);
+        }
+        let write_comment = TextAssets.get(key).write_comment;
+        if (write_comment  == undefined){
+            prompt(`textAssets is missing 'write_comment' for ${key}!`);
+        }
+        let hide_comment = TextAssets.get(key).hide_comment;
+        if (hide_comment  == undefined){
+            prompt(`textAssets is missing 'hide_comment' for ${key}!`);
+        }
+        let my_comment_is = TextAssets.get(key).my_comment_is;
+        if (my_comment_is  == undefined){
+            prompt(`textAssets is missing 'my_comment_is' for ${key}!`);
+        }
+        let rejection = TextAssets.get(key).rejection;
+        if (rejection  == undefined){
+            prompt(`textAssets is missing 'rejection' for ${key}!`);
+        }
+        let rejection_advice = TextAssets.get(key).rejection_advice;
+        if (rejection_advice  == undefined){
+            prompt(`textAssets is missing 'rejection_advice' for ${key}!`);
+        }
+    })
+
+    //test connection
+    try{
+        let apiHandler = new PMAPIHandler();
+    }
+    catch(e){
+        prompt(`could not find 'connection.js' file!`);
+    }
+}
+
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
 
@@ -152,8 +289,11 @@ template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
 class PolicyModelsChat extends HTMLElement{
     constructor(){
         super();
+
+
+
         this.question;
-        this.pageIdentifyer = 1;
+        this.pageIdentifier = 1;
         this.rejectionFlag = 0;
 
 
@@ -182,11 +322,11 @@ class PolicyModelsChat extends HTMLElement{
 
     async changeLanguage(){
         this.language = this.shadowRoot.querySelector('#mySelect').value;
-            if(this.pageIdentifyer == 1){
+            if(this.pageIdentifier == 1){
                 this.apiHandler.changeHandlerLanguage(this.language);
                 this.welcomePage();
             }
-            else if (this.pageIdentifyer == 2){
+            else if (this.pageIdentifier == 2){
                 let changeLanguageData = await this.apiHandler.changeLanguage(this.language);
                 let languageAnswers = changeLanguageData[2];
                 let newAnswers = new Map();
@@ -197,12 +337,12 @@ class PolicyModelsChat extends HTMLElement{
                 this.answers = newAnswers;
                 this.interviewPage();
             }
-            else if (this.pageIdentifyer == 3){
+            else if (this.pageIdentifier == 3){
                 this.apiHandler.changeHandlerLanguage(this.language);
                 this.tags = await this.apiHandler.getTags(this.language);
                 this.conclusionPage();
             }
-            else if (this.pageIdentifyer == 4){
+            else if (this.pageIdentifier == 4){
                 let changeLanguageData = await this.apiHandler.changeLanguage(this.language);
                 let languageAnswers = changeLanguageData[2];
                 let newAnswers = new Map();
@@ -217,7 +357,7 @@ class PolicyModelsChat extends HTMLElement{
     }
 
     async welcomePage(){
-        this.pageIdentifyer = 1;
+        this.pageIdentifier = 1;
         let div = `
         <div>
         <p class=welcomeContent>`+ TextAssets.get(this.language).welcome +`</p>
@@ -237,7 +377,7 @@ class PolicyModelsChat extends HTMLElement{
     //  <input class type="text" id="fname" name="fname" value = "test"></input><br>
     //</div>
     interviewPage(){
-        this.pageIdentifyer = 2;
+        this.pageIdentifier = 2;
         let div = `
         <div>
             <h3></h3>
@@ -295,7 +435,7 @@ class PolicyModelsChat extends HTMLElement{
     }
 
     rejectionPage(){
-        this.pageIdentifyer = 4;
+        this.pageIdentifier = 4;
         let div = `
         <div>
         <p class=rejectionContent>${TextAssets.get(this.language).rejection}</p>
@@ -530,7 +670,7 @@ class PolicyModelsChat extends HTMLElement{
     }
 
     conclusionPage(){ 
-        this.pageIdentifyer = 3;
+        this.pageIdentifier = 3;
         let div = `
         <div>
         <p class="conclusionContent">`+TextAssets.get(this.language).conclusion_page+`<p>  

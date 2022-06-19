@@ -9,133 +9,139 @@ class Question {
         this.answers = answers
     }
 }
-
-/**
- * temp question bank
- */
- const jsonData = {"Recommendations":["checkElderlyAllowance"],"Duties":["employeePriorNotice"],"EmployerObligations":["honorFormerContractorSeniority","finalAccountSettlement","pensionFundNotice","jobTerminationConfirmation","workPeriodLetter","form161"],"Notices":["severancePayMethod_Monthly","priorNoticePeriod_Varied"],"Benefits":{"Pension":"allowance","Properties":["possiblePersonalAccidentsInsurance"]},"Assertions":{"Employment":{"Type":"contractor","Scope":"full","SalaryUnits":"monthly","Duration":"_6_11"},"AgeGroup":"voluntaryPension","LegalStatus":"israeliCitizenship","Gender":"female"}};
- //answer order - are you a woman? - yes || How old are you? - 62 to 67 || Are you an Israeli citizen? - yes.
- const jsonQuestionBankEnglish = [{
-     "questionID": 1,
-     "question": "Are you a woman?",
-     "answers": ["yes", "no"]
- },
- {
-     "questionID": 2,
-     "question": "How old are you?",
-     "answers": ["under 62", "62 to 67", "67 and over"]
- },
- {
-     "questionID": 3,
-     "question": "Are you an Israeli citizen?",
-     "answers": ["yes", "no"]
- },
- {
-     "questionID": 4,
-     "question": "How was your salary calculated?",
-     "answers": ["monthly", "daily", "hourly"]
- },
- {
-     "questionID": 5,
-     "question": "How has your day been?",
-     "answers":  ["Best day of my life", "Great", "Ok", "Bad", "Straight up agony"]
- },
- {
-     "questionID": 6,
-     "question": "What is your favorite animal",
-     "answers": ["Dog", "Cat", "Mouse", "Frog", "Hedgehog", "Bee", "Wolf", "Other"]
- },
- {
-     "questionID": 7,
-     "question": "Who is the best?",
-     "answers": ["Shady", "Shelly", "Eilon", "Tbh none of them"]
- },
- {
-     "questionID": 8,
-     "question": "Are you an israeli citizan",
-     "answers": ["Yes", "No"]
- },
- {
-     "questionID": 9,
-     "question": "Who is the best friend?",
-     "answers": ["Ross", "Chandler", "Monica", "Rachel", "Pheobe", "Joey"]
- },
- {
-     "questionID": 10,
-     "question": "HIMYM or Seinfeld?",
-     "answers": ["HIMYM", "Seinfeld", "F.r.i.e.n.d.s", "other"]
- },
- {
-     "questionID": undefined,
-     "question": "",
-     "answers": []
- }];
-
-//const jsonQuestionBankArabic = [];
-//const jsonQuestionBankHebrew = [];
-//const jsonQuestionBankRussian = [];
-
-
-/**
- * a class that portrays the API calls. later will be changed to include them
- */
-class APIMock {
-    constructor(){
-        this.language = 'English-Raw'
-        this.questionId;
-        this.questionbank = jsonQuestionBankEnglish
-        this.answers = new Map();
+ 
+if(document.getElementById('internalCheckUp') != null){
+    //test css
+    try{
+        let css = document.getElementById("style").innerHTML;
     }
-
-    initModel(modelId, versionId){
-        return;
+    catch(e){
+        prompt("Could not find CSS file!");
     }
-
-    initInterview(language){
-        this.answers = new Map();
-        this.questionId = this.questionbank[0]['questionID'];
-        let retObject = [[this.questionbank[0]['questionID'],this.questionbank[0]['question'],this.questionbank[0]['answers']], jsonData];
-        return retObject;
+    //test Text Assets
+    try{
+        let keys = TextAssets.keys();
     }
-
-    getNextQuestion(answer, questionId) {
-        this.answers.set(questionId, [this.questionbank[questionId]['question'], answer]);
-        // if (answer == -1)
-        //     retObject = JSON.stringify(this.questionbank[questionID - 1]); 
-        // if (questionId == undefined)
-        //     retObject = JSON.stringify(this.questionbank[0]);
-        // else
-        this.questionId = this.questionbank[questionId]['questionID'];
-        let retObject = [[this.questionbank[questionId]['questionID'],this.questionbank[questionId]['question'],this.questionbank[questionId]['answers']], jsonData];
-        return retObject;
+    catch(e){
+        prompt("Could not find \"textAssets.js\" file!");
     }
+    Array.from(TextAssets.keys()).forEach((key) =>
+    {
+    
+        let welcome = TextAssets.get(key).welcome;
+        if (welcome  == undefined){
+            prompt(`textAssets is missing 'welcome' for ${key}!`);
+        }
+        let start_interview = TextAssets.get(key).start_interview;
+        if (start_interview  == undefined){
+            prompt(`textAssets is missing 'start_interview' for ${key}!`);
+        }
+        let start = TextAssets.get(key).start;
+        if (start  == undefined){
+            prompt(`textAssets is missing 'start' for ${key}!`);
+        }
+        let show_transcript = TextAssets.get(key).show_transcript;
+        if (show_transcript  == undefined){
+            prompt(`textAssets is missing 'show_transcript' for ${key}!`);
+        }
+        let hide_transcript = TextAssets.get(key).hide_transcript;
+        if (hide_transcript  == undefined){
+            prompt(`textAssets is missing 'hide_transcript' for ${key}!`);
+        }
+        let question = TextAssets.get(key).question;
+        if (question  == undefined){
+            prompt(`textAssets is missing 'question' for ${key}!`);
+        }
+        let your_answer = TextAssets.get(key).your_answer;
+        if (your_answer  == undefined){
+            prompt(`textAssets is missing 'your_answer' for ${key}!`);
+        }
+        let revisit = TextAssets.get(key).revisit;
+        if (revisit  == undefined){
+            prompt(`textAssets is missing 'revisit' for ${key}!`);
+        }
+        let show_conclusion = TextAssets.get(key).show_conclusion;
+        if (show_conclusion  == undefined){
+            prompt(`textAssets is missing 'show_conclusion' for ${key}!`);
+        }
+        let home = TextAssets.get(key).home;
+        if (home  == undefined){
+            prompt(`textAssets is missing 'home' for ${key}!`);
+        }
+        let result = TextAssets.get(key).result;
+        if (result  == undefined){
+            prompt(`textAssets is missing 'result' for ${key}!`);
+        }
+        let conclusion_page = TextAssets.get(key).conclusion_page;
+        if (conclusion_page  == undefined){
+            prompt(`textAssets is missing 'conclusion_page' for ${key}!`);
+        }
+        let press_conclusions = TextAssets.get(key).press_conclusions;
+        if (press_conclusions  == undefined){
+            prompt(`textAssets is missing 'press_conclusions' for ${key}!`);
+        }
+        let download_transcript = TextAssets.get(key).download_transcript;
+        if (download_transcript  == undefined){
+            prompt(`textAssets is missing 'download_transcript' for ${key}!`);
+        }
+        let write_feedback = TextAssets.get(key).write_feedback;
+        if (write_feedback  == undefined){
+            prompt(`textAssets is missing 'write_feedback' for ${key}!`);
+        }
+        let submit_feedback = TextAssets.get(key).submit_feedback;
+        if (submit_feedback  == undefined){
+            prompt(`textAssets is missing 'submit_feedback' for ${key}!`);
+        }
+        let show_tags = TextAssets.get(key).show_tags;
+        if (show_tags  == undefined){
+            prompt(`textAssets is missing 'show_tags' for ${key}!`);
+        }
+        let hide_tags = TextAssets.get(key).hide_tags;
+        if (hide_tags  == undefined){
+            prompt(`textAssets is missing 'hide_tags' for ${key}!`);
+        }
+        let my_feedback_is = TextAssets.get(key).my_feedback_is;
+        if (my_feedback_is  == undefined){
+            prompt(`textAssets is missing 'my_feedback_is' for ${key}!`);
+        }
+        let my_name_is = TextAssets.get(key).my_name_is;
+        if (my_name_is  == undefined){
+            prompt(`textAssets is missing 'my_name_is' for ${key}!`);
+        }
+        let download_conclusions = TextAssets.get(key).download_conclusions;
+        if (download_conclusions  == undefined){
+            prompt(`textAssets is missing 'download_conclusions' for ${key}!`);
+        }
+        let write_comment = TextAssets.get(key).write_comment;
+        if (write_comment  == undefined){
+            prompt(`textAssets is missing 'write_comment' for ${key}!`);
+        }
+        let hide_comment = TextAssets.get(key).hide_comment;
+        if (hide_comment  == undefined){
+            prompt(`textAssets is missing 'hide_comment' for ${key}!`);
+        }
+        let my_comment_is = TextAssets.get(key).my_comment_is;
+        if (my_comment_is  == undefined){
+            prompt(`textAssets is missing 'my_comment_is' for ${key}!`);
+        }
+        let rejection = TextAssets.get(key).rejection;
+        if (rejection  == undefined){
+            prompt(`textAssets is missing 'rejection' for ${key}!`);
+        }
+        let rejection_advice = TextAssets.get(key).rejection_advice;
+        if (rejection_advice  == undefined){
+            prompt(`textAssets is missing 'rejection_advice' for ${key}!`);
+        }
+    })
 
-    returnToQuestion(questionId){
-        this.answers.forEach((value, key) => {if(key >= questionId) this.answers.delete(key)});
-        let retObject = [[this.questionbank[questionId-1]['questionID'],this.questionbank[questionId-1]['question'],this.questionbank[questionId-1]['answers']], jsonData, this.answers];
-        return retObject;
+    //test connection
+    try{
+        let apiHandler = new PMAPIHandler();
     }
-
-    changeLanguage(language){
-        let retObject = [[this.questionbank[this.questionId]['questionID'],this.questionbank[this.questionId]['question'],this.questionbank[this.questionId]['answers']], jsonData, this.answers];
-        return retObject
-    }
-
-    changeHandlerLanguage(language){
-        this.language = language;
-    }
-
-    getTags(language){
-        return jsonData;
-    }
-
-    sendFeedback(name, feedback){
-        console.log(name);
-        console.log(feedback);
+    catch(e){
+        prompt(`could not find 'connection.js' file!`);
     }
 }
- 
-
 
 const template = document.createElement('template');
 var nameOfFileCss = document.getElementById("style").innerHTML;
@@ -161,7 +167,7 @@ class PolicyModelsDefault extends HTMLElement{
     constructor(){
         super();
         this.rejectionFlag = 0;
-        this.pageIdentifyer = 1;
+        this.pageIdentifier = 1;
         this.transcriptFlag = false;
         this.feedbackFlag = false;
         this.commentFlag = false;
@@ -181,7 +187,7 @@ class PolicyModelsDefault extends HTMLElement{
         //base language will always be the language in index '0' at textAssets.languages.
         this.language = TextAssets.keys().next().value;
 
-        // this.question = new Question(undefined,TextAssets.get(this.language).welcome_PM, [TextAssets.get(this.language).start]);
+        // this.question = new Question(undefined,TextAssets.get(this.language).welcome, [TextAssets.get(this.language).start]);
         // this.buttons = ['#a0'];
 
         this.attachShadow({ mode: 'open' });
@@ -195,13 +201,14 @@ class PolicyModelsDefault extends HTMLElement{
         
 
     }
+
     async changeLanguage(){
         this.language = this.shadowRoot.querySelector('#mySelect').value;
-            if(this.pageIdentifyer == 1){
+            if(this.pageIdentifier == 1){
                 this.apiHandler.changeHandlerLanguage(this.language);
                 this.welcomePage();
             }
-            else if (this.pageIdentifyer == 2){
+            else if (this.pageIdentifier == 2){
                 let changeLanguageData = await this.apiHandler.changeLanguage(this.language);
                 let languageAnswers = changeLanguageData[2];
                 let newAnswers = new Map();
@@ -212,12 +219,12 @@ class PolicyModelsDefault extends HTMLElement{
                 this.answers = newAnswers;
                 this.interviewPage();
             }
-            else if (this.pageIdentifyer == 3){
+            else if (this.pageIdentifier == 3){
                 this.apiHandler.changeHandlerLanguage(this.language);
                 this.tags = await this.apiHandler.getTags(this.language);
                 this.conclusionPage();
             }
-            else if (this.pageIdentifyer == 4){
+            else if (this.pageIdentifier == 4){
                 let changeLanguageData = await this.apiHandler.changeLanguage(this.language);
                 let languageAnswers = changeLanguageData[2];
                 let newAnswers = new Map();
@@ -234,7 +241,7 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the welcome page
     */
     async welcomePage(){
-        this.pageIdentifyer = 1;
+        this.pageIdentifier = 1;
         let div = `
         <div>
         <p class=welcomeContent>`+ TextAssets.get(this.language).welcome +`</p>
@@ -256,7 +263,7 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the interview page
      */
     interviewPage(){
-        this.pageIdentifyer = 2;
+        this.pageIdentifier = 2;
         let div = `
         <div class = "grid">
             <div class = "defaultInterview">
@@ -287,7 +294,7 @@ class PolicyModelsDefault extends HTMLElement{
         
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
         //this.transcriptFlag = false;
-        //this.question = new Question(0,TextAssets.get(this.language).welcome_PM, [TextAssets.get(this.language).start]);
+        //this.question = new Question(0,TextAssets.get(this.language).welcome, [TextAssets.get(this.language).start]);
         //this.buttons = ['#a0'];
         this.shadowRoot.querySelector('.namePolicyModels').innerText = this.getAttribute('name');
         //this.shadowRoot.querySelector('h4').innerText = this.question.question;
@@ -318,7 +325,7 @@ class PolicyModelsDefault extends HTMLElement{
     }
 
     rejectionPage(){
-        this.pageIdentifyer = 4;
+        this.pageIdentifier = 4;
         let div = `
         <div>
         <p class=rejectionContent>${TextAssets.get(this.language).rejection}</p>
@@ -369,7 +376,7 @@ class PolicyModelsDefault extends HTMLElement{
      * a function called to load the conclusion page
      */
     conclusionPage(){ //TODO add text assets
-        this.pageIdentifyer = 3;
+        this.pageIdentifier = 3;
         let div = `
         <div>
         <p class=conclusionContent>`+TextAssets.get(this.language).conclusion_page+`</p>  
