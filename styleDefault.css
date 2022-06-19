@@ -272,3 +272,10 @@ h4 {
   font-family: 'Nunito', sans-serif;
   font-weight:900;
 }
+
+.rejectionContent{
+  color: red;
+  font-family: 'Nunito', sans-serif;
+  font-weight:900;
+  font-size: 20px;
+}

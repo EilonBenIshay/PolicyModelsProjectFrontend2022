@@ -74,7 +74,7 @@
   align-items: center;
 }
 
-.startInterviewBtn, .btnShowTags, .btnDownloadConclusions, .backToWelcomePage, .btnConclusion, .btnDownloadTranscript, .restartBtn{
+.startInterviewBtn, .btnShowTags, .btnDownloadConclusions, .backToWelcomePage, .btnConclusion, .btnDownloadTranscript, .restartBtn, .btnShowTranscript{
   align-self: center;
   background-color: #fff;
   background-image: none;
@@ -104,11 +104,11 @@
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-.startInterviewBtn:hover, .btnShowTags:hover, .btnDownloadConclusions:hover, .backToWelcomePage:hover, .btnConclusion:hover, .btnDownloadTranscript:hover, .restartBtn:hover{
+.startInterviewBtn:hover, .btnShowTags:hover, .btnDownloadConclusions:hover, .backToWelcomePage:hover, .btnConclusion:hover, .btnDownloadTranscript:hover, .restartBtn:hover, .btnShowTranscript:hover{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
 }
-.startInterviewBtn:focus, .btnShowTags:focus, .btnDownloadConclusions:focus, .backToWelcomePage:focus, .btnConclusion:focus, .btnDownloadTranscript:focus, .restartBtn:focus{
+.startInterviewBtn:focus, .btnShowTags:focus, .btnDownloadConclusions:focus, .backToWelcomePage:focus, .btnConclusion:focus, .btnDownloadTranscript:focus, .restartBtn:focus, .btnShowTranscript:focus{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
 
@@ -235,4 +235,11 @@
   font-size: 20px;
   text-align: center;
   align-items: center;
+}
+
+.rejectionContent{
+  color: red;
+  font-family: 'Nunito', sans-serif;
+  font-weight:900;
+  font-size: 20px;
 }
