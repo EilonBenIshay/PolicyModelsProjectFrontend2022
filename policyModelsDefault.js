@@ -160,6 +160,7 @@ template.innerHTML = `<link rel=\"stylesheet\" href=` + nameOfFileCss + `>
 class PolicyModelsDefault extends HTMLElement{
     constructor(){
         super();
+        this.rejectionFlag = 0;
         this.pageIdentifyer = 1;
         this.transcriptFlag = false;
         this.feedbackFlag = false;
@@ -215,6 +216,18 @@ class PolicyModelsDefault extends HTMLElement{
                 this.apiHandler.changeHandlerLanguage(this.language);
                 this.tags = await this.apiHandler.getTags(this.language);
                 this.conclusionPage();
+            }
+            else if (this.pageIdentifyer == 4){
+                let changeLanguageData = await this.apiHandler.changeLanguage(this.language);
+                let languageAnswers = changeLanguageData[2];
+                let newAnswers = new Map();
+                this.answers.forEach((value,key) => {
+                    if (key < this.question.id) 
+                        newAnswers.set(key, [languageAnswers.get(key)[0], languageAnswers.get(key)[1], value[2]]);
+                });
+                newAnswers.set(this.question.id, [changeLanguageData[0][1], changeLanguageData[0][2][this.answers.get(this.question.id)[2]], this.answers.get(this.question.id)[2]]);
+                this.answers = newAnswers;
+                this.rejectionPage();
             }
     }
     /** 
@@ -304,6 +317,33 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.btnDownloadTranscript').addEventListener('click', () => this.downloadTranscript(this.answers, 'myTranscript.json'));
     }
 
+    rejectionPage(){
+        this.pageIdentifyer = 4;
+        let div = `
+        <div>
+        <p class=rejectionContent>${TextAssets.get(this.language).rejection}</p>
+        <p class=rejectionAdvice>${TextAssets.get(this.language).rejection_advice}</p>
+        <div class="restartClass">
+        <button class = restartBtn> ${TextAssets.get(this.language).home}</button>
+        </div>
+        <div class = divBtnShowTranscript><button class = btnShowTranscript id="transcript-toggle">${TextAssets.get(this.language).show_transcript}</button></div>
+        <div class="transcript"></div>
+        <div class="downloadTranscript">
+        <button class="btnDownloadTranscript">${TextAssets.get(this.language).download_transcript}</button>
+        </div>
+        </div>`;
+        this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
+
+        this.setTranscript("rejection"); 
+        if (this.transcriptFlag == true){
+            this.shadowRoot.querySelector('.transcript').style.display = 'block';
+            this.shadowRoot.querySelector('#transcript-toggle').innerText = TextAssets.get(this.language).hide_transcript;
+        }
+        this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
+        this.shadowRoot.querySelector('.btnDownloadTranscript').addEventListener('click', () => this.downloadTranscript(this.answers, 'myTranscript.json'));
+        this.shadowRoot.querySelector('.restartBtn').addEventListener('click', () => this.backToWelcomePage());
+    }
+
     downloadTranscript(objToJson, name) {
         const obj = Object.fromEntries(objToJson);
         const text = JSON.stringify(obj);
@@ -316,6 +356,7 @@ class PolicyModelsDefault extends HTMLElement{
 
     backToWelcomePage(){
         this.answers = new Map();   
+        this.rejectionFlag = 0;
         this.transcriptFlag = false;
         this.question = undefined;
         this.tagsFlag = false;
@@ -397,7 +438,10 @@ class PolicyModelsDefault extends HTMLElement{
         }
         else{
             let data = await this.apiHandler.getNextQuestion(answerNum,this.question.id);
-            if (data[0] != undefined)
+            if (data == -1){
+                this.rejectionFlag = 1;
+            }
+            else if (data[0] != undefined)
                 this.question = new Question(data[0][0],data[0][1],data[0][2]);
             else
                 this.question = new Question(undefined,"",[""]);
@@ -409,14 +453,21 @@ class PolicyModelsDefault extends HTMLElement{
     /**
      * sets up the transcript
      */
-    setTranscript(){
+    setTranscript(str = undefined){
         let transcriptSTR = "";
         let num = 0;
         let transcript = this.shadowRoot.querySelector('.transcript');
+        if (str == "rejection"){
+            this.answers.forEach((value,key) => {num += 1; transcriptSTR += ("<div>" +TextAssets.get(this.language).question+ " "+ (num).toString() +": " + value[0] +"&emsp;|&emsp;" +TextAssets.get(this.language).your_answer+ ": " +
+            value[1])});
+            transcript.innerHTML = transcriptSTR;
+        }
+        else{
         this.answers.forEach((value,key) => {num += 1; transcriptSTR += ("<div>" +TextAssets.get(this.language).question+ " "+ (num).toString() +": " + value[0] +"&emsp;|&emsp;" +TextAssets.get(this.language).your_answer+ ": " +
         value[1] + "&emsp;|&emsp;<button class = \"btnRevisitQ\" id = \"QR"+ key.toString() +"\">"+TextAssets.get(this.language).revisit+"</button></div>")});
         transcript.innerHTML = transcriptSTR;
         this.answers.forEach((value,key) => {this.shadowRoot.querySelector('#QR' + key.toString()).addEventListener('click', ()=>this.ReturnToQuestion(key))});
+        }
     }
 
     /**
@@ -428,37 +479,42 @@ class PolicyModelsDefault extends HTMLElement{
      */
     async QuestionSetUp(answer, overwriteid, answerNum){ 
         await this.FetchQuestion(answer,overwriteid, answerNum);
-        this.setTranscript(); 
-        this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
-        this.shadowRoot.querySelector('.questions').innerText = this.question.question; 
-        this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = '';
-        this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
-        `<button class = feedbackBtn id = feedbackBtnID>`+TextAssets.get(this.language).write_feedback+`</button>`;
-        this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
-        this.feedbackFlag = false;
-        this.shadowRoot.querySelector('.commentDiv').innerHTML = 
-        `<button class = commentBtn id = commentBtnID>`+ TextAssets.get(this.language).write_comment +`</button>`;
-        this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
-        this.commentFlag = false;
-        if(this.question.id == undefined){
-            this.shadowRoot.querySelector('.buttons').innerHTML = 
-                "<p class=transitionToConclusionPageContent>"+TextAssets.get(this.language).press_conclusions+"</p>";
-
-            this.conclusion();
+        if (this.rejectionFlag == 1){
+            this.rejectionPage();
         }
         else{
-            this.buttonSetUp();
-            var e = this.shadowRoot.querySelector('#inputID') ; //NEW
-            if (e != null){
-                e.parentNode.removeChild(e);
+            this.setTranscript(); 
+            this.shadowRoot.querySelector('.tagsDiv').innerHTML = this.parseTags(this.tags, false);
+            this.shadowRoot.querySelector('.questions').innerText = this.question.question; 
+            this.shadowRoot.querySelector('.feedbackInputDiv').innerHTML = '';
+            this.shadowRoot.querySelector('.feedbackDiv').innerHTML = 
+            `<button class = feedbackBtn id = feedbackBtnID>`+TextAssets.get(this.language).write_feedback+`</button>`;
+            this.shadowRoot.querySelector('.feedbackBtn').addEventListener('click', () => this.toggleFeedback());
+            this.feedbackFlag = false;
+            this.shadowRoot.querySelector('.commentDiv').innerHTML = 
+            `<button class = commentBtn id = commentBtnID>`+ TextAssets.get(this.language).write_comment +`</button>`;
+            this.shadowRoot.querySelector('.commentBtn').addEventListener('click', () => this.toggleComment());
+            this.commentFlag = false;
+            if(this.question.id == undefined){
+                this.shadowRoot.querySelector('.buttons').innerHTML = 
+                    "<p class=transitionToConclusionPageContent>"+TextAssets.get(this.language).press_conclusions+"</p>";
+
+                this.conclusion();
             }
-            var name = this.shadowRoot.querySelector('#inputNameID') ; //NEW
-            if (name != null){
-                name.parentNode.removeChild(name);
-            }
-            var c = this.shadowRoot.querySelector('#inputCommentID') ; //NEW
-            if (c != null){
-                c.parentNode.removeChild(c);
+            else{
+                this.buttonSetUp();
+                var e = this.shadowRoot.querySelector('#inputID') ; //NEW
+                if (e != null){
+                    e.parentNode.removeChild(e);
+                }
+                var name = this.shadowRoot.querySelector('#inputNameID') ; //NEW
+                if (name != null){
+                    name.parentNode.removeChild(name);
+                }
+                var c = this.shadowRoot.querySelector('#inputCommentID') ; //NEW
+                if (c != null){
+                    c.parentNode.removeChild(c);
+                }
             }
         }
     }
@@ -607,8 +663,8 @@ class PolicyModelsDefault extends HTMLElement{
         // if(questionNum > 10 || questionNum < 1){
         //     return;
         // }
-        this.answers.forEach((value, key) => {if(key >= questionNum) this.answers.delete(key)});
-        this.comments.forEach((value,key) => {if(key > questionNum) this.comments.delete(key)})
+        this.answers.forEach((value, key) => {if(key >= parseInt(questionNum)){this.answers.delete(key)}});
+        this.comments.forEach((value,key) => {if(key > parseInt(questionNum)) this.comments.delete(key)});
         this.QuestionSetUp(undefined,questionNum, -1);
     }
 
@@ -630,6 +686,7 @@ class PolicyModelsDefault extends HTMLElement{
     }
 
     toggleTags(){
+        console.log("hi");
         let info = this.shadowRoot.querySelector('.tagsDiv');
         let btn = this.shadowRoot.querySelector('#tags-toggle');
         this.tagsFlag = !this.tagsFlag;

@@ -25,7 +25,9 @@ TextAssets.set("English-Raw", {
     enter_answer: "Enter your answer here",
     write_comment: "Add personal comment",
     hide_comment: "Hide comment",
-    my_comment_is: "my comment is:"
+    my_comment_is: "my comment is:",
+    rejection: "Rejection!",
+    rejection_advice:"You still be able to get some benefits. We recommend consulting a lawyer, we can refer you if needed."
 });
 TextAssets.set("en-US", {
     welcome: "Welcome",
@@ -53,7 +55,9 @@ TextAssets.set("en-US", {
     enter_answer: "Enter your answer here",
     write_comment: "Add personal comment",
     hide_comment: "Hide comment",
-    my_comment_is: "my comment is:"
+    my_comment_is: "my comment is:",
+    rejection: "Rejection!",
+    rejection_advice:"We recommend consulting a lawyer, we can refer you if needed."
 });
 TextAssets.set("he-IL", {
     welcome: "ברוכים הבאים",
@@ -81,6 +85,8 @@ TextAssets.set("he-IL", {
     enter_answer: "הכנס את התשובה שלך כאן",
     write_comment: "הוסף הערה אישית",
     hide_comment: "הסתר הערה",
-    my_comment_is: "ההערה שלי היא:"
+    my_comment_is: "ההערה שלי היא:",
+    rejection: "הפניה למענה אנושי",
+    rejection_advice:"אנחנו ממליצים שתפנה/י לעורך דין, אנחנו יכולים להפנות אותך אם תרצה/י"
 });
 

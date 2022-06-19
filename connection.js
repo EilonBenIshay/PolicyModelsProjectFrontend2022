@@ -83,13 +83,21 @@ export class PMAPIHandler {
 
     async answerQuestion(uuid,modelId,versionId,languageId,questionId,answer)
     {
-        let response = await fetch(`${this.serverDomain}/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
-        let data = await response.json();
-        return data;
+        try{
+            let response = await fetch(`${this.serverDomain}/apiInterviewCtrl/answer/${uuid}/${modelId}/${versionId}/${languageId}/${questionId}/${answer}/`);
+            let data = await response.json();
+            return data;
+        }
+        catch(e){
+            return "rejection";
+        }
     }
 
     async getNextQuestion(answer, questionId = this.questionId){
         const ans = await this.answerQuestion(this.userId,this.modelId,this.versionId,this.activeLanguage,questionId,answer);
+        if(ans == "rejection"){
+            return -1;
+        }
         if(ans['finished'] == 'true'){
             this.questionId = undefined;
             return [[undefined, "", [""]], ans['tagsInYourLanguage']];
