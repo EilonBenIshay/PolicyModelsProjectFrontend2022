@@ -1,5 +1,3 @@
-//import * as http from 'http';
-//const http = require('http');
 export class PMAPIHandler {
     constructor(){
         this.serverDomain = `https://policymodelsserver.azurewebsites.net`

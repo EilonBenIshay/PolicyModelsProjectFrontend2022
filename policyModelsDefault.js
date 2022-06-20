@@ -187,16 +187,10 @@ class PolicyModelsDefault extends HTMLElement{
         //base language will always be the language in index '0' at textAssets.languages.
         this.language = TextAssets.keys().next().value;
 
-        // this.question = new Question(undefined,TextAssets.get(this.language).welcome_PM_PM_PM, [TextAssets.get(this.language).start]);
-        // this.buttons = ['#a0'];
-
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.welcomePage();
         
-
-
-        //  NEW (delete the btn and the script)
         this.shadowRoot.querySelector('#mySelect').addEventListener('change', () => {this.changeLanguage();});
         
 
@@ -293,15 +287,9 @@ class PolicyModelsDefault extends HTMLElement{
         this.shadowRoot.querySelector('.policy-models-default').innerHTML = div;
         
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
-        //this.transcriptFlag = false;
-        //this.question = new Question(0,TextAssets.get(this.language).welcome_PM_PM, [TextAssets.get(this.language).start]);
-        //this.buttons = ['#a0'];
         this.shadowRoot.querySelector('.namePolicyModels').innerText = this.getAttribute('name');
-        //this.shadowRoot.querySelector('h4').innerText = this.question.question;
         if (this.question == undefined){
             this.QuestionSetUp(undefined,undefined,-1);
-            // this.shadowRoot.querySelector('.buttons').innerHTML = "<button class = \"btnStart\" id =\"a0\">" + TextAssets.get(this.language).start + "</button>\n";
-            // this.shadowRoot.querySelector('#a0').addEventListener('click', () => this.QuestionSetUp(""));
             }
         else{
             this.QuestionSetUp(undefined,this.question.id);
@@ -666,10 +654,6 @@ class PolicyModelsDefault extends HTMLElement{
      * questionNum -> question to return to
      */
     ReturnToQuestion(questionNum){
-        //TODO remove this condition with the full API implementation
-        // if(questionNum > 10 || questionNum < 1){
-        //     return;
-        // }
         this.answers.forEach((value, key) => {if(key >= parseInt(questionNum)){this.answers.delete(key)}});
         this.comments.forEach((value,key) => {if(key > parseInt(questionNum)) this.comments.delete(key)});
         this.QuestionSetUp(undefined,questionNum, -1);
