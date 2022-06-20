@@ -28,9 +28,9 @@ if(document.getElementById('internalCheckUp') != null){
     Array.from(TextAssets.keys()).forEach((key) =>
     {
     
-        let welcome = TextAssets.get(key).welcome;
-        if (welcome  == undefined){
-            prompt(`textAssets is missing 'welcome' for ${key}!`);
+        let welcome_PM = TextAssets.get(key).welcome_PM;
+        if (welcome_PM  == undefined){
+            prompt(`textAssets is missing 'welcome_PM' for ${key}!`);
         }
         let start_interview = TextAssets.get(key).start_interview;
         if (start_interview  == undefined){
@@ -187,7 +187,7 @@ class PolicyModelsDefault extends HTMLElement{
         //base language will always be the language in index '0' at textAssets.languages.
         this.language = TextAssets.keys().next().value;
 
-        // this.question = new Question(undefined,TextAssets.get(this.language).welcome, [TextAssets.get(this.language).start]);
+        // this.question = new Question(undefined,TextAssets.get(this.language).welcome_PM_PM_PM, [TextAssets.get(this.language).start]);
         // this.buttons = ['#a0'];
 
         this.attachShadow({ mode: 'open' });
@@ -244,7 +244,7 @@ class PolicyModelsDefault extends HTMLElement{
         this.pageIdentifier = 1;
         let div = `
         <div>
-        <p class=welcomeContent>`+ TextAssets.get(this.language).welcome +`</p>
+        <p class=welcomeContent>`+ TextAssets.get(this.language).welcome_PM +`</p>
         <h4></h4>
         <div class=\"startInterview\"></div>
         </div>`;
@@ -294,7 +294,7 @@ class PolicyModelsDefault extends HTMLElement{
         
         this.shadowRoot.querySelector('#transcript-toggle').addEventListener('click', () => this.toggleTranscript());
         //this.transcriptFlag = false;
-        //this.question = new Question(0,TextAssets.get(this.language).welcome, [TextAssets.get(this.language).start]);
+        //this.question = new Question(0,TextAssets.get(this.language).welcome_PM_PM, [TextAssets.get(this.language).start]);
         //this.buttons = ['#a0'];
         this.shadowRoot.querySelector('.namePolicyModels').innerText = this.getAttribute('name');
         //this.shadowRoot.querySelector('h4').innerText = this.question.question;
