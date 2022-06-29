@@ -89,4 +89,34 @@ TextAssets.set("he-IL", {
     rejection: "הפניה למענה אנושי",
     rejection_advice:"אנחנו ממליצים שתפנה/י לעורך דין, אנחנו יכולים להפנות אותך אם תרצה/י"
 });
+TextAssets.set("ar-IL", {
+    welcome: "اهلا وسهلا",
+    start_interview: "ابدأ المقابلة",
+    start: "ابدأ",
+    show_transcript: "",
+    hide_transcript: "اخفي النتائج",
+    question: "سؤال",
+    your_answer: "جوابك",
+    revisit: "العوده الى هذا السؤال",
+    show_conclusion: "اعرض النتائج",
+    home: "العودة للصفحة الرئيسية",
+    welcome_PM: "ברוכים הבאים לאתר הזמני של PolicyModels",
+    result: "نتائجك",
+    conclusion_page: "صفحة النتائج",
+    press_conclusions: "انقر فوق الزر \ "إظهار النتائج \" لرؤية نتائج المقابلة",
+    download_transcript: "قم بتنزيل ورقة كافة الإجابات",
+    write_feedback: "اكتب ملاحظاتك",
+    submit_feedback: "ارسل رأيك",
+    show_tags: "إظهار النتائج الأولية",
+    hide_tags: "إخفاء النتائج الأولية",
+    my_feedback_is: "ملاحظاتي هي:",
+    my_name_is: "اسمي هو:",
+    download_conclusions: "نتائج التنزيل",
+    enter_answer: "أدخل إجابتك هنا",
+    write_comment: "أضف ملاحظة شخصية",
+    hide_comment: "اخفاء تعليق",
+    my_comment_is: "تعليقي هو:",
+    rejection: "الإحالة إلى استجابة بشرية",
+    rejection_advice:"نوصيك بالاتصال بمحام ، ويمكننا إحالتك إذا أردت"
+});
 
